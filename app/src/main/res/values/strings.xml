@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Register</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="Mail">E-mail</string>
+    <string name="password">Password</string>
+</resources>
