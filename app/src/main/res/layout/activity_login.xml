@@ -53,6 +53,7 @@
         <Button
             android:id="@+id/btCancel"
             android:layout_weight="0.5"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/cancel"
             android:onClick="clickCancel"
@@ -61,6 +62,7 @@
         <Button
             android:id="@+id/btConfirm"
             android:layout_weight="0.5"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/confirm"
             android:onClick="clickConfirm"/>
