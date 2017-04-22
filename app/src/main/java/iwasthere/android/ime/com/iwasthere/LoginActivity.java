@@ -1,5 +1,6 @@
 package iwasthere.android.ime.com.iwasthere;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -14,7 +15,7 @@ import android.widget.TextView;
 
 public class LoginActivity extends AppCompatActivity {
 
-    EditText email,password;
+    EditText name, nusp, email,password;
     Button register,login;
 //    ProgressBar progressBar;
 
@@ -56,13 +57,16 @@ public class LoginActivity extends AppCompatActivity {
         String s1 = email.getText().toString();
         String s2 = password.getText().toString();
 
-        setContentView(R.layout.activity_list);
+        Intent i = new Intent(this, ListActivity.class);
+        startActivity(i);
+
+        //setContentView(R.layout.activity_list);
         Log.d("login", "Click Confirm");
     }
 
     public void signUp(View v) {
-        setContentView(R.layout.activity_signup);
+        Intent i = new Intent(this, SignUpActivity.class);
+        startActivity(i);
+        //setContentView(R.layout.activity_signup);
     }
-
-
 }
