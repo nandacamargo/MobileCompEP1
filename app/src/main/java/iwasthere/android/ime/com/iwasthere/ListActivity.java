@@ -21,5 +21,15 @@ public class ListActivity extends Activity {
     public void addTeacher(View v){
 //        startActivityForResult( new Intent(this, TeacherActivity.class), 1);
         Log.d("list", "Click Add");
+        /*Intent i = new Intent(this, HttpActivity.class);
+        startActivity(i);*/
+    }
+
+    public void listStudents(View v) {
+        Log.d("list", "Click List Students");
+        Intent i = new Intent(this, HttpActivity.class);
+        startActivity(i);
+
+        //setContentView(R.layout.activity_signup);
     }
 }

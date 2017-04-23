@@ -14,11 +14,21 @@
     </ListView>
 
     <Button
+        android:id="@+id/add_teacher"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
         android:text="@string/add"
         android:onClick="addTeacher"
+        />
+
+    <Button
+        android:id="@+id/list_students"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:text="@string/listStudents"
+        android:onClick="listStudents"
         />
 
 </LinearLayout>
