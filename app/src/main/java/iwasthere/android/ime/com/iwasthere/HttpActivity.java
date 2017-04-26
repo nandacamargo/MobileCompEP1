@@ -1,6 +1,7 @@
 package iwasthere.android.ime.com.iwasthere;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,15 +24,15 @@ import java.net.URLEncoder;
 
 public class HttpActivity extends Activity {
 
-    Button btnFetchStudents;
+    Button btnFetchSeminars;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_list);
         Log.d("HttpActivity", "Antes de estabelecer a conexão.");
-        btnFetchStudents = (Button) findViewById(R.id.list_students);
-        btnFetchStudents.setOnClickListener(new View.OnClickListener() {
+        btnFetchSeminars = (Button) findViewById(R.id.list_seminars);
+        btnFetchSeminars.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -52,7 +53,7 @@ public class HttpActivity extends Activity {
 
             URL url = null;
             try {
-                url = new URL("http://207.38.82.139:8001/student");
+                url = new URL("http://207.38.82.139:8001/seminar");
                 Log.d("HttpActivity", "A URL é " + url);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -69,6 +70,15 @@ public class HttpActivity extends Activity {
                 }
 
                 Log.d("HttpActivity", "Results =  " + stringBuilder.toString());
+
+                Intent intent = new Intent();
+                intent.putExtra("seminarsData", stringBuilder.toString());
+
+                Log.d("Before: ", "Antes de enviar o resultado");
+
+                setResult(RESULT_OK, intent);
+                //finish();
+
                 return stringBuilder.toString();
             } catch (MalformedURLException e) {
                 Log.d("HttpActivity", "Erro. My url " + url);

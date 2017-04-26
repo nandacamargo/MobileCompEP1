@@ -23,12 +23,12 @@
         />
 
     <Button
-        android:id="@+id/list_students"
+        android:id="@+id/list_seminars"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
-        android:text="@string/listStudents"
-        android:onClick="listStudents"
+        android:text="@string/listSeminars"
+        android:onClick="listSeminars"
         />
 
 </LinearLayout>

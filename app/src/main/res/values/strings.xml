@@ -4,7 +4,7 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="add">Add</string>
-    <string name="listStudents">"List Students"</string>
+    <string name="listSeminars">"List Seminars"</string>
     <string name="register">Create an account.</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
