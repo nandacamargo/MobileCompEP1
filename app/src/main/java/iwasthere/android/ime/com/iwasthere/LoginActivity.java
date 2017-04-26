@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class LoginActivity extends AppCompatActivity {
@@ -60,13 +59,11 @@ public class LoginActivity extends AppCompatActivity {
         Intent i = new Intent(this, ListActivity.class);
         startActivity(i);
 
-        //setContentView(R.layout.activity_list);
         Log.d("login", "Click Confirm");
     }
 
     public void signUp(View v) {
         Intent i = new Intent(this, SignUpActivity.class);
         startActivity(i);
-        //setContentView(R.layout.activity_signup);
     }
 }
