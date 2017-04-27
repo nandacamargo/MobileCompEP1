@@ -39,7 +39,7 @@ public class Seminar {
     }
 
     public static ArrayList<Seminar> getSeminars(JSONArray seminarsJSON) {
-       ArrayList<Seminar> seminars = new ArrayList<Seminar>();
+        ArrayList<Seminar> seminars = new ArrayList<Seminar>();
         for (int i = 0; i < seminarsJSON.length(); i++) {
             try {
                 JSONObject seminar = seminarsJSON.getJSONObject(i);

@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("iwasthere.android.ime.com.iwasthere", appContext.getPackageName());
+        assertEquals("com.example.dududcbier.iwasthere", appContext.getPackageName());
     }
 }
