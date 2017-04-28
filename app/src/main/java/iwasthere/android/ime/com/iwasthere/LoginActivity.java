@@ -81,6 +81,10 @@ public class LoginActivity extends AppCompatActivity {
         mProgressView = findViewById(R.id.login_progress);
     }
 
+    public void SignUpClick() {
+
+    }
+
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid nusp, missing fields, etc.), the
@@ -135,7 +139,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean isNuspValid(String nusp) {
         //TODO: Replace this with your own logic
-        return nusp.length() > 4;
+        return nusp.length() > 0;
     }
 
     private boolean isPasswordValid(String password) {
@@ -201,13 +205,54 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected Integer doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+            StringBuilder stringBuilder;
+            String stringURL = "http://207.38.82.139:8001/student/get/" + mNusp;
+
+            URL url = null;
 
             try {
-                // Simulate network access.
-                Thread.sleep(0);
-            } catch (InterruptedException e) {
-                return CONNECTION_FAILED;
+                url = new URL(stringURL);
+                Log.d("httpGetRequest", "A URL é " + url);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                connection.setRequestMethod("GET");
+                connection.setReadTimeout(15*1000);
+                connection.connect();
+
+                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                stringBuilder = new StringBuilder();
+
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    stringBuilder.append(line + "\n");
+                }
+
+                Log.d("httpGetRequest", "Results =  " + stringBuilder.toString());
+
+
+            } catch (MalformedURLException e) {
+                Log.d("httpGetRequest", "Erro. My url " + url);
+                e.printStackTrace();
+                return  null;
+            } catch (Exception e) {
+                Log.e("httpGetRequest", Log.getStackTraceString(e));
+                e.printStackTrace();
+                return null;
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException ioe) {
+                        Log.e("PlaceholderFragment", "Error closing stream");
+                        ioe.printStackTrace();
+                    }
+                }
             }
 
             for (String credential : DUMMY_CREDENTIALS) {
