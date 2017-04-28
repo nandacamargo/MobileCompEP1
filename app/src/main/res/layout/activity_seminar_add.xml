@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/seminar_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/seminar_section"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        />
+
+    <TextView
+        android:id="@+id/addSeminar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:hint="@string/seminar_name"
+        android:inputType="text" />
+    <Button
+        android:id="@+id/btAddSeminar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:text="@string/add_seminar"
+        android:textStyle="bold"
+        android:onClick="addSeminar"/>
+</LinearLayout>
+
+

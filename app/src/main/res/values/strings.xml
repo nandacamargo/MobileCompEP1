@@ -16,11 +16,13 @@
     <string name="title_activity_seminar_list">Seminar List</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
+    <string name="add_seminar">Add Seminar</string>
     <string name="name">Name</string>
     <string name="nusp">N˚USP</string>
     <string name="email">Email</string>
     <string name="passwd">Password</string>
     <string name="confirmPasswd">Confirm Password</string>
     <string name="register">Create an account.</string>
-
+    <string name="seminar_section">Seminar Section</string>
+    <string name="seminar_name">Seminar Name</string>
 </resources>
