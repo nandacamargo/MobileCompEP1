@@ -19,13 +19,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
+
+import static iwasthere.android.ime.com.iwasthere.R.id.login;
 
 /**
  * A login screen that offers login via nusp/password.
@@ -61,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                if (id == login || id == EditorInfo.IME_NULL) {
                     attemptLogin();
                     return true;
                 }
@@ -187,7 +192,7 @@ public class LoginActivity extends AppCompatActivity {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Integer> {
+    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mNusp;
         private final String mPassword;
@@ -204,76 +209,89 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Integer doInBackground(Void... params) {
+        protected Boolean doInBackground(Void... params) {
 
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
-            StringBuilder stringBuilder;
-            String stringURL = "http://207.38.82.139:8001/student/get/" + mNusp;
+            String stringURL = "http://207.38.82.139:8001/login/student";
 
             URL url = null;
+            String postParams = "nusp=" + mNusp + "&password=" + mPassword;
+            Boolean success;
 
             try {
                 url = new URL(stringURL);
                 Log.d("httpGetRequest", "A URL é " + url);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-                connection.setRequestMethod("GET");
+                connection.setRequestMethod("POST");
                 connection.setReadTimeout(15*1000);
+                connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded");
+                connection.setRequestProperty( "charset", "utf-8");
+                connection.setRequestProperty("Content-Length", "" + Integer.toString(postParams.getBytes().length));
                 connection.connect();
 
-                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                stringBuilder = new StringBuilder();
+                DataOutputStream os = new DataOutputStream(connection.getOutputStream());
 
-                String line = null;
-                while ((line = reader.readLine()) != null) {
-                    stringBuilder.append(line + "\n");
+                os.writeBytes(postParams);
+                os.flush();
+                os.close();
+
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(connection.getInputStream()));
+                String inputLine;
+                StringBuffer response = new StringBuffer();
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
                 }
+                in.close();
 
-                Log.d("httpGetRequest", "Results =  " + stringBuilder.toString());
+                Log.d("UserLoginTask", response.toString());
+                JSONObject user = new JSONObject(response.toString());
+                success = user.getBoolean("success");
+                return success;
 
-
-            } catch (MalformedURLException e) {
-                Log.d("httpGetRequest", "Erro. My url " + url);
-                e.printStackTrace();
-                return  null;
-            } catch (Exception e) {
-                Log.e("httpGetRequest", Log.getStackTraceString(e));
-                e.printStackTrace();
-                return null;
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException ioe) {
-                        Log.e("PlaceholderFragment", "Error closing stream");
-                        ioe.printStackTrace();
+                } catch (MalformedURLException e) {
+                   Log.d("httpGetRequest", "Erro. My url " + url);
+                    e.printStackTrace();
+                    return null;
+                } catch (Exception e) {
+                   Log.e("httpGetRequest", Log.getStackTraceString(e));
+                    e.printStackTrace();
+                    return null;
+                } finally {
+                    if (urlConnection != null) {
+                        urlConnection.disconnect();
+                    }
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (IOException ioe) {
+                            Log.e("PlaceholderFragment", "Error closing stream");
+                            ioe.printStackTrace();
+                        }
                     }
                 }
-            }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mNusp)) {
-                    // Account exists, return true if the password matches.
-                    if (pieces[1].equals(mPassword)) return SUCCESS;
-                    return WRNG_PASSWD;
-                }
-            }
+//            for (String credential : DUMMY_CREDENTIALS) {
+//                String[] pieces = credential.split(":");
+//                if (pieces[0].equals(mNusp)) {
+//                    // Account exists, return true if the password matches.
+//                    if (pieces[1].equals(mPassword)) return SUCCESS;
+//                    return WRNG_PASSWD;
+//                }
+//            }
 
-            return USER_NOT_FOUND;
         }
 
         @Override
-        protected void onPostExecute(Integer success) {
+        protected void onPostExecute(Boolean success) {
 
             mAuthTask = null;
             showProgress(false);
             String result = null;
-            if (success == SUCCESS) {
+            if (success) {
                 try {
                     result = new GetSeminarTask().execute("http://207.38.82.139:8001/seminar").get();
                 } catch (InterruptedException e){
@@ -285,14 +303,14 @@ public class LoginActivity extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(), SeminarListActivity.class);
                 i.putExtra("result", result);
                 startActivity(i);
-            } else if (success == WRNG_PASSWD) {
+            } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
-            } else if (success == USER_NOT_FOUND){
-                Intent i = new Intent(getApplicationContext(), SignUpActivity.class);
-                i.putExtra("nusp", mNusp);
-                i.putExtra("password", mPassword);
-                startActivity(i);
+//            } else if (success == USER_NOT_FOUND){
+//                Intent i = new Intent(getApplicationContext(), SignUpActivity.class);
+//                i.putExtra("nusp", mNusp);
+//                i.putExtra("password", mPassword);
+//                startActivity(i);
             }
 
         }

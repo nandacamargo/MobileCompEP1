@@ -8,19 +8,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.ExecutionException;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -102,7 +93,7 @@ public class SignUpActivity extends AppCompatActivity {
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
             StringBuilder stringBuilder;
-            String stringURL = "http://207.38.82.139:8001/student/add/";
+            String stringURL = "http://207.38.82.139:8001/student/add";
 
             URL url = null;
 
@@ -116,23 +107,20 @@ public class SignUpActivity extends AppCompatActivity {
 
                 connection.setRequestMethod("POST");
                 connection.setReadTimeout(15 * 1000);
+                connection.setConnectTimeout(15 * 1000);
+                connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded");
+                connection.setRequestProperty( "charset", "utf-8");
                 connection.setRequestProperty("Content-Length", "" + Integer.toString(s.getBytes().length));
                 connection.connect();
 
-//                JSONObject postDataParams = new JSONObject();
-//                postDataParams.put("portalAccountUsername", "nusp");
-//                postDataParams.put("portalAccountPassword", "password");
-//
                 DataOutputStream os = new DataOutputStream(connection.getOutputStream());
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
 
-                //String s = "{\"name\": \"" + mName + "\", \"nusp\": \"" + mNusp + "\", \"password\": \"" + mPassword + "\"}";
-                writer.write(s);
-                writer.flush();
-                writer.close();
+                os.writeBytes(s);
+                os.flush();
                 os.close();
 
-                int responseCode = connection.getResponseCode();
+                Integer responseCode = connection.getResponseCode();
+                Log.d("SignUpActivity", responseCode.toString());
 
                 if (responseCode == HttpsURLConnection.HTTP_OK) {
 
