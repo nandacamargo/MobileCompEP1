@@ -26,6 +26,7 @@
             android:label="@string/title_activity_seminar_list"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".SignUpActivity"></activity>
+        <activity android:name=".SeminarAddActivity"></activity>
     </application>
 
 </manifest>

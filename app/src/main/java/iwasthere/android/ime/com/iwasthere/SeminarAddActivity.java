@@ -38,8 +38,8 @@ public class SeminarAddActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seminar_add);
 
-        nameView = (EditText) findViewById(R.id.name);
-        nameView.setText(getIntent().getStringExtra("nusp"));
+        nameView = (EditText) findViewById(R.id.addSeminar);
+        nameView.setText(getIntent().getStringExtra("name"));
     }
 
     public void addSeminar(View v) {
@@ -54,9 +54,9 @@ public class SeminarAddActivity extends AppCompatActivity{
             SeminarAddTask seminar = new SeminarAddTask(name);
             seminar.execute();
 
-            Intent i = new Intent(this, LoginActivity.class);
+            Intent i = new Intent(this, SeminarAddActivity.class);
             startActivity(i);
-            Log.d("SeminarAddActivity", "Click Add Activity");
+            Log.d("SeminarAddActivity", "After Intent");
         }
     }
 
