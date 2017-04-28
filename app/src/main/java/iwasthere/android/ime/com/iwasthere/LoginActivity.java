@@ -75,10 +75,17 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         Button mNuspSignInButton = (Button) findViewById(R.id.nusp_sign_in_button);
+        Button mNuspSignUpButton = (Button) findViewById(R.id.nusp_register_button);
         mNuspSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
+            }
+        });
+        mNuspSignUpButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signUpClick(mNuspView.getText().toString(), mPasswordView.getText().toString());
             }
         });
 
@@ -86,8 +93,11 @@ public class LoginActivity extends AppCompatActivity {
         mProgressView = findViewById(R.id.login_progress);
     }
 
-    public void SignUpClick() {
-
+    public void signUpClick(String nusp, String password) {
+        Intent i = new Intent(getApplicationContext(), SignUpActivity.class);
+        i.putExtra("nusp", nusp);
+        i.putExtra("password", password);
+        startActivity(i);
     }
 
     /**
@@ -197,12 +207,6 @@ public class LoginActivity extends AppCompatActivity {
         private final String mNusp;
         private final String mPassword;
 
-        private final int WRNG_PASSWD = 1;
-        private final int USER_NOT_FOUND = 2;
-        private final int CONNECTION_FAILED = -1;
-        private final int SUCCESS = 0;
-
-
         UserLoginTask(String nusp, String password) {
             mNusp = nusp;
             mPassword = password;
@@ -216,8 +220,7 @@ public class LoginActivity extends AppCompatActivity {
             String stringURL = "http://207.38.82.139:8001/login/student";
 
             URL url = null;
-            String postParams = "nusp=" + mNusp + "&password=" + mPassword;
-            Boolean success;
+            String postParams = "nusp=" + mNusp + "&pass=" + mPassword;
 
             try {
                 url = new URL(stringURL);
@@ -229,6 +232,8 @@ public class LoginActivity extends AppCompatActivity {
                 connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded");
                 connection.setRequestProperty( "charset", "utf-8");
                 connection.setRequestProperty("Content-Length", "" + Integer.toString(postParams.getBytes().length));
+                connection.setDoInput(true);
+                connection.setDoOutput(true);
                 connection.connect();
 
                 DataOutputStream os = new DataOutputStream(connection.getOutputStream());
@@ -249,8 +254,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 Log.d("UserLoginTask", response.toString());
                 JSONObject user = new JSONObject(response.toString());
-                success = user.getBoolean("success");
-                return success;
+                return user.getBoolean("success");
 
                 } catch (MalformedURLException e) {
                    Log.d("httpGetRequest", "Erro. My url " + url);
@@ -273,15 +277,6 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 }
-
-//            for (String credential : DUMMY_CREDENTIALS) {
-//                String[] pieces = credential.split(":");
-//                if (pieces[0].equals(mNusp)) {
-//                    // Account exists, return true if the password matches.
-//                    if (pieces[1].equals(mPassword)) return SUCCESS;
-//                    return WRNG_PASSWD;
-//                }
-//            }
 
         }
 
@@ -306,11 +301,6 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
-//            } else if (success == USER_NOT_FOUND){
-//                Intent i = new Intent(getApplicationContext(), SignUpActivity.class);
-//                i.putExtra("nusp", mNusp);
-//                i.putExtra("password", mPassword);
-//                startActivity(i);
             }
 
         }
@@ -346,7 +336,7 @@ public class LoginActivity extends AppCompatActivity {
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 stringBuilder = new StringBuilder();
 
-                String line = null;
+                String line;
                 while ((line = reader.readLine()) != null) {
                     stringBuilder.append(line + "\n");
                 }

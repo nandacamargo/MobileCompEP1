@@ -3,14 +3,20 @@ package iwasthere.android.ime.com.iwasthere;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -62,10 +68,6 @@ public class SignUpActivity extends AppCompatActivity {
 
             UserSignUpTask user = new UserSignUpTask(name, nusp, password);
             user.execute();
-
-            Intent i = new Intent(this, LoginActivity.class);
-            startActivity(i);
-            Log.d("signup", "Click Create Account");
         }
 
 
@@ -79,7 +81,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         private final int CONNECTION_FAILED = -1;
         private final int SUCCESS = 0;
-        private final int POST_FAILED = -2;
+        private final int USER_ALREADY_EXISTS = -2;
 
         UserSignUpTask(String name, String nusp, String password) {
             mName = name;
@@ -96,8 +98,12 @@ public class SignUpActivity extends AppCompatActivity {
             String stringURL = "http://207.38.82.139:8001/student/add";
 
             URL url = null;
-
-            String s = "name=" + mName + "&nusp=" + mNusp + "&password=" + mPassword;
+            String s = null;
+            try {
+                s = "name=" + mName + "&nusp=" + mNusp + "&pass=" + mPassword;
+            } catch (Exception e) {
+                Log.e("Exception", "Exceprton");
+            }
             Log.d("SignUpActivity", s);
 
             try {
@@ -108,9 +114,11 @@ public class SignUpActivity extends AppCompatActivity {
                 connection.setRequestMethod("POST");
                 connection.setReadTimeout(15 * 1000);
                 connection.setConnectTimeout(15 * 1000);
-                connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded");
-                connection.setRequestProperty( "charset", "utf-8");
+                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                connection.setRequestProperty("charset", "utf-8");
                 connection.setRequestProperty("Content-Length", "" + Integer.toString(s.getBytes().length));
+                connection.setDoInput(true);
+                connection.setDoOutput(true);
                 connection.connect();
 
                 DataOutputStream os = new DataOutputStream(connection.getOutputStream());
@@ -125,31 +133,30 @@ public class SignUpActivity extends AppCompatActivity {
                 if (responseCode == HttpsURLConnection.HTTP_OK) {
 
                     Log.i("SignUpActivity", "POST efetuado com sucesso!");
-                    //String line;
-//                    BufferedReader br=new BufferedReader(new InputStreamReader(connection.getInputStream()));
-//                    while ((line=br.readLine()) != null) {
-//                        response+=line;
-//                        Log.i("tag", line);
-//                    }
+                    String line;
+                    String response = "";
+                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    while ((line = br.readLine()) != null) {
+                        response += line + "\n";
+                        Log.i("SignUpActivity", line);
+                    }
+
+                    JSONObject resp = new JSONObject(response);
+                    if (!resp.getBoolean("success")) {
+                        return USER_ALREADY_EXISTS;
+                    }
                 } else {
                     Log.i("SignUpActivity", "POST efetuado com sucesso!");
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return SUCCESS;
-        }
-    }
-
-      /*  catch (MalformedURLException e) {
+            } catch (MalformedURLException e) {
                 Log.d("httpGetRequest", "Erro. My url " + url);
                 e.printStackTrace();
-                return  null;
-        } catch (Exception e) {
+                return null;
+            } catch (Exception e) {
                 Log.e("httpGetRequest", Log.getStackTraceString(e));
                 e.printStackTrace();
                 return null;
-        } finally {
+            } finally {
                 if (urlConnection != null) {
                     urlConnection.disconnect();
                 }
@@ -163,35 +170,27 @@ public class SignUpActivity extends AppCompatActivity {
                 }
             }
 
+            return SUCCESS;
         }
-*/
-        /*@Override
+
+        @Override
         protected void onPostExecute(Integer success) {
 
-            mAuthTask = null;
-            showProgress(false);
-            String result = null;
-            if (success == SUCCESS) {
-                try {
-                    result = new LoginActivity.GetSeminarTask().execute("http://207.38.82.139:8001/seminar").get();
-                } catch (InterruptedException e){
-                    Log.e("UserLoginTask: ", "Interrupted!");
-                } catch (ExecutionException e) {
-                    Log.e("UserLoginTask: ", "Execution Exception!");
-                }
-
-                Intent i = new Intent(getApplicationContext(), SeminarListActivity.class);
-                i.putExtra("result", result);
-                startActivity(i);
-            } else if (success == WRNG_PASSWD) {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            } else if (success == USER_NOT_FOUND){
-                Intent i = new Intent(getApplicationContext(), SignUpActivity.class);
-                i.putExtra("nusp", mNusp);
-                i.putExtra("password", mPassword);
-                startActivity(i);
+            switch (success) {
+                case SUCCESS:
+                    Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(i);
+                    Log.d("signup", "Click Create Account");
+                    break;
+                case USER_ALREADY_EXISTS:
+                    nuspView.setError(getString(R.string.error_user_exists));
+                    nuspView.requestFocus();
+                    break;
+                default:
+                    Snackbar.make(findViewById(android.R.id.content), "An error occurred. Please try again later.", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
             }
 
-        }*/
+        }
+    }
 }
