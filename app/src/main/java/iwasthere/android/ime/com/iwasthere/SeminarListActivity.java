@@ -104,7 +104,7 @@ public class SeminarListActivity extends AppCompatActivity {
             case R.id.new_teacher:
                 return true;
             case R.id.my_account:
-                Intent i = new Intent(getApplicationContext(), RegisterUpdateActivity.class);
+                Intent i = new Intent(getApplicationContext(), EditProfileActivity.class);
                 startActivity(i);
                 return true;
             default:

@@ -3,7 +3,10 @@
 
     <!-- Strings related to login -->
     <string name="prompt_nusp">NUSP</string>
-    <string name="prompt_password">Password (optional)</string>
+    <string name="prompt_password">Password</string>
+    <string name="prompt_name">Name</string>
+    <string name="prompt_confirm_new_password">Confirm new password</string>
+    <string name="prompt_new_password">New password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Log in</string>
     <string name="action_sign_up">Register</string>
