@@ -4,23 +4,15 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.ExecutionException;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -28,7 +20,7 @@ import javax.net.ssl.HttpsURLConnection;
  * Created by nanda on 28/04/17.
  */
 
-public class SeminarAddActivity extends AppCompatActivity{
+public class AddSeminarActivity extends AppCompatActivity{
 
 
     private EditText nameView;
@@ -36,10 +28,12 @@ public class SeminarAddActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_seminar_add);
+        setContentView(R.layout.activity_add_seminar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.title_activity_add_seminar);
 
         nameView = (EditText) findViewById(R.id.name);
-        nameView.setText(getIntent().getStringExtra("nusp"));
     }
 
     public void addSeminar(View v) {
@@ -56,7 +50,7 @@ public class SeminarAddActivity extends AppCompatActivity{
 
             Intent i = new Intent(this, LoginActivity.class);
             startActivity(i);
-            Log.d("SeminarAddActivity", "Click Add Activity");
+            Log.d("AddSeminarActivity", "Click Add Activity");
         }
     }
 
@@ -64,9 +58,6 @@ public class SeminarAddActivity extends AppCompatActivity{
 
         private final String mName;
 
-        private final int WRNG_PASSWD = 1;
-        private final int USER_NOT_FOUND = 2;
-        private final int CONNECTION_FAILED = -1;
         private final int SUCCESS = 0;
 
 
@@ -85,7 +76,7 @@ public class SeminarAddActivity extends AppCompatActivity{
             URL url = null;
 
             String s = "name=" + mName;
-            Log.d("SeminarAddActivity", s);
+            Log.d("AddSeminarActivity", s);
 
             try {
                 url = new URL(stringURL);
@@ -107,13 +98,13 @@ public class SeminarAddActivity extends AppCompatActivity{
                 os.close();
 
                 Integer responseCode = connection.getResponseCode();
-                Log.d("SeminarAddActivity", responseCode.toString());
+                Log.d("AddSeminarActivity", responseCode.toString());
 
 
                 if (responseCode == HttpsURLConnection.HTTP_OK) {
-                    Log.i("SeminarAddActivity", "POST efetuado com sucesso!");
+                    Log.i("AddSeminarActivity", "POST efetuado com sucesso!");
                 } else {
-                    Log.i("SeminarAddActivity", "POST não efetuado!");
+                    Log.i("AddSeminarActivity", "POST não efetuado!");
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -12,8 +12,10 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">Invalid nusp or password</string>
     <string name="error_field_required">This field is required</string>
-    <string name="password_mismatch">The passwords must match</string>
+    <string name="error_password_mismatch">The passwords must match</string>
     <string name="title_activity_seminar_list">Seminar List</string>
+    <string name="title_activity_sign_up">Register</string>
+    <string name="title_activity_add_seminar">New Seminar</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="add_seminar">Add Seminar</string>
@@ -22,7 +24,7 @@
     <string name="email">Email</string>
     <string name="passwd">Password</string>
     <string name="confirmPasswd">Confirm Password</string>
-    <string name="register">Create an account.</string>
+    <string name="register">Create an account</string>
     <string name="seminar_section">Seminar Section</string>
     <string name="seminar_name">Seminar Name</string>
 </resources>

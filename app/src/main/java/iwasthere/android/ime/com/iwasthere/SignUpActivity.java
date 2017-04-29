@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -34,6 +35,10 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.title_activity_sign_up);
+
         nameView = (EditText) findViewById(R.id.name);
         nuspView = (EditText) findViewById(R.id.nusp);
         passwordView = (EditText) findViewById(R.id.passwd);
@@ -61,7 +66,7 @@ public class SignUpActivity extends AppCompatActivity {
             passwordView.setError(getString(R.string.error_invalid_password));
             passwordView.requestFocus();
         } else if (!password.equals(confirmPassword)) {
-            confirmPasswordView.setError(getString(R.string.password_mismatch));
+            confirmPasswordView.setError(getString(R.string.error_password_mismatch));
             confirmPasswordView.setText("");
             confirmPasswordView.requestFocus();
         } else {
