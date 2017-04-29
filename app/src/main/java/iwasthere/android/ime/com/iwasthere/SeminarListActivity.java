@@ -47,7 +47,10 @@ public class SeminarListActivity extends AppCompatActivity {
         actionMenuView = (ActionMenuView) findViewById(R.id.action_menu_view);
         mSearchView = (SearchView) findViewById(R.id.search_view);
 
+        Boolean teacher = getIntent().getBooleanExtra("teacher", false);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        if (!teacher)
+            fab.setVisibility(View.GONE);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -99,7 +102,11 @@ public class SeminarListActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.new_teacher:
+                return true;
             case R.id.my_account:
+                Intent i = new Intent(getApplicationContext(), RegisterUpdateActivity.class);
+                startActivity(i);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
