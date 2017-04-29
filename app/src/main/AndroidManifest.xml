@@ -31,7 +31,17 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AddSeminarActivity"
-            android:label="Sign Up"
+            android:label="@string/title_activity_add_seminar"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".AfterLoginActivity"
+            android:label="Welcome"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".RegisterUpdateActivity"
+            android:label="My account"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

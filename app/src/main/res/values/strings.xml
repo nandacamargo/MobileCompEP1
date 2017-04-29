@@ -27,4 +27,7 @@
     <string name="register">Create an account</string>
     <string name="seminar_section">Seminar Section</string>
     <string name="seminar_name">Seminar Name</string>
+    <string name="go_to_update_register">My account</string>
+    <string name="go_to_seminars">Seminars</string>
+    <string name="edit_register">"Edit register"</string>
 </resources>

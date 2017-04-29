@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -60,7 +59,7 @@ public class RegisterUpdateActivity extends AppCompatActivity {
             passwordView.setError(getString(R.string.error_invalid_password));
             passwordView.requestFocus();
         } else if (!password.equals(confirmPassword)) {
-            confirmPasswordView.setError(getString(R.string.password_mismatch));
+            confirmPasswordView.setError(getString(R.string.error_password_mismatch));
             confirmPasswordView.setText("");
             confirmPasswordView.requestFocus();
         } else {
