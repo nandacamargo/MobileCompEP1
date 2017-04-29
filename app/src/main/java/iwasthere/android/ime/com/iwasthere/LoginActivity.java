@@ -295,7 +295,8 @@ public class LoginActivity extends AppCompatActivity {
                     Log.e("UserLoginTask: ", "Execution Exception!");
                 }
 
-                Intent i = new Intent(getApplicationContext(), SeminarListActivity.class);
+                /*Intent i = new Intent(getApplicationContext(), SeminarListActivity.class);*/
+                Intent i = new Intent(getApplicationContext(), AfterLoginActivity.class);
                 i.putExtra("result", result);
                 startActivity(i);
             } else {
