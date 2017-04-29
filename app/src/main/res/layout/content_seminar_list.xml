@@ -6,7 +6,10 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="iwasthere.android.ime.com.iwasthere.SeminarListActivity"
-    tools:showIn="@layout/activity_seminar_list">
+    tools:showIn="@layout/activity_seminar_list"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

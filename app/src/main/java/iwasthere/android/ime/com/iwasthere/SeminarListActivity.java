@@ -84,6 +84,7 @@ public class SeminarListActivity extends AppCompatActivity {
         });
         mSearchView.setSubmitButtonEnabled(false);
         mSearchView.setQueryHint(getString(R.string.search_hint));
+
     }
 
     @Override

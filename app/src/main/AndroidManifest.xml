@@ -36,7 +36,8 @@
         <activity
             android:name=".AddSeminarActivity"
             android:label="@string/title_activity_add_seminar"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"/>
 
         <activity
             android:name=".AfterLoginActivity"
