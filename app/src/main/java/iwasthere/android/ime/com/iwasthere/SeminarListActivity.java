@@ -57,7 +57,6 @@ public class SeminarListActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
         String result = getIntent().getStringExtra("result");
         try {
             JSONObject jObj = new JSONObject(result);
