@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.EditText;
 
 import java.io.DataOutputStream;
 import java.net.HttpURLConnection;
@@ -13,10 +14,25 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class EditProfileActivity extends AppCompatActivity {
 
+    private User user;
+    EditText nameView;
+    EditText confirmPasswordView;
+    EditText passwordView;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
+
+        user = getIntent().getParcelableExtra("user");
+
+        nameView = (EditText) findViewById(R.id.name);
+        passwordView = (EditText) findViewById(R.id.pass);
+        confirmPasswordView = (EditText) findViewById(R.id.confirm_pass);
+
+        nameView.setText(user.getName());
+        passwordView.setText("password");
     }
 
     public class EditProfileTask extends AsyncTask<Void, Void, Integer> {

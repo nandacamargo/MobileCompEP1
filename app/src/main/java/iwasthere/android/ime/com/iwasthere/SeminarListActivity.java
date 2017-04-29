@@ -33,7 +33,7 @@ public class SeminarListActivity extends AppCompatActivity {
     private ListView seminar_list;
     private SearchView mSearchView;
     private SeminarsAdapter adapter;
-    private Boolean teacher;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +42,10 @@ public class SeminarListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        teacher = getIntent().getBooleanExtra("teacher", false);
+        user = getIntent().getParcelableExtra("user");
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        if (!teacher)
+        if (!user.isTeacher())
             fab.setVisibility(View.GONE);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,14 +84,13 @@ public class SeminarListActivity extends AppCompatActivity {
         });
         mSearchView.setSubmitButtonEnabled(false);
         mSearchView.setQueryHint(getString(R.string.search_hint));
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
-        if (!teacher) {
+        if (!user.isTeacher()) {
             MenuItem menuItem = menu.findItem(R.id.new_teacher);
             menuItem.setVisible(false);
         }
@@ -105,6 +105,7 @@ public class SeminarListActivity extends AppCompatActivity {
                 return true;
             case R.id.my_account:
                 Intent i = new Intent(getApplicationContext(), EditProfileActivity.class);
+                i.putExtra("user", user);
                 startActivity(i);
                 return true;
             default:

@@ -20,6 +20,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -48,8 +49,7 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTaskStudent = null;
-    private UserLoginTask mAuthTaskTeacher = null;
+    private UserLoginTask mAuth = null;
 
     // UI references.
     private EditText mNuspView;
@@ -114,7 +114,7 @@ public class LoginActivity extends AppCompatActivity {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTaskStudent != null) {
+        if (mAuth != null) {
             return;
         }
 
@@ -155,24 +155,23 @@ public class LoginActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
+            Boolean res;
             if (checkBox.isChecked()) {
-                mAuthTaskTeacher = new UserLoginTask(nusp, password, true, "http://207.38.82.139:8001/login/teacher");
-                mAuthTaskTeacher.execute((Void) null);
+                mAuth = new UserLoginTask(nusp, password, true, "http://207.38.82.139:8001/login/teacher");
+                mAuth.execute((Void) null);
             } else {
-                mAuthTaskStudent = new UserLoginTask(nusp, password, false, "http://207.38.82.139:8001/login/student");
-                mAuthTaskStudent.execute((Void) null);
+                mAuth = new UserLoginTask(nusp, password, false, "http://207.38.82.139:8001/login/student");
+                mAuth.execute((Void) null);
             }
 
         }
     }
 
     private boolean isNuspValid(String nusp) {
-        //TODO: Replace this with your own logic
         return nusp.length() > 0;
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 2;
     }
 
@@ -300,21 +299,31 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean success) {
 
-            mAuthTaskStudent = null;
+            mAuth = null;
             showProgress(false);
             String result = null;
+            String user = null;
             if (success) {
                 try {
-                    result = new GetSeminarTask().execute("http://207.38.82.139:8001/seminar").get();
+                    result = new HttpGetTask().execute("http://207.38.82.139:8001/seminar").get();
+                    if (mTeacher)
+                        user = new HttpGetTask().execute("http://207.38.82.139:8001/teacher/get/" + mNusp).get();
+                    else user = new HttpGetTask().execute("http://207.38.82.139:8001/student/get/" + mNusp).get();
                 } catch (InterruptedException e){
                     Log.e("UserLoginTask: ", "Interrupted!");
                 } catch (ExecutionException e) {
                     Log.e("UserLoginTask: ", "Execution Exception!");
                 }
+
                 Intent i = new Intent(getApplicationContext(), SeminarListActivity.class);
                 i.putExtra("result", result);
-                i.putExtra("teacher", mTeacher);
-                i.putExtra("nusp", mNusp);
+                try {
+                    JSONObject userJSON = new JSONObject(user);
+                    user = userJSON.getString("data");
+                    i.putExtra("user", new User(user, mTeacher));
+                } catch (JSONException e) {
+                    Log.e("LoginActivity", "Incorrect JSON");
+                }
                 startActivity(i);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
@@ -325,70 +334,8 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onCancelled() {
-            mAuthTaskStudent = null;
+            mAuth = null;
             showProgress(false);
-        }
-    }
-
-    public class GetSeminarTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-            StringBuilder stringBuilder;
-            String stringURL = params[0];
-            String result;
-
-            URL url = null;
-            try {
-                url = new URL(stringURL);
-                Log.d("httpGetRequest", "A URL é " + url);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-                connection.setRequestMethod("GET");
-                connection.setReadTimeout(15*1000);
-                connection.connect();
-
-                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                stringBuilder = new StringBuilder();
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    stringBuilder.append(line + "\n");
-                }
-
-                Log.d("httpGetRequest", "Results =  " + stringBuilder.toString());
-
-                result = stringBuilder.toString();
-
-                return result;
-            } catch (MalformedURLException e) {
-                Log.d("httpGetRequest", "Erro. My url " + url);
-                e.printStackTrace();
-                return  null;
-            } catch (Exception e) {
-                Log.e("httpGetRequest", Log.getStackTraceString(e));
-                e.printStackTrace();
-                return null;
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException ioe) {
-                        Log.e("PlaceholderFragment", "Error closing stream");
-                        ioe.printStackTrace();
-                    }
-                }
-            }
-        }
-        @Override
-        protected void onPostExecute(String result){
-            super.onPostExecute(result);
         }
     }
 }

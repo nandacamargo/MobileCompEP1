@@ -17,9 +17,13 @@ public class Seminar {
     private String name;
     private Integer id;
 
-    private Seminar(String name, int id) {
+    public Seminar(String name, int id) {
         this.name = name;
         this.id = id;
+    }
+
+    public Seminar(String seminar) {
+
     }
 
     public String getName() {

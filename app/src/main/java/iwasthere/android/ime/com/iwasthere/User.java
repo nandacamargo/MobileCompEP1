@@ -1,5 +1,7 @@
 package iwasthere.android.ime.com.iwasthere;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -12,14 +14,38 @@ import java.util.ArrayList;
  * Created by dududcbier on 29/04/17.
  */
 
-public class User {
+public class User implements Parcelable{
 
     private String nusp;
     private String name;
+    private Boolean teacher;
 
-    public User(String nusp, String name) {
+    public User(String nusp, String name, Boolean teacher) {
         this.nusp = nusp;
         this.name = name;
+        this.teacher = teacher;
+    }
+
+    public User(String user, Boolean teacher){
+        try {
+            JSONObject jObject = new JSONObject(user);
+            this.nusp = jObject.getString("nusp");
+            this.name = jObject.getString("name");
+            this.teacher = teacher;
+        } catch (JSONException e) {
+            Log.e("User", "Incorrect JSON");
+        }
+
+
+    }
+
+    public User(Parcel p){
+        String[] data = new String[3];
+
+        p.readStringArray(data);
+        this.nusp= data[0];
+        this.name= data[1];
+        this.teacher= Boolean.getBoolean(data[2]);
     }
 
     public String getName() {
@@ -30,7 +56,6 @@ public class User {
         this.name = name;
     }
 
-
     public String getNusp() {
         return nusp;
     }
@@ -39,18 +64,30 @@ public class User {
         this.nusp = nusp;
     }
 
-    public static ArrayList<User> getSeminars(JSONArray seminarsJSON) {
+    public Boolean isTeacher() {
+        return teacher;
+    }
+
+    private static ArrayList<User> getUsers(JSONArray users, Boolean teacher) {
         ArrayList<User> seminars = new ArrayList<User>();
-        for (int i = 0; i < seminarsJSON.length(); i++) {
+        for (int i = 0; i < users.length(); i++) {
             try {
-                JSONObject user = seminarsJSON.getJSONObject(i);
-                seminars.add(new User(user.getString("nusp"), user.getString("name")));
+                JSONObject user = users.getJSONObject(i);
+                seminars.add(new User(user.getString("nusp"), user.getString("name"), teacher));
                 Log.d("ListActivity: ", seminars.get(i).toString());
             } catch (JSONException e) {
                 Log.e("ListActivity: ", "Invalid JSON object!");
             }
         }
         return seminars;
+    }
+
+    public ArrayList<User> getStudents(JSONArray users) {
+        return getUsers(users, false);
+    }
+
+    public ArrayList<User> getTeachers(JSONArray users) {
+        return getUsers(users, true);
     }
 
     @Override
@@ -60,4 +97,30 @@ public class User {
                 ", name='" + name + '\'' +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringArray(new String[]{this.nusp,this.name,String.valueOf(this.teacher)});
+    }
+
+    public static final Parcelable.Creator<User> CREATOR= new Parcelable.Creator<User>() {
+
+        @Override
+        public User createFromParcel(Parcel source) {
+            return new User(source);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
 }
+
+
