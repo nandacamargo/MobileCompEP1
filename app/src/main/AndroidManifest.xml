@@ -27,6 +27,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".SignUpActivity"></activity>
         <activity android:name=".SeminarAddActivity"></activity>
+        <activity android:name=".RegisterUpdateActivity"></activity>
+        <activity android:name=".AfterLoginActivity"></activity>
     </application>
 
 </manifest>

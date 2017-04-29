@@ -15,16 +15,22 @@
     <string name="password_mismatch">The passwords must match</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
+
+    <!-- Strings related to register stuff -->
     <string name="name">Name</string>
     <string name="nusp">N˚USP</string>
     <string name="email">Email</string>
     <string name="passwd">Password</string>
     <string name="confirmPasswd">Confirm Password</string>
     <string name="register">Create an account.</string>
+    <string name="edit_register">Update Register</string>
+    <string name="go_to_update_register">Update Register</string>
+
 
     <!-- Strings related to seminars -->
     <string name="add_seminar">Add Seminar</string>
     <string name="title_activity_seminar_list">Seminar List</string>
     <string name="seminar_section">Seminar Section</string>
     <string name="seminar_name">Seminar Name</string>
+    <string name="go_to_seminars">Seminars</string>
 </resources>
