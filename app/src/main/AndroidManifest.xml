@@ -40,11 +40,6 @@
             android:windowSoftInputMode="stateHidden"/>
 
         <activity
-            android:name=".AfterLoginActivity"
-            android:label="Welcome"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity
             android:name=".RegisterUpdateActivity"
             android:label="My account"
             android:theme="@style/AppTheme.NoActionBar" />

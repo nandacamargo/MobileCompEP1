@@ -67,8 +67,7 @@ public class RegisterUpdateActivity extends AppCompatActivity {
             RegisterUpdateActivity.RegisterUpdateTask register = new RegisterUpdateActivity.RegisterUpdateTask(nusp, password, name);
             register.execute();
 
-            /*Intent i = new Intent(this, RegisterUpdateActivity.class);*/
-            Intent i = new Intent(this, AfterLoginActivity.class);
+            Intent i = new Intent(this, SeminarListActivity.class);
             startActivity(i);
             Log.d("RegisterUpdateActivity", "After Intent do RegisterUpdateActivity");
         }

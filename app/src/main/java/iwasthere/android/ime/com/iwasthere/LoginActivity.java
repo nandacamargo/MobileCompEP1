@@ -16,6 +16,7 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -47,13 +48,15 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+    private UserLoginTask mAuthTaskStudent = null;
+    private UserLoginTask mAuthTaskTeacher = null;
 
     // UI references.
     private EditText mNuspView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private CheckBox checkBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +94,11 @@ public class LoginActivity extends AppCompatActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        checkBox = (CheckBox) findViewById(R.id.checkbox);
+        if (checkBox.isChecked()) {
+            checkBox.setChecked(false);
+        }
     }
 
     public void signUpClick(String nusp, String password) {
@@ -106,7 +114,7 @@ public class LoginActivity extends AppCompatActivity {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
+        if (mAuthTaskStudent != null) {
             return;
         }
 
@@ -147,8 +155,14 @@ public class LoginActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(nusp, password);
-            mAuthTask.execute((Void) null);
+            if (checkBox.isChecked()) {
+                mAuthTaskTeacher = new UserLoginTask(nusp, password, true, "http://207.38.82.139:8001/login/teacher");
+                mAuthTaskTeacher.execute((Void) null);
+            } else {
+                mAuthTaskStudent = new UserLoginTask(nusp, password, false, "http://207.38.82.139:8001/login/student");
+                mAuthTaskStudent.execute((Void) null);
+            }
+
         }
     }
 
@@ -206,10 +220,14 @@ public class LoginActivity extends AppCompatActivity {
 
         private final String mNusp;
         private final String mPassword;
+        private final Boolean mTeacher;
+        private final String stringURL;
 
-        UserLoginTask(String nusp, String password) {
+        UserLoginTask(String nusp, String password, Boolean teacher, String url) {
             mNusp = nusp;
             mPassword = password;
+            mTeacher = teacher;
+            stringURL = url;
         }
 
         @Override
@@ -217,7 +235,6 @@ public class LoginActivity extends AppCompatActivity {
 
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
-            String stringURL = "http://207.38.82.139:8001/login/student";
 
             URL url = null;
             String postParams = "nusp=" + mNusp + "&pass=" + mPassword;
@@ -283,7 +300,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean success) {
 
-            mAuthTask = null;
+            mAuthTaskStudent = null;
             showProgress(false);
             String result = null;
             if (success) {
@@ -294,10 +311,10 @@ public class LoginActivity extends AppCompatActivity {
                 } catch (ExecutionException e) {
                     Log.e("UserLoginTask: ", "Execution Exception!");
                 }
-
-                /*Intent i = new Intent(getApplicationContext(), SeminarListActivity.class);*/
-                Intent i = new Intent(getApplicationContext(), AfterLoginActivity.class);
+                Intent i = new Intent(getApplicationContext(), SeminarListActivity.class);
                 i.putExtra("result", result);
+                i.putExtra("teacher", mTeacher);
+                i.putExtra("nusp", mNusp);
                 startActivity(i);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
@@ -308,7 +325,7 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onCancelled() {
-            mAuthTask = null;
+            mAuthTaskStudent = null;
             showProgress(false);
         }
     }

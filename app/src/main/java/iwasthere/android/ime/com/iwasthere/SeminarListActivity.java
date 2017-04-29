@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -34,8 +33,7 @@ public class SeminarListActivity extends AppCompatActivity {
     private ListView seminar_list;
     private SearchView mSearchView;
     private SeminarsAdapter adapter;
-
-    ActionMenuView actionMenuView;
+    private Boolean teacher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +42,7 @@ public class SeminarListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        actionMenuView = (ActionMenuView) findViewById(R.id.action_menu_view);
-        mSearchView = (SearchView) findViewById(R.id.search_view);
-
-        Boolean teacher = getIntent().getBooleanExtra("teacher", false);
+        teacher = getIntent().getBooleanExtra("teacher", false);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         if (!teacher)
             fab.setVisibility(View.GONE);
@@ -73,6 +68,7 @@ public class SeminarListActivity extends AppCompatActivity {
         this.seminar_list.setAdapter(adapter);
         seminar_list.setTextFilterEnabled(true);
 
+        mSearchView = (SearchView) findViewById(R.id.search_view);
         mSearchView.setIconifiedByDefault(false);
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -94,6 +90,10 @@ public class SeminarListActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
+        if (!teacher) {
+            MenuItem menuItem = menu.findItem(R.id.new_teacher);
+            menuItem.setVisible(false);
+        }
         return true;
     }
 

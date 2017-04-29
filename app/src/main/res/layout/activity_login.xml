@@ -64,7 +64,12 @@
                     android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
-
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/checkbox"
+                android:text="@string/teacher_checkbox"
+                />
             <Button
                 android:id="@+id/nusp_sign_in_button"
                 style="?android:textAppearanceSmall"
