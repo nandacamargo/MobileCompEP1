@@ -33,4 +33,6 @@
     <string name="seminar_section">Seminar Section</string>
     <string name="seminar_name">Seminar Name</string>
     <string name="go_to_seminars">Seminars</string>
+    <string name="close_submissions">Close submissions</string>
+
 </resources>
