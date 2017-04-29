@@ -29,5 +29,6 @@
     <string name="seminar_name">Seminar Name</string>
     <string name="go_to_update_register">My account</string>
     <string name="go_to_seminars">Seminars</string>
-    <string name="edit_register">"Edit register"</string>
+    <string name="edit_register">Edit register</string>
+    <string name="search_hint">Search seminar</string>
 </resources>
