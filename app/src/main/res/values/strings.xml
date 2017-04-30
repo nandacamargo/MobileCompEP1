@@ -21,6 +21,8 @@
     <string name="title_activity_seminar_list">Seminar List</string>
     <string name="title_activity_sign_up">Register</string>
     <string name="title_activity_add_seminar">New Seminar</string>
+    <string name="title_edit_profile">Edit Profile</string>
+    <string name="title_attendees_list">Attendees</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="add_seminar">Add Seminar</string>
@@ -39,4 +41,5 @@
     <string name="teacher_checkbox">I\'m a teacher</string>
     <string name="delete_message">Are you sure you want to delete your account?</string>
     <string name="password_placeholder">password</string>
+    <string name="i_was_there">I was there</string>
 </resources>

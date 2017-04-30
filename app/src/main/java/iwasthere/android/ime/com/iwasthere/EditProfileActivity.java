@@ -2,7 +2,6 @@ package iwasthere.android.ime.com.iwasthere;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -14,8 +13,6 @@ import android.widget.EditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.net.URL;
 
 import static iwasthere.android.ime.com.iwasthere.HttpUtil.doPost;
 import static iwasthere.android.ime.com.iwasthere.R.id.pass;
@@ -56,7 +53,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 deleteAccount();
             }
         });
-        deleteButton.setBackgroundColor(Color.parseColor("#e03e26"));
+//        deleteButton.setBackgroundColor(Color.parseColor("#F44336"));
     }
 
     private void updateProfile() {

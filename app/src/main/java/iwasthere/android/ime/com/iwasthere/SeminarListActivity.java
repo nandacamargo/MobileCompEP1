@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -45,8 +46,6 @@ public class SeminarListActivity extends AppCompatActivity {
         if (getIntent().hasExtra("user"))
             user = getIntent().getParcelableExtra("user");
 
-        Log.d("User recebido no SLA", user.toString());
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         if (!user.isTeacher())
             fab.setVisibility(View.GONE);
@@ -75,10 +74,19 @@ public class SeminarListActivity extends AppCompatActivity {
         } catch (JSONException e) {
             Log.e("ListActivity: ", "Invalid JSON returned from GET.");
         }
-        ListView seminar_list = (ListView) findViewById(R.id.seminar_list);
+        final ListView seminar_list = (ListView) findViewById(R.id.list);
         adapter = new SeminarsAdapter(this, seminars);
         seminar_list.setAdapter(adapter);
         seminar_list.setTextFilterEnabled(true);
+        seminar_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(getApplicationContext(), AttendeesListActivity.class);
+                i.putExtra("id", adapter.getItemAtPosition(position).getId());
+                startActivity(i);
+            }
+        });
 
         mSearchView = (SearchView) findViewById(R.id.search_view);
         mSearchView.setIconifiedByDefault(false);
@@ -145,6 +153,10 @@ public class SeminarListActivity extends AppCompatActivity {
             TextView name = (TextView) convertView.findViewById(R.id.seminar_name);
             name.setText(seminar.getName());
             return convertView;
+        }
+
+        public Seminar getItemAtPosition(int pos) {
+            return filteredSeminarList.get(pos);
         }
 
         @Override
