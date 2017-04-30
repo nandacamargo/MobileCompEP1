@@ -22,10 +22,6 @@ public class Seminar {
         this.id = id;
     }
 
-    public Seminar(String seminar) {
-
-    }
-
     public String getName() {
         return name;
     }
@@ -43,7 +39,7 @@ public class Seminar {
     }
 
     public static ArrayList<Seminar> getSeminars(JSONArray seminarsJSON) {
-        ArrayList<Seminar> seminars = new ArrayList<Seminar>();
+        ArrayList<Seminar> seminars = new ArrayList<>();
         for (int i = 0; i < seminarsJSON.length(); i++) {
             try {
                 JSONObject seminar = seminarsJSON.getJSONObject(i);

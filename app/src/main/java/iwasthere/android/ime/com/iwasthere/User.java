@@ -60,16 +60,12 @@ public class User implements Parcelable{
         return nusp;
     }
 
-    public void setNusp(String nusp) {
-        this.nusp = nusp;
-    }
-
     public Boolean isTeacher() {
         return this.teacher;
     }
 
     private static ArrayList<User> getUsers(JSONArray users, Boolean teacher) {
-        ArrayList<User> seminars = new ArrayList<User>();
+        ArrayList<User> seminars = new ArrayList<>();
         for (int i = 0; i < users.length(); i++) {
             try {
                 JSONObject user = users.getJSONObject(i);

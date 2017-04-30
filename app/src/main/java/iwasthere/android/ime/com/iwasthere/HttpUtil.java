@@ -94,8 +94,7 @@ public class HttpUtil {
 
         @Override
         protected String doInBackground(String... params) {
-
-            HttpURLConnection urlConnection = null;
+            HttpURLConnection connection = null;
             BufferedReader reader = null;
             StringBuilder stringBuilder;
             String stringURL = params[0];
@@ -105,7 +104,7 @@ public class HttpUtil {
             try {
                 url = new URL(stringURL);
                 Log.d("httpGetRequest", "A URL é " + url);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection = (HttpURLConnection) url.openConnection();
 
                 connection.setRequestMethod("GET");
                 connection.setReadTimeout(15*1000);
@@ -133,8 +132,8 @@ public class HttpUtil {
                 e.printStackTrace();
                 return null;
             } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
+                if (connection != null) {
+                    connection.disconnect();
                 }
                 if (reader != null) {
                     try {

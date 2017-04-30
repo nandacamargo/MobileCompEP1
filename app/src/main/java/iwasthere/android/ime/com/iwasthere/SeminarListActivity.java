@@ -31,7 +31,6 @@ public class SeminarListActivity extends AppCompatActivity {
 
     private ArrayList<Seminar> seminars;
     private ArrayList<Seminar> allSeminars;
-    private ListView seminar_list;
     private SearchView mSearchView;
     private SeminarsAdapter adapter;
     private User user;
@@ -76,10 +75,9 @@ public class SeminarListActivity extends AppCompatActivity {
         } catch (JSONException e) {
             Log.e("ListActivity: ", "Invalid JSON returned from GET.");
         }
-
-        this.seminar_list = (ListView) findViewById(R.id.seminar_list);
+        ListView seminar_list = (ListView) findViewById(R.id.seminar_list);
         adapter = new SeminarsAdapter(this, seminars);
-        this.seminar_list.setAdapter(adapter);
+        seminar_list.setAdapter(adapter);
         seminar_list.setTextFilterEnabled(true);
 
         mSearchView = (SearchView) findViewById(R.id.search_view);

@@ -40,26 +40,26 @@ public class EditProfileActivity extends AppCompatActivity {
         confirmPasswordView = (EditText) findViewById(R.id.confirm_pass);
 
         nameView.setText(user.getName());
-        passwordView.setText("password");
+        passwordView.setText(R.string.password_placeholder);
 
         Button saveButton = (Button) findViewById(R.id.save_button);
         Button deleteButton = (Button) findViewById(R.id.delete_account_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateProfile(view);
+                updateProfile();
             }
         });
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                deleteAccount(view);
+                deleteAccount();
             }
         });
         deleteButton.setBackgroundColor(Color.parseColor("#e03e26"));
     }
 
-    private void updateProfile(View v) {
+    private void updateProfile() {
 
         String name = nameView.getText().toString();
         String password = passwordView.getText().toString();
@@ -89,7 +89,7 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void deleteAccount(View v) {
+    private void deleteAccount() {
         AlertDialog.Builder dlgAlert = new AlertDialog.Builder(EditProfileActivity.this);
         dlgAlert.setMessage(R.string.delete_message);
         dlgAlert.setTitle(R.string.app_name);
@@ -105,7 +105,7 @@ public class EditProfileActivity extends AppCompatActivity {
         dlgAlert.create().show();
     }
 
-    public class EditProfileTask extends AsyncTask<Void, Void, Integer> {
+    private class EditProfileTask extends AsyncTask<Void, Void, Integer> {
 
         private final String mPassword;
         private final String mName;
@@ -128,7 +128,6 @@ public class EditProfileActivity extends AppCompatActivity {
             } else {
                 stringURL = "http://207.38.82.139:8001/student/edit";
             }
-            URL url = null;
 
             String s = "nusp=" + user.getNusp() + "&pass=" + mPassword + "&name=" + mName;
             Log.d("SeminarAddActivity", s);
