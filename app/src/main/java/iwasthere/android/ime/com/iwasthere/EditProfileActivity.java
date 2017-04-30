@@ -1,9 +1,12 @@
 package iwasthere.android.ime.com.iwasthere;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import java.io.DataOutputStream;
@@ -33,22 +36,62 @@ public class EditProfileActivity extends AppCompatActivity {
 
         nameView.setText(user.getName());
         passwordView.setText("password");
+
+        Button saveButton = (Button) findViewById(R.id.save_button);
+        Button deleteButton = (Button) findViewById(R.id.delete_account_button);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updateProfile(view);
+            }
+        });
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               //TODO delete account
+            }
+        });
+    }
+
+    public void updateProfile(View v) {
+
+        String name = nameView.getText().toString();
+        String password = passwordView.getText().toString();
+        String confirmPassword = confirmPasswordView.getText().toString();
+
+
+        if (name.length() < 1) {
+            nameView.setError(getString(R.string.error_field_required));
+            nameView.requestFocus();
+        } else if (password.length() < 3) {
+            passwordView.setError(getString(R.string.error_invalid_password));
+            passwordView.requestFocus();
+        } else if (!password.equals(confirmPassword)) {
+            confirmPasswordView.setError(getString(R.string.error_password_mismatch));
+            confirmPasswordView.setText("");
+            confirmPasswordView.requestFocus();
+        } else {
+
+            EditProfileTask register = new EditProfileTask(password, name);
+            register.execute();
+
+            user.setName(name);
+
+            Intent i = new Intent(this, SeminarListActivity.class);
+            i.putExtra("user", user);
+            startActivity(i);
+        }
     }
 
     public class EditProfileTask extends AsyncTask<Void, Void, Integer> {
 
-        private final String mNusp;
         private final String mPassword;
         private final String mName;
 
-        private final int WRNG_PASSWD = 1;
-        private final int USER_NOT_FOUND = 2;
-        private final int CONNECTION_FAILED = -1;
         private final int SUCCESS = 0;
 
 
-        EditProfileTask(String nusp, String pass, String name) {
-            mNusp = nusp;
+        EditProfileTask(String pass, String name) {
             mName = name;
             mPassword = pass;
         }
@@ -56,10 +99,15 @@ public class EditProfileActivity extends AppCompatActivity {
         @Override
         protected Integer doInBackground(Void... params) {
 
-            String stringURL = "http://207.38.82.139:8001/student/edit";
+            String stringURL;
+            if (user.isTeacher()) {
+                stringURL = "http://207.38.82.139:8001/teacher/edit";
+            } else {
+                stringURL = "http://207.38.82.139:8001/student/edit";
+            }
             URL url = null;
 
-            String s = "nusp=" + mNusp + "&pass=" + mPassword + "&name=" + mName;
+            String s = "nusp=" + user.getNusp() + "&pass=" + mPassword + "&name=" + mName;
             Log.d("SeminarAddActivity", s);
 
             try {
@@ -82,13 +130,13 @@ public class EditProfileActivity extends AppCompatActivity {
                 os.close();
 
                 Integer responseCode = connection.getResponseCode();
-                Log.d("RegisterUpdateActivity", responseCode.toString());
+                Log.d("EditProfileActivity", responseCode.toString());
 
 
                 if (responseCode == HttpsURLConnection.HTTP_OK) {
-                    Log.i("RegisterUpdateActivity", "POST efetuado com sucesso!");
+                    Log.i("EditProfileActivity", "POST efetuado com sucesso!");
                 } else {
-                    Log.i("RegisterUpdateActivity", "POST não efetuado!");
+                    Log.i("EditProfileActivity", "POST não efetuado!");
                 }
             } catch (Exception e) {
                 e.printStackTrace();

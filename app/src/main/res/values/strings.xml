@@ -10,6 +10,8 @@
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Log in</string>
     <string name="action_sign_up">Register</string>
+    <string name="action_delete_account">Delete account</string>
+    <string name="action_save_profile">Save changes</string>
     <string name="error_invalid_nusp">This NUSP is invalid</string>
     <string name="error_user_exists">This NUSP is already registered</string>
     <string name="error_invalid_password">This password is too short</string>

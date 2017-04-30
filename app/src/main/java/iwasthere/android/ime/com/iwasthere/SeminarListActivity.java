@@ -25,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class SeminarListActivity extends AppCompatActivity {
 
@@ -42,7 +43,8 @@ public class SeminarListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        user = getIntent().getParcelableExtra("user");
+        if (getIntent().hasExtra("user"))
+            user = getIntent().getParcelableExtra("user");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         if (!user.isTeacher())
@@ -55,7 +57,15 @@ public class SeminarListActivity extends AppCompatActivity {
             }
         });
 
-        String result = getIntent().getStringExtra("result");
+        String result = null;
+        try {
+            result = new HttpGetTask().execute("http://207.38.82.139:8001/seminar").get();
+        } catch (InterruptedException e){
+            Log.e("UserLoginTask: ", "Interrupted!");
+        } catch (ExecutionException e) {
+            Log.e("UserLoginTask: ", "Execution Exception!");
+        }
+
         try {
             JSONObject jObj = new JSONObject(result);
             JSONArray seminarsJSON = jObj.getJSONArray("data");
@@ -64,6 +74,7 @@ public class SeminarListActivity extends AppCompatActivity {
         } catch (JSONException e) {
             Log.e("ListActivity: ", "Invalid JSON returned from GET.");
         }
+
         this.seminar_list = (ListView) findViewById(R.id.seminar_list);
         adapter = new SeminarsAdapter(this, seminars);
         this.seminar_list.setAdapter(adapter);

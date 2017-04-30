@@ -305,18 +305,16 @@ public class LoginActivity extends AppCompatActivity {
             String user = null;
             if (success) {
                 try {
-                    result = new HttpGetTask().execute("http://207.38.82.139:8001/seminar").get();
                     if (mTeacher)
                         user = new HttpGetTask().execute("http://207.38.82.139:8001/teacher/get/" + mNusp).get();
-                    else user = new HttpGetTask().execute("http://207.38.82.139:8001/student/get/" + mNusp).get();
+                    else
+                        user = new HttpGetTask().execute("http://207.38.82.139:8001/student/get/" + mNusp).get();
                 } catch (InterruptedException e){
                     Log.e("UserLoginTask: ", "Interrupted!");
                 } catch (ExecutionException e) {
                     Log.e("UserLoginTask: ", "Execution Exception!");
                 }
-
                 Intent i = new Intent(getApplicationContext(), SeminarListActivity.class);
-                i.putExtra("result", result);
                 try {
                     JSONObject userJSON = new JSONObject(user);
                     user = userJSON.getString("data");
@@ -329,7 +327,6 @@ public class LoginActivity extends AppCompatActivity {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }
-
         }
 
         @Override
