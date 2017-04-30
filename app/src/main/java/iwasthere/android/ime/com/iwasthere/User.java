@@ -1,7 +1,6 @@
 package iwasthere.android.ime.com.iwasthere;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -15,7 +14,7 @@ import java.util.concurrent.ExecutionException;
  * Created by dududcbier on 29/04/17.
  */
 
-public class User implements Parcelable{
+public class User {
 
     private String nusp;
     private String name;
@@ -128,29 +127,6 @@ public class User implements Parcelable{
                 ", teacher='" + teacher + '\'' +
                 '}';
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringArray(new String[]{this.nusp, this.name, String.valueOf(this.teacher)});
-    }
-
-    public static final Parcelable.Creator<User> CREATOR= new Parcelable.Creator<User>() {
-
-        @Override
-        public User createFromParcel(Parcel source) {
-            return new User(source);
-        }
-
-        @Override
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-    };
 
     @Override
     public boolean equals(Object o) {

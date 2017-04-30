@@ -36,7 +36,7 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        user = getIntent().getParcelableExtra("user");
+        user = UserSingleton.getInstance();
 
         nameView = (EditText) findViewById(R.id.name);
         passwordView = (EditText) findViewById(pass);
@@ -115,7 +115,6 @@ public class EditProfileActivity extends AppCompatActivity {
     private void postUpdateProfile(String name) {
         user.setName(name);
         Intent i = new Intent(this, SeminarListActivity.class);
-        i.putExtra("user", user);
         startActivity(i);
     }
 

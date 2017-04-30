@@ -47,8 +47,7 @@ public class SeminarListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if (getIntent().hasExtra("user"))
-            user = getIntent().getParcelableExtra("user");
+        user = UserSingleton.getInstance();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         if (!user.isTeacher())
@@ -141,7 +140,6 @@ public class SeminarListActivity extends AppCompatActivity {
                 return true;
             case R.id.my_account:
                 Intent i = new Intent(getApplicationContext(), EditProfileActivity.class);
-                i.putExtra("user", user);
                 startActivity(i);
                 return true;
             default:

@@ -51,6 +51,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        UserSingleton.deleteInstance();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -201,9 +207,8 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d("Response: ", response);
                         JSONObject resp = HttpUtil.getJSONObject(response, "onLoginSuccess");
                         if (HttpUtil.responseWasSuccess(resp)) {
-                            User user = new User(HttpUtil.getResponseDataString(resp), isTeacher);
+                            UserSingleton.getInstance(HttpUtil.getResponseDataString(resp), isTeacher);
                             Intent i = new Intent(getApplicationContext(), SeminarListActivity.class);
-                            i.putExtra("user", user);
                             showProgress(false);
                             startActivity(i);
                         }
