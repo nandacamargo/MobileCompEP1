@@ -20,13 +20,17 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 public class SeminarListActivity extends AppCompatActivity {
 
@@ -57,36 +61,27 @@ public class SeminarListActivity extends AppCompatActivity {
             }
         });
 
-        String result = null;
-        try {
-            result = new HttpUtil.HttpGetTask().execute("http://207.38.82.139:8001/seminar").get();
-        } catch (InterruptedException e){
-            Log.e("UserLoginTask: ", "Interrupted!");
-        } catch (ExecutionException e) {
-            Log.e("UserLoginTask: ", "Execution Exception!");
-        }
-
-        try {
-            JSONObject jObj = new JSONObject(result);
-            JSONArray seminarsJSON = jObj.getJSONArray("data");
-            this.seminars = Seminar.getSeminars(seminarsJSON);
-            this.allSeminars = Seminar.getSeminars(seminarsJSON);
-        } catch (JSONException e) {
-            Log.e("ListActivity: ", "Invalid JSON returned from GET.");
-        }
-        final ListView seminarList = (ListView) findViewById(R.id.list);
-        adapter = new SeminarsAdapter(this, seminars);
-        seminarList.setAdapter(adapter);
-        seminarList.setTextFilterEnabled(true);
-        seminarList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(getApplicationContext(), AttendeesListActivity.class);
-                i.putExtra("id", adapter.getItemAtPosition(position).getId());
-                startActivity(i);
-            }
-        });
+        String url = "http://207.38.82.139:8001/seminar";
+        StringRequest strRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response)
+                    {
+                        Log.d("Response: ", response);
+                        JSONObject resp = HttpUtil.getJSONObject(response, "SeminarListActivity-onCreate");
+                        if (HttpUtil.responseWasSuccess(resp)) getSeminars(resp);
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error)
+                    {
+                        Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+        RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
 
         mSearchView = (SearchView) findViewById(R.id.search_view);
         mSearchView.setIconifiedByDefault(false);
@@ -104,6 +99,27 @@ public class SeminarListActivity extends AppCompatActivity {
         mSearchView.setSubmitButtonEnabled(false);
         mSearchView.setQueryHint(getString(R.string.search_hint));
     }
+
+    public void getSeminars(JSONObject resp){
+        JSONArray seminarsJSON =  HttpUtil.getResponseDataArray(resp);
+        this.seminars = Seminar.getSeminars(seminarsJSON);
+        this.allSeminars = Seminar.getSeminars(seminarsJSON);
+
+        final ListView seminarList = (ListView) findViewById(R.id.list);
+        adapter = new SeminarsAdapter(this, seminars);
+        seminarList.setAdapter(adapter);
+        seminarList.setTextFilterEnabled(true);
+        seminarList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(getApplicationContext(), AttendeesListActivity.class);
+                i.putExtra("id", adapter.getItemAtPosition(position).getId());
+                startActivity(i);
+            }
+        });
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -38,6 +38,7 @@ public class User implements Parcelable{
             Log.e("User", "Incorrect JSON");
         }
         Log.d("Novo user com teacher ", this.teacher.toString());
+        Log.d("user: ", this.toString());
     }
 
     public User(Parcel p){
@@ -124,6 +125,7 @@ public class User implements Parcelable{
         return "User{" +
                 "nusp='" + nusp + '\'' +
                 ", name='" + name + '\'' +
+                ", teacher='" + teacher + '\'' +
                 '}';
     }
 

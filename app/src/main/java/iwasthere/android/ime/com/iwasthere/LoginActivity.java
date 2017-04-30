@@ -194,7 +194,8 @@ public class LoginActivity extends AppCompatActivity {
         } else {
              url = "http://207.38.82.139:8001/teacher/get/" + nusp;
         }
-
+        Log.d("URL", url);
+        Log.d("TEACHER: ", isTeacher.toString());
         StringRequest strRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>()
                 {
