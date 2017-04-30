@@ -138,8 +138,6 @@ public class LoginActivity extends AppCompatActivity {
         if (cancel) {
             focusView.requestFocus();
         } else {
-            showProgress(true);
-
             String url;
             if (checkBox.isChecked()) {
                 url = "http://207.38.82.139:8001/login/teacher";
@@ -148,14 +146,13 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             StringRequest strRequest = new StringRequest(Request.Method.POST, url,
-                    new Response.Listener<String>()
-                    {
+                    new Response.Listener<String>() {
                         @Override
-                        public void onResponse(String response)
-                        {
+                        public void onResponse(String response) {
                             Log.d("Response: ", response);
                             JSONObject resp = HttpUtil.getJSONObject(response, "attemptLogin");
                             if (HttpUtil.responseWasSuccess(resp)) {
+                                showProgress(true);
                                 onLoginSuccess(nusp);
                             } else {
                                 mPasswordView.setError(getString(R.string.error_incorrect_password));
@@ -166,8 +163,7 @@ public class LoginActivity extends AppCompatActivity {
                     new Response.ErrorListener()
                     {
                         @Override
-                        public void onErrorResponse(VolleyError error)
-                        {
+                        public void onErrorResponse(VolleyError error) {
                             Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
                         }
                     })
@@ -230,7 +226,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 2;
+        return password.length() >= 2;
     }
 
     /**
