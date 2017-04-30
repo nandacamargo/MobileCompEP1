@@ -9,34 +9,45 @@
     <string name="prompt_new_password">New password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Log in</string>
-    <string name="action_sign_up">Register</string>
     <string name="action_delete_account">Delete account</string>
     <string name="action_save_profile">Save changes</string>
     <string name="error_invalid_nusp">This NUSP is invalid</string>
-    <string name="error_user_exists">This NUSP is already registered</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">Invalid nusp or password</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_password_mismatch">The passwords must match</string>
-    <string name="title_activity_seminar_list">Seminar List</string>
+    
+    <!-- Strings related to register stuff -->
     <string name="title_activity_sign_up">Register</string>
-    <string name="title_activity_add_seminar">New Seminar</string>
-    <string name="confirm">Confirm</string>
+	<string name="action_sign_up">Register</string>
+	<string name="error_user_exists">This NUSP is already registered</string>
+	<string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
-    <string name="add_seminar">Add Seminar</string>
     <string name="name">Name</string>
     <string name="nusp">N˚USP</string>
     <string name="email">Email</string>
     <string name="passwd">Password</string>
     <string name="confirmPasswd">Confirm Password</string>
     <string name="register">Create an account</string>
+    <string name="edit_register">Edit register</string>
+
+    <!-- Strings related to seminars -->
+    <string name="title_activity_seminar_list">Seminar List</string>
+    <string name="title_activity_add_seminar">New Seminar</string>
+    <string name="add_seminar">Add Seminar</string>
     <string name="seminar_section">Seminar Section</string>
     <string name="seminar_name">Seminar Name</string>
-    <string name="go_to_update_register">My account</string>
     <string name="go_to_seminars">Seminars</string>
-    <string name="edit_register">Edit register</string>
+    <string name="close_submissions">Close submissions</string>
+
+
+    <string name="go_to_update_register">My account</string>
     <string name="search_hint">Search</string>
     <string name="teacher_checkbox">I\'m a teacher</string>
     <string name="delete_message">Are you sure you want to delete your account?</string>
     <string name="password_placeholder">password</string>
+
+
+
+
 </resources>
