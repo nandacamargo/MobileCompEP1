@@ -47,9 +47,6 @@
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".EditProfileActivity"></activity>
 
-        <activity android:name=".SeminarAddActivity"></activity>
-        <activity android:name=".RegisterUpdateActivity"></activity>
-        <activity android:name=".AfterLoginActivity"></activity>
         <activity android:name=".BluetoothActivity"></activity>
 
     </application>
