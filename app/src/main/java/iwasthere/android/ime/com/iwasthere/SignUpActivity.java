@@ -10,17 +10,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -78,7 +69,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
-    public class UserSignUpTask extends AsyncTask<Void, Void, Integer> {
+    private class UserSignUpTask extends AsyncTask<Void, Void, Integer> {
 
         private final String mName;
         private final String mNusp;
@@ -97,85 +88,28 @@ public class SignUpActivity extends AppCompatActivity {
         @Override
         protected Integer doInBackground(Void... params) {
 
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-            StringBuilder stringBuilder;
             String stringURL = "http://207.38.82.139:8001/student/add";
 
-            URL url = null;
             String s = null;
             try {
                 s = "name=" + mName + "&nusp=" + mNusp + "&pass=" + mPassword;
             } catch (Exception e) {
-                Log.e("Exception", "Exceprton");
+                e.printStackTrace();
             }
             Log.d("SignUpActivity", s);
 
+            JSONObject jObj =  HttpUtil.doPost(stringURL, s);
             try {
-                url = new URL(stringURL);
-                Log.d("httpGetRequest", "A URL é " + url);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-                connection.setRequestMethod("POST");
-                connection.setReadTimeout(15 * 1000);
-                connection.setConnectTimeout(15 * 1000);
-                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                connection.setRequestProperty("charset", "utf-8");
-                connection.setRequestProperty("Content-Length", "" + Integer.toString(s.getBytes().length));
-                connection.setDoInput(true);
-                connection.setDoOutput(true);
-                connection.connect();
-
-                DataOutputStream os = new DataOutputStream(connection.getOutputStream());
-
-                os.writeBytes(s);
-                os.flush();
-                os.close();
-
-                Integer responseCode = connection.getResponseCode();
-                Log.d("SignUpActivity", responseCode.toString());
-
-                if (responseCode == HttpsURLConnection.HTTP_OK) {
-
-                    Log.i("SignUpActivity", "POST efetuado com sucesso!");
-                    String line;
-                    String response = "";
-                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    while ((line = br.readLine()) != null) {
-                        response += line + "\n";
-                        Log.i("SignUpActivity", line);
-                    }
-
-                    JSONObject resp = new JSONObject(response);
-                    if (!resp.getBoolean("success")) {
-                        return USER_ALREADY_EXISTS;
-                    }
-                } else {
-                    Log.i("SignUpActivity", "POST efetuado com sucesso!");
+                if (jObj != null && jObj.getBoolean("success")) {
+                    return SUCCESS;
                 }
-            } catch (MalformedURLException e) {
-                Log.d("httpGetRequest", "Erro. My url " + url);
+                else {
+                    return USER_ALREADY_EXISTS;
+                }
+            } catch (JSONException e) {
                 e.printStackTrace();
-                return null;
-            } catch (Exception e) {
-                Log.e("httpGetRequest", Log.getStackTraceString(e));
-                e.printStackTrace();
-                return null;
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException ioe) {
-                        Log.e("PlaceholderFragment", "Error closing stream");
-                        ioe.printStackTrace();
-                    }
-                }
             }
-
-            return SUCCESS;
+            return CONNECTION_FAILED;
         }
 
         @Override

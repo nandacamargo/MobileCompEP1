@@ -46,6 +46,8 @@ public class SeminarListActivity extends AppCompatActivity {
         if (getIntent().hasExtra("user"))
             user = getIntent().getParcelableExtra("user");
 
+        Log.d("User recebido no SLA", user.toString());
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         if (!user.isTeacher())
             fab.setVisibility(View.GONE);
@@ -59,7 +61,7 @@ public class SeminarListActivity extends AppCompatActivity {
 
         String result = null;
         try {
-            result = new HttpGetTask().execute("http://207.38.82.139:8001/seminar").get();
+            result = new HttpUtil.HttpGetTask().execute("http://207.38.82.139:8001/seminar").get();
         } catch (InterruptedException e){
             Log.e("UserLoginTask: ", "Interrupted!");
         } catch (ExecutionException e) {
@@ -113,6 +115,7 @@ public class SeminarListActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.new_teacher:
+                //TODO new teacher
                 return true;
             case R.id.my_account:
                 Intent i = new Intent(getApplicationContext(), EditProfileActivity.class);

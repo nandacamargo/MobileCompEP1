@@ -1,19 +1,24 @@
 package iwasthere.android.ime.com.iwasthere;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.io.DataOutputStream;
-import java.net.HttpURLConnection;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.URL;
 
-import javax.net.ssl.HttpsURLConnection;
+import static iwasthere.android.ime.com.iwasthere.HttpUtil.doPost;
+import static iwasthere.android.ime.com.iwasthere.R.id.pass;
 
 public class EditProfileActivity extends AppCompatActivity {
 
@@ -31,7 +36,7 @@ public class EditProfileActivity extends AppCompatActivity {
         user = getIntent().getParcelableExtra("user");
 
         nameView = (EditText) findViewById(R.id.name);
-        passwordView = (EditText) findViewById(R.id.pass);
+        passwordView = (EditText) findViewById(pass);
         confirmPasswordView = (EditText) findViewById(R.id.confirm_pass);
 
         nameView.setText(user.getName());
@@ -48,12 +53,13 @@ public class EditProfileActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               //TODO delete account
+                deleteAccount(view);
             }
         });
+        deleteButton.setBackgroundColor(Color.parseColor("#e03e26"));
     }
 
-    public void updateProfile(View v) {
+    private void updateProfile(View v) {
 
         String name = nameView.getText().toString();
         String password = passwordView.getText().toString();
@@ -83,12 +89,29 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     }
 
+    private void deleteAccount(View v) {
+        AlertDialog.Builder dlgAlert = new AlertDialog.Builder(EditProfileActivity.this);
+        dlgAlert.setMessage(R.string.delete_message);
+        dlgAlert.setTitle(R.string.app_name);
+        dlgAlert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+               new DeleteAccountTask().execute();
+            }
+        });
+        dlgAlert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {}
+        });
+        dlgAlert.setCancelable(true);
+        dlgAlert.create().show();
+    }
+
     public class EditProfileTask extends AsyncTask<Void, Void, Integer> {
 
         private final String mPassword;
         private final String mName;
 
-        private final int SUCCESS = 0;
+        private final int SUCCESS = 1;
+        private final int FAILURE = 0;
 
 
         EditProfileTask(String pass, String name) {
@@ -110,39 +133,46 @@ public class EditProfileActivity extends AppCompatActivity {
             String s = "nusp=" + user.getNusp() + "&pass=" + mPassword + "&name=" + mName;
             Log.d("SeminarAddActivity", s);
 
-            try {
-                url = new URL(stringURL);
-                Log.d("httpGetRequest", "A URL é " + url);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-                connection.setRequestMethod("POST");
-                connection.setReadTimeout(15 * 1000);
-                connection.setConnectTimeout(15 * 1000);
-                connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded");
-                connection.setRequestProperty( "charset", "utf-8");
-                connection.setRequestProperty("Content-Length", "" + Integer.toString(s.getBytes().length));
-                connection.connect();
-
-                DataOutputStream os = new DataOutputStream(connection.getOutputStream());
-
-                os.writeBytes(s);
-                os.flush();
-                os.close();
-
-                Integer responseCode = connection.getResponseCode();
-                Log.d("EditProfileActivity", responseCode.toString());
-
-
-                if (responseCode == HttpsURLConnection.HTTP_OK) {
-                    Log.i("EditProfileActivity", "POST efetuado com sucesso!");
-                } else {
-                    Log.i("EditProfileActivity", "POST não efetuado!");
+            JSONObject jObj = HttpUtil.doPost(stringURL, s);
+            if (jObj != null) {
+                try {
+                    if (jObj.getBoolean("success")) {
+                        return SUCCESS;
+                    }
+                } catch (JSONException e) {
+                    Log.e("deleteAccountTask", "JSONException");
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-            return SUCCESS;
+            return FAILURE;
         }
     }
 
+    private class DeleteAccountTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            String stringURL = "http://207.38.82.139:8001/student/delete";
+
+            String s = null;
+            try {
+                s = "nusp=" + user.getNusp();
+            } catch (Exception e) {
+                Log.e("Exception", "Exception");
+            }
+            Log.d("SignUpActivity", s);
+
+            JSONObject jObj = doPost(stringURL, s);
+            if (jObj != null) {
+                try {
+                    if (jObj.getBoolean("success")) {
+                        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                        startActivity(i);
+                    }
+                } catch (JSONException e) {
+                    Log.e("deleteAccountTask", "JSONException");
+                }
+            }
+            return null;
+        }
+    }
 }

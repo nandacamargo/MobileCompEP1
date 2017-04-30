@@ -75,7 +75,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/action_delete_account"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"/>
         </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

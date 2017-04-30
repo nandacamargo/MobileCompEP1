@@ -23,13 +23,6 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
 import static iwasthere.android.ime.com.iwasthere.R.id.login;
@@ -39,13 +32,6 @@ import static iwasthere.android.ime.com.iwasthere.R.id.login;
  */
 public class LoginActivity extends AppCompatActivity {
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "8536148:hello", "12345:678"
-    };
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -155,7 +141,6 @@ public class LoginActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            Boolean res;
             if (checkBox.isChecked()) {
                 mAuth = new UserLoginTask(nusp, password, true, "http://207.38.82.139:8001/login/teacher");
                 mAuth.execute((Void) null);
@@ -180,42 +165,32 @@ public class LoginActivity extends AppCompatActivity {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
+        mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        });
 
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
+        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        mProgressView.animate().setDuration(shortAnimTime).alpha(
+                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    private class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mNusp;
         private final String mPassword;
@@ -227,73 +202,23 @@ public class LoginActivity extends AppCompatActivity {
             mPassword = password;
             mTeacher = teacher;
             stringURL = url;
+            Log.d("UserLoginTask", "mTeacher é " + mTeacher);
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
 
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-
-            URL url = null;
             String postParams = "nusp=" + mNusp + "&pass=" + mPassword;
 
+            JSONObject jObj = HttpUtil.doPost(stringURL, postParams);
+            if (jObj == null) return false;
+            Boolean r;
             try {
-                url = new URL(stringURL);
-                Log.d("httpGetRequest", "A URL é " + url);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-                connection.setRequestMethod("POST");
-                connection.setReadTimeout(15*1000);
-                connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded");
-                connection.setRequestProperty( "charset", "utf-8");
-                connection.setRequestProperty("Content-Length", "" + Integer.toString(postParams.getBytes().length));
-                connection.setDoInput(true);
-                connection.setDoOutput(true);
-                connection.connect();
-
-                DataOutputStream os = new DataOutputStream(connection.getOutputStream());
-
-                os.writeBytes(postParams);
-                os.flush();
-                os.close();
-
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(connection.getInputStream()));
-                String inputLine;
-                StringBuffer response = new StringBuffer();
-
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
-
-                Log.d("UserLoginTask", response.toString());
-                JSONObject user = new JSONObject(response.toString());
-                return user.getBoolean("success");
-
-                } catch (MalformedURLException e) {
-                   Log.d("httpGetRequest", "Erro. My url " + url);
-                    e.printStackTrace();
-                    return null;
-                } catch (Exception e) {
-                   Log.e("httpGetRequest", Log.getStackTraceString(e));
-                    e.printStackTrace();
-                    return null;
-                } finally {
-                    if (urlConnection != null) {
-                        urlConnection.disconnect();
-                    }
-                    if (reader != null) {
-                        try {
-                            reader.close();
-                        } catch (IOException ioe) {
-                            Log.e("PlaceholderFragment", "Error closing stream");
-                            ioe.printStackTrace();
-                        }
-                    }
-                }
-
+                r = jObj.getBoolean("success");
+            } catch (JSONException e) {
+                r = false;
+            }
+            return r;
         }
 
         @Override
@@ -301,14 +226,13 @@ public class LoginActivity extends AppCompatActivity {
 
             mAuth = null;
             showProgress(false);
-            String result = null;
             String user = null;
             if (success) {
                 try {
                     if (mTeacher)
-                        user = new HttpGetTask().execute("http://207.38.82.139:8001/teacher/get/" + mNusp).get();
+                        user = new HttpUtil.HttpGetTask().execute("http://207.38.82.139:8001/teacher/get/" + mNusp).get();
                     else
-                        user = new HttpGetTask().execute("http://207.38.82.139:8001/student/get/" + mNusp).get();
+                        user = new HttpUtil.HttpGetTask().execute("http://207.38.82.139:8001/student/get/" + mNusp).get();
                 } catch (InterruptedException e){
                     Log.e("UserLoginTask: ", "Interrupted!");
                 } catch (ExecutionException e) {

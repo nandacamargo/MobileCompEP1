@@ -37,4 +37,5 @@
     <string name="edit_register">Edit register</string>
     <string name="search_hint">Search</string>
     <string name="teacher_checkbox">I\'m a teacher</string>
+    <string name="delete_message">Are you sure you want to delete your account?</string>
 </resources>

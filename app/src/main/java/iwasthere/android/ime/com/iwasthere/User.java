@@ -24,6 +24,7 @@ public class User implements Parcelable{
         this.nusp = nusp;
         this.name = name;
         this.teacher = teacher;
+        Log.d("Novo user com teacher ", this.teacher.toString());
     }
 
     public User(String user, Boolean teacher){
@@ -35,17 +36,16 @@ public class User implements Parcelable{
         } catch (JSONException e) {
             Log.e("User", "Incorrect JSON");
         }
-
-
+        Log.d("Novo user com teacher ", this.teacher.toString());
     }
 
     public User(Parcel p){
         String[] data = new String[3];
 
         p.readStringArray(data);
-        this.nusp= data[0];
-        this.name= data[1];
-        this.teacher= Boolean.getBoolean(data[2]);
+        this.nusp = data[0];
+        this.name = data[1];
+        this.teacher = Boolean.valueOf(data[2]);
     }
 
     public String getName() {
@@ -65,7 +65,7 @@ public class User implements Parcelable{
     }
 
     public Boolean isTeacher() {
-        return teacher;
+        return this.teacher;
     }
 
     private static ArrayList<User> getUsers(JSONArray users, Boolean teacher) {
@@ -105,7 +105,7 @@ public class User implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringArray(new String[]{this.nusp,this.name,String.valueOf(this.teacher)});
+        dest.writeStringArray(new String[]{this.nusp, this.name, String.valueOf(this.teacher)});
     }
 
     public static final Parcelable.Creator<User> CREATOR= new Parcelable.Creator<User>() {
