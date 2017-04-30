@@ -48,17 +48,17 @@ public class HttpUtil {
             os.close();
 
             Integer responseCode = connection.getResponseCode();
-            Log.d("SignUpActivity", responseCode.toString());
+            Log.d("doPost", responseCode.toString());
 
             if (responseCode == HttpsURLConnection.HTTP_OK) {
 
-                Log.i("SignUpActivity", "POST efetuado com sucesso!");
+                Log.i("doPost", "POST efetuado com sucesso!");
                 String line;
                 String response = "";
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 while ((line = reader.readLine()) != null) {
                     response += line + "\n";
-                    Log.i("SignUpActivity", line);
+                    Log.i("doPost", line);
                 }
 
                 return new JSONObject(response);
@@ -82,7 +82,7 @@ public class HttpUtil {
                 try {
                     reader.close();
                 } catch (IOException ioe) {
-                    Log.e("PlaceholderFragment", "Error closing stream");
+                    Log.e("doPost", "Error closing stream");
                     ioe.printStackTrace();
                 }
             }
@@ -101,6 +101,7 @@ public class HttpUtil {
             String result;
 
             URL url = null;
+            Log.d("HttpGetTask", "Vou fazer o requesy");
             try {
                 url = new URL(stringURL);
                 Log.d("httpGetRequest", "A URL é " + url);
@@ -144,10 +145,6 @@ public class HttpUtil {
                     }
                 }
             }
-        }
-        @Override
-        protected void onPostExecute(String result){
-            super.onPostExecute(result);
         }
     }
 

@@ -74,11 +74,11 @@ public class SeminarListActivity extends AppCompatActivity {
         } catch (JSONException e) {
             Log.e("ListActivity: ", "Invalid JSON returned from GET.");
         }
-        final ListView seminar_list = (ListView) findViewById(R.id.list);
+        final ListView seminarList = (ListView) findViewById(R.id.list);
         adapter = new SeminarsAdapter(this, seminars);
-        seminar_list.setAdapter(adapter);
-        seminar_list.setTextFilterEnabled(true);
-        seminar_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        seminarList.setAdapter(adapter);
+        seminarList.setTextFilterEnabled(true);
+        seminarList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -148,9 +148,9 @@ public class SeminarListActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             Seminar seminar = getItem(position);
             if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.seminar_item, parent, false);
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
             }
-            TextView name = (TextView) convertView.findViewById(R.id.seminar_name);
+            TextView name = (TextView) convertView.findViewById(R.id.item_name);
             name.setText(seminar.getName());
             return convertView;
         }
