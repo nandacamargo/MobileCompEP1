@@ -43,6 +43,8 @@ public class LoginActivity extends AppCompatActivity {
     private View mProgressView;
     private View mLoginFormView;
     private CheckBox checkBox;
+    Button mNuspSignInButton;
+    Button mNuspSignUpButton;
 
     @Override
     public void onBackPressed() {
@@ -54,6 +56,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         UserSingleton.deleteInstance();
+        mNuspSignInButton.setEnabled(true);
     }
 
     @Override
@@ -75,11 +78,12 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        Button mNuspSignInButton = (Button) findViewById(R.id.nusp_sign_in_button);
-        Button mNuspSignUpButton = (Button) findViewById(R.id.nusp_register_button);
+        mNuspSignInButton = (Button) findViewById(R.id.nusp_sign_in_button);
+        mNuspSignUpButton = (Button) findViewById(R.id.nusp_register_button);
         mNuspSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                mNuspSignInButton.setEnabled(false);
                 attemptLogin();
             }
         });
@@ -170,7 +174,7 @@ public class LoginActivity extends AppCompatActivity {
                     {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), R.string.error_connection, Toast.LENGTH_SHORT).show();
                         }
                     })
             {
@@ -185,6 +189,7 @@ public class LoginActivity extends AppCompatActivity {
             };
             RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
         }
+        mNuspSignUpButton.setEnabled(true);
     }
 
     private void onLoginSuccess(String nusp) {
@@ -208,6 +213,7 @@ public class LoginActivity extends AppCompatActivity {
                         JSONObject resp = HttpUtil.getJSONObject(response, "onLoginSuccess");
                         if (HttpUtil.responseWasSuccess(resp)) {
                             UserSingleton.getInstance(HttpUtil.getResponseDataString(resp), isTeacher);
+                            mNuspSignUpButton.setEnabled(true);
                             Intent i = new Intent(getApplicationContext(), SeminarListActivity.class);
                             showProgress(false);
                             startActivity(i);
@@ -223,7 +229,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
         RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
-
+        mNuspSignUpButton.setEnabled(true);
     }
 
     private boolean isNuspValid(String nusp) {

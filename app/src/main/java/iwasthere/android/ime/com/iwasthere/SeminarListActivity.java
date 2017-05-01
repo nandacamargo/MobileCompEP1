@@ -77,7 +77,7 @@ public class SeminarListActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error)
                     {
-                        Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), R.string.error_connection, Toast.LENGTH_SHORT).show();
                     }
                 });
         RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);

@@ -18,6 +18,7 @@
     <string name="error_incorrect_password">Invalid nusp or password</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_password_mismatch">The passwords must match</string>
+    <string name="error_connection">An error occurred. Please try again later.</string>
     <string name="title_activity_seminar_list">Seminar List</string>
     <string name="title_activity_sign_up">Register</string>
     <string name="title_activity_add_seminar">New Seminar</string>
@@ -42,4 +43,5 @@
     <string name="delete_message">Are you sure you want to delete your account?</string>
     <string name="password_placeholder">password</string>
     <string name="i_was_there">I was there</string>
+    <string name="empty_list">There doesn\'t seem to be anything here yet</string>
 </resources>

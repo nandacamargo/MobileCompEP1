@@ -3,12 +3,8 @@ package iwasthere.android.ime.com.iwasthere;
 import android.os.Parcel;
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by dududcbier on 29/04/17.
@@ -63,60 +59,6 @@ public class User {
 
     public Boolean isTeacher() {
         return this.teacher;
-    }
-
-    private static ArrayList<User> getUsers(JSONArray usersJSON, Boolean teacher) {
-        ArrayList<User> users = new ArrayList<>();
-        Log.d("getUsers", usersJSON.toString());
-        int size = usersJSON.length();
-        for (int i = 0; i < size; i++) {
-            JSONObject jObj;
-            try {
-                jObj = usersJSON.getJSONObject(i);
-            } catch (JSONException e) {
-                Log.e("getUsers: ", "Invalid JSON object!");
-                jObj = null;
-            }
-            User user;
-            try {
-                user = getUserFromDB(jObj.getString("student_nusp"));
-            } catch (JSONException e) {
-                user = null;
-            }
-            if (user != null) users.add(user);
-        }
-        Log.d("getUsers res: ", users.toString());
-        return users;
-    }
-
-    public static User getUserFromDB(String nusp) {
-        String result = null;
-        try {
-            Log.d("GetUserFromDB", "comecei");
-            HttpUtil.HttpGetTask request = new HttpUtil.HttpGetTask();
-            result = request.execute("http://207.38.82.139:8001/student/get/" + nusp).get();
-        } catch (InterruptedException e){
-            Log.e("UserLoginTask: ", "Interrupted!");
-        } catch (ExecutionException e) {
-            Log.e("UserLoginTask: ", "Execution Exception!");
-        }
-        Log.d("GetUserFromDB", "Vou criar o user");
-
-        try {
-            JSONObject res = new JSONObject(result);
-            return new User(nusp, res.getJSONObject("data").getString("name"), false);
-        } catch (JSONException e){
-            Log.e("getUserFromDB", "Invalid JSON object!");
-        }
-        return null;
-    }
-
-    public static ArrayList<User> getStudents(JSONArray users) {
-        return getUsers(users, false);
-    }
-
-    public static ArrayList<User> getTeachers(JSONArray users) {
-        return getUsers(users, true);
     }
 
     @Override
