@@ -11,17 +11,20 @@
     <string name="action_sign_in_short">Log in</string>
     <string name="action_delete_account">Delete account</string>
     <string name="action_save_profile">Save changes</string>
+    <string name="action_sign_up">Register</string>
     <string name="error_invalid_nusp">This NUSP is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">Invalid nusp or password</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_password_mismatch">The passwords must match</string>
-    
-    <!-- Strings related to register stuff -->
-    <string name="title_activity_sign_up">Register</string>
-	<string name="action_sign_up">Register</string>
 	<string name="error_user_exists">This NUSP is already registered</string>
-	<string name="confirm">Confirm</string>
+    <string name="error_connection">An error occurred. Please try again later.</string>
+    <string name="title_activity_seminar_list">Seminar List</string>
+    <string name="title_activity_sign_up">Register</string>
+    <string name="title_activity_add_seminar">New Seminar</string>
+    <string name="title_edit_profile">Edit Profile</string>
+    <string name="title_attendees_list">Attendees</string>
+    <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="name">Name</string>
     <string name="nusp">N˚USP</string>
@@ -32,8 +35,6 @@
     <string name="edit_register">Edit register</string>
 
     <!-- Strings related to seminars -->
-    <string name="title_activity_seminar_list">Seminar List</string>
-    <string name="title_activity_add_seminar">New Seminar</string>
     <string name="add_seminar">Add Seminar</string>
     <string name="seminar_section">Seminar Section</string>
     <string name="seminar_name">Seminar Name</string>
@@ -47,7 +48,6 @@
     <string name="delete_message">Are you sure you want to delete your account?</string>
     <string name="password_placeholder">password</string>
 
-
-
-
+    <string name="i_was_there">I was there</string>
+    <string name="empty_list">There doesn\'t seem to be anything here yet</string>
 </resources>

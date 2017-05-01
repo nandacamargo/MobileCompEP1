@@ -1,13 +1,24 @@
 package iwasthere.android.ime.com.iwasthere;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by nanda on 28/04/17.
@@ -31,43 +42,48 @@ public class AddSeminarActivity extends AppCompatActivity {
 
     public void addSeminar(View v) {
 
-        String name = nameView.getText().toString();
+        final String name = nameView.getText().toString();
 
         if (name.length() < 1) {
             nameView.setError(getString(R.string.error_field_required));
             nameView.requestFocus();
         } else {
-
-            SeminarAddTask seminar = new SeminarAddTask(name);
-            seminar.execute();
-
-            Intent i = new Intent(this, SeminarListActivity.class);
-            startActivity(i);
-            Log.d("AddSeminarActivity", "Click Add Activity");
+            String url = "http://207.38.82.139:8001/seminar/add";
+            StringRequest strRequest = new StringRequest(Request.Method.POST, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.d("Response: ", response);
+                            JSONObject resp = HttpUtil.getJSONObject(response, "addSeminar");
+                            if (HttpUtil.responseWasSuccess(resp)) {
+                                postAddSeminar();
+                            }
+                            else {
+                                Snackbar.make(findViewById(android.R.id.content), "An error occurred. Please try again later.", Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+            {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("name", name);
+                    return params;
+                }
+            };
+            RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
         }
     }
 
-    private class SeminarAddTask extends AsyncTask<Void, Void, Integer> {
-
-        private final String mName;
-
-        private final int SUCCESS = 0;
-
-
-        SeminarAddTask(String name) {
-            mName = name;
-        }
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-
-            String stringURL = "http://207.38.82.139:8001/seminar/add";
-
-            String s = "name=" + mName;
-            Log.d("AddSeminarActivity", s);
-
-            HttpUtil.doPost(stringURL, s);
-            return SUCCESS;
-        }
+    private void postAddSeminar() {
+        Intent i = new Intent(this, SeminarListActivity.class);
+        startActivity(i);
     }
 }

@@ -1,20 +1,16 @@
 package iwasthere.android.ime.com.iwasthere;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 /**
  * Created by dududcbier on 29/04/17.
  */
 
-public class User implements Parcelable{
+public class User {
 
     private String nusp;
     private String name;
@@ -37,6 +33,7 @@ public class User implements Parcelable{
             Log.e("User", "Incorrect JSON");
         }
         Log.d("Novo user com teacher ", this.teacher.toString());
+        Log.d("user: ", this.toString());
     }
 
     public User(Parcel p){
@@ -64,59 +61,29 @@ public class User implements Parcelable{
         return this.teacher;
     }
 
-    private static ArrayList<User> getUsers(JSONArray users, Boolean teacher) {
-        ArrayList<User> seminars = new ArrayList<>();
-        for (int i = 0; i < users.length(); i++) {
-            try {
-                JSONObject user = users.getJSONObject(i);
-                seminars.add(new User(user.getString("nusp"), user.getString("name"), teacher));
-                Log.d("ListActivity: ", seminars.get(i).toString());
-            } catch (JSONException e) {
-                Log.e("ListActivity: ", "Invalid JSON object!");
-            }
-        }
-        return seminars;
-    }
-
-    public ArrayList<User> getStudents(JSONArray users) {
-        return getUsers(users, false);
-    }
-
-    public ArrayList<User> getTeachers(JSONArray users) {
-        return getUsers(users, true);
-    }
-
     @Override
     public String toString() {
         return "User{" +
                 "nusp='" + nusp + '\'' +
                 ", name='" + name + '\'' +
+                ", teacher='" + teacher + '\'' +
                 '}';
     }
 
     @Override
-    public int describeContents() {
-        return 0;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        return nusp.equals(user.nusp);
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringArray(new String[]{this.nusp, this.name, String.valueOf(this.teacher)});
+    public int hashCode() {
+        return nusp.hashCode();
     }
-
-    public static final Parcelable.Creator<User> CREATOR= new Parcelable.Creator<User>() {
-
-        @Override
-        public User createFromParcel(Parcel source) {
-            return new User(source);
-        }
-
-        @Override
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-    };
-
 }
 
 

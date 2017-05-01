@@ -1,19 +1,10 @@
 package iwasthere.android.ime.com.iwasthere;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by dududcbier on 30/04/17.
@@ -21,134 +12,48 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class HttpUtil {
 
-    public static JSONObject doPost(String stringURL, String s) {
-
-        HttpURLConnection connection = null;
-        BufferedReader reader = null;
-
+    public static JSONObject getJSONObject(String response, String origin) {
+        JSONObject resp = null;
         try {
-            URL url = new URL(stringURL);
-            Log.d("httpGetRequest", "A URL é " + url);
-            connection = (HttpURLConnection) url.openConnection();
+            resp = new JSONObject(response);
+        }
+        catch (JSONException e) {
+            resp = null;
+            Log.e(origin, "unable to parse JSON");
+        }
+        return resp;
+    }
 
-            connection.setRequestMethod("POST");
-            connection.setReadTimeout(15 * 1000);
-            connection.setConnectTimeout(15 * 1000);
-            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.setRequestProperty("charset", "utf-8");
-            connection.setRequestProperty("Content-Length", "" + Integer.toString(s.getBytes().length));
-            connection.setDoInput(true);
-            connection.setDoOutput(true);
-            connection.connect();
+    public static Boolean responseWasSuccess(JSONObject resp) {
+        if (resp == null) return false;
+        try {
+            if (resp.has("success"))
+                return resp.getBoolean("success");
+        } catch (JSONException e) {
+            Log.e("responseWasSuccess", "unable to parse JSON");
+        }
+        return false;
+    }
 
-            DataOutputStream os = new DataOutputStream(connection.getOutputStream());
-
-            os.writeBytes(s);
-            os.flush();
-            os.close();
-
-            Integer responseCode = connection.getResponseCode();
-            Log.d("SignUpActivity", responseCode.toString());
-
-            if (responseCode == HttpsURLConnection.HTTP_OK) {
-
-                Log.i("SignUpActivity", "POST efetuado com sucesso!");
-                String line;
-                String response = "";
-                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                while ((line = reader.readLine()) != null) {
-                    response += line + "\n";
-                    Log.i("SignUpActivity", line);
-                }
-
-                return new JSONObject(response);
-
-            } else {
-                Log.i("doPost", "POST efetuado com sucesso!");
-            }
-        } catch (MalformedURLException e) {
-            Log.d("doPost", "Erro. My url " + stringURL);
-            e.printStackTrace();
-            return null;
-        } catch (Exception e) {
-            Log.e("doPost", Log.getStackTraceString(e));
-            e.printStackTrace();
-            return null;
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException ioe) {
-                    Log.e("PlaceholderFragment", "Error closing stream");
-                    ioe.printStackTrace();
-                }
-            }
+    public static JSONArray getResponseDataArray(JSONObject resp) {
+        if (resp == null) return null;
+        try {
+            if (resp.has("data"))
+                return resp.getJSONArray("data");
+        } catch (JSONException e) {
+            Log.e("responseWasSuccess", "unable to parse JSON");
         }
         return null;
     }
 
-    public static class HttpGetTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-            StringBuilder stringBuilder;
-            String stringURL = params[0];
-            String result;
-
-            URL url = null;
-            try {
-                url = new URL(stringURL);
-                Log.d("httpGetRequest", "A URL é " + url);
-                connection = (HttpURLConnection) url.openConnection();
-
-                connection.setRequestMethod("GET");
-                connection.setReadTimeout(15*1000);
-                connection.connect();
-
-                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                stringBuilder = new StringBuilder();
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    stringBuilder.append(line + "\n");
-                }
-
-                Log.d("httpGetRequest", "Results =  " + stringBuilder.toString());
-
-                result = stringBuilder.toString();
-
-                return result;
-            } catch (MalformedURLException e) {
-                Log.d("httpGetRequest", "Erro. My url " + url);
-                e.printStackTrace();
-                return  null;
-            } catch (Exception e) {
-                Log.e("httpGetRequest", Log.getStackTraceString(e));
-                e.printStackTrace();
-                return null;
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException ioe) {
-                        Log.e("PlaceholderFragment", "Error closing stream");
-                        ioe.printStackTrace();
-                    }
-                }
-            }
+    public static String getResponseDataString(JSONObject resp) {
+        if (resp == null) return null;
+        try {
+            if (resp.has("data"))
+                return resp.getString("data");
+        } catch (JSONException e) {
+            Log.e("responseWasSuccess", "unable to parse JSON");
         }
-        @Override
-        protected void onPostExecute(String result){
-            super.onPostExecute(result);
-        }
+        return null;
     }
-
 }

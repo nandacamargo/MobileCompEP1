@@ -45,10 +45,22 @@
             android:label="@string/title_activity_add_seminar"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".EditProfileActivity"></activity>
 
         <activity android:name=".BluetoothActivity"></activity>
 
+        <activity
+            android:name=".EditProfileActivity"
+            android:label="@string/title_edit_profile"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".AttendeesListActivity"
+            android:label="@string/title_attendees_list"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
     </application>
 
 </manifest>

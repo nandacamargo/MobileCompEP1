@@ -2,8 +2,6 @@ package iwasthere.android.ime.com.iwasthere;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -11,13 +9,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
-import org.json.JSONException;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
 import org.json.JSONObject;
 
-import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
-import static iwasthere.android.ime.com.iwasthere.HttpUtil.doPost;
 import static iwasthere.android.ime.com.iwasthere.R.id.pass;
 
 public class EditProfileActivity extends AppCompatActivity {
@@ -33,7 +36,7 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        user = getIntent().getParcelableExtra("user");
+        user = UserSingleton.getInstance();
 
         nameView = (EditText) findViewById(R.id.name);
         passwordView = (EditText) findViewById(pass);
@@ -56,14 +59,13 @@ public class EditProfileActivity extends AppCompatActivity {
                 deleteAccount();
             }
         });
-        deleteButton.setBackgroundColor(Color.parseColor("#e03e26"));
     }
 
     private void updateProfile() {
 
-        String name = nameView.getText().toString();
-        String password = passwordView.getText().toString();
-        String confirmPassword = confirmPasswordView.getText().toString();
+        final String name = nameView.getText().toString();
+        final String password = passwordView.getText().toString();
+        final String confirmPassword = confirmPasswordView.getText().toString();
 
 
         if (name.length() < 1) {
@@ -77,16 +79,43 @@ public class EditProfileActivity extends AppCompatActivity {
             confirmPasswordView.setText("");
             confirmPasswordView.requestFocus();
         } else {
-
-            EditProfileTask register = new EditProfileTask(password, name);
-            register.execute();
-
-            user.setName(name);
-
-            Intent i = new Intent(this, SeminarListActivity.class);
-            i.putExtra("user", user);
-            startActivity(i);
+            String url;
+            if (user.isTeacher()) url = "http://207.38.82.139:8001/teacher/edit";
+            else url = "http://207.38.82.139:8001/student/edit";
+            StringRequest strRequest = new StringRequest(Request.Method.POST, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.d("Response: ", response);
+                            JSONObject resp = HttpUtil.getJSONObject(response, "attemptLogin");
+                            if (HttpUtil.responseWasSuccess(resp)) postUpdateProfile(name);
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+            {
+                @Override
+                protected Map<String, String> getParams()
+                {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("nusp", user.getNusp());
+                    params.put("pass", passwordView.getText().toString());
+                    params.put("name", nameView.getText().toString());
+                    return params;
+                }
+            };
+            RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
         }
+    }
+
+    private void postUpdateProfile(String name) {
+        user.setName(name);
+        Intent i = new Intent(this, SeminarListActivity.class);
+        startActivity(i);
     }
 
     private void deleteAccount() {
@@ -95,7 +124,34 @@ public class EditProfileActivity extends AppCompatActivity {
         dlgAlert.setTitle(R.string.app_name);
         dlgAlert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-               new DeleteAccountTask().execute();
+                String url;
+                if (user.isTeacher()) url = "http://207.38.82.139:8001/teacher/delete";
+                else url = "http://207.38.82.139:8001/student/delete";
+                StringRequest strRequest = new StringRequest(Request.Method.POST, url,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                Log.d("Response: ", response);
+                                JSONObject resp = HttpUtil.getJSONObject(response, "attemptLogin");
+                                if (HttpUtil.responseWasSuccess(resp)) postDeleteAccount();
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                {
+                    @Override
+                    protected Map<String, String> getParams()
+                    {
+                        Map<String, String> params = new HashMap<String, String>();
+                        params.put("nusp", user.getNusp());
+                        return params;
+                    }
+                };
+                RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
             }
         });
         dlgAlert.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -105,73 +161,8 @@ public class EditProfileActivity extends AppCompatActivity {
         dlgAlert.create().show();
     }
 
-    private class EditProfileTask extends AsyncTask<Void, Void, Integer> {
-
-        private final String mPassword;
-        private final String mName;
-
-        private final int SUCCESS = 1;
-        private final int FAILURE = 0;
-
-
-        EditProfileTask(String pass, String name) {
-            mName = name;
-            mPassword = pass;
-        }
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-
-            String stringURL;
-            if (user.isTeacher()) {
-                stringURL = "http://207.38.82.139:8001/teacher/edit";
-            } else {
-                stringURL = "http://207.38.82.139:8001/student/edit";
-            }
-
-            String s = "nusp=" + user.getNusp() + "&pass=" + mPassword + "&name=" + mName;
-            Log.d("SeminarAddActivity", s);
-
-            JSONObject jObj = HttpUtil.doPost(stringURL, s);
-            if (jObj != null) {
-                try {
-                    if (jObj.getBoolean("success")) {
-                        return SUCCESS;
-                    }
-                } catch (JSONException e) {
-                    Log.e("deleteAccountTask", "JSONException");
-                }
-            }
-            return FAILURE;
-        }
-    }
-
-    private class DeleteAccountTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            String stringURL = "http://207.38.82.139:8001/student/delete";
-
-            String s = null;
-            try {
-                s = "nusp=" + user.getNusp();
-            } catch (Exception e) {
-                Log.e("Exception", "Exception");
-            }
-            Log.d("SignUpActivity", s);
-
-            JSONObject jObj = doPost(stringURL, s);
-            if (jObj != null) {
-                try {
-                    if (jObj.getBoolean("success")) {
-                        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-                        startActivity(i);
-                    }
-                } catch (JSONException e) {
-                    Log.e("deleteAccountTask", "JSONException");
-                }
-            }
-            return null;
-        }
+    private void postDeleteAccount() {
+        Intent i = new Intent(this, LoginActivity.class);
+        startActivity(i);
     }
 }
