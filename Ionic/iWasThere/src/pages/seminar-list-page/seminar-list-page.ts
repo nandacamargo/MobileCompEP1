@@ -3,6 +3,8 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { LoginPage } from '../login-page/login-page'
 import { AddSeminarPage } from '../add-seminar-page/add-seminar-page'
 import { EditProfilePage } from '../edit-profile-page/edit-profile-page'
+import { RegisterPage } from '../register-page/register-page'
+import { StudentListPage } from '../student-list-page/student-list-page'
 
 /**
  * Generated class for the SeminarListPage page.
@@ -21,9 +23,11 @@ export class SeminarListPage {
 
   addSeminarPage = AddSeminarPage
   editProfilePage = EditProfilePage
+  registerPage = RegisterPage
+  studentListPage = StudentListPage
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
-  	this.seminars = []
+  	this.seminars = ["Seminar"]
   }
 
   ionViewDidLoad() {

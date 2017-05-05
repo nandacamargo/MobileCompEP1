@@ -24,7 +24,7 @@
 		<button ion-item (click)="openPage(editProfilePage)">
 			<ion-label>My account</ion-label>
 		</button>
-		<button ion-item (click)="openPage(AddSeminarPage)">
+		<button ion-item (click)="openPage(registerPage)">
 			<ion-label>Register new teacher</ion-label>
 		</button>
 		<button ion-item (click)="logOut()">
@@ -36,7 +36,7 @@
 
 <ion-content padding>
 	<ion-list>
-		<button ion-item *ngFor="let s of seminars">
+		<button ion-item *ngFor="let s of seminars" (click)="openPage(studentListPage)">
 			<ion-label>{{s}}</ion-label>
 		</button>
 	</ion-list>
