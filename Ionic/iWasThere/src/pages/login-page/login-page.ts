@@ -28,6 +28,6 @@ export class LoginPage {
   }
 
   openPage(event, page){
-  	this.navCtrl.push(page)
+  	this.navCtrl.setRoot(page)
   }
 }

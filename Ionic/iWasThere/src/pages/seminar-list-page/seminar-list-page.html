@@ -7,13 +7,26 @@
 <ion-header>
 
   <ion-navbar>
+  	<button ion-button menuToggle right>
+      <ion-icon name="menu"></ion-icon>
+    </button>
     <ion-title>Seminar List</ion-title>
   </ion-navbar>
-
   <ion-searchbar></ion-searchbar>
 
 </ion-header>
 
+<ion-nav #menu></ion-nav>
+
+<ion-menu [content]="menu" side="right">
+  <ion-content>
+    <ion-list>
+		<button ion-item>
+			<ion-label>My Account</ion-label>
+		</button>
+	</ion-list>
+  </ion-content>
+</ion-menu>
 
 <ion-content padding>
 	<ion-list>
@@ -21,4 +34,5 @@
 			<ion-label>{{s}}</ion-label>
 		</button>
 	</ion-list>
+
 </ion-content>
