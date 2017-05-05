@@ -167,6 +167,7 @@ public class LoginActivity extends AppCompatActivity {
                             } else {
                                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                                 mPasswordView.requestFocus();
+                                mNuspSignInButton.setEnabled(true);
                             }
                         }
                     },

@@ -21,11 +21,11 @@
 <ion-menu [content]="menu" side="right">
   <ion-content>
     <ion-list>
-		<button ion-item>
-			<ion-label (click)="openPage(addSeminarPage)">My Account</ion-label>
+		<button ion-item (click)="openPage(editProfilePage)">
+			<ion-label>My account</ion-label>
 		</button>
-		<button ion-item>
-			<ion-label (click)="openPage(addSeminarPage)">Register new teacher</ion-label>
+		<button ion-item (click)="openPage(AddSeminarPage)">
+			<ion-label>Register new teacher</ion-label>
 		</button>
 		<button ion-item (click)="logOut()">
 			<ion-label>Log out</ion-label>

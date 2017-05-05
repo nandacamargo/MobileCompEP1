@@ -8,7 +8,7 @@ import { LoginPage } from '../pages/login-page/login-page';
 import { RegisterPage } from '../pages/register-page/register-page';
 import { SeminarListPage } from '../pages/seminar-list-page/seminar-list-page'
 import { AddSeminarPage } from '../pages/add-seminar-page/add-seminar-page'
-
+import { EditProfilePage } from '../pages/edit-profile-page/edit-profile-page'
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -19,7 +19,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     LoginPage,
     RegisterPage,
     SeminarListPage,
-    AddSeminarPage
+    AddSeminarPage,
+    EditProfilePage
   ],
   imports: [
     BrowserModule,
@@ -32,7 +33,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     LoginPage,
     RegisterPage,
     SeminarListPage,
-    AddSeminarPage
+    AddSeminarPage,
+    EditProfilePage
   ],
   providers: [
     StatusBar,
