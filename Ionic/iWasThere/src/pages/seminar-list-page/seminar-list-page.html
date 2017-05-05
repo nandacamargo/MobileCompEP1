@@ -22,7 +22,13 @@
   <ion-content>
     <ion-list>
 		<button ion-item>
-			<ion-label>My Account</ion-label>
+			<ion-label (click)="openPage(addSeminarPage)">My Account</ion-label>
+		</button>
+		<button ion-item>
+			<ion-label (click)="openPage(addSeminarPage)">Register new teacher</ion-label>
+		</button>
+		<button ion-item (click)="logOut()">
+			<ion-label>Log out</ion-label>
 		</button>
 	</ion-list>
   </ion-content>
@@ -34,5 +40,7 @@
 			<ion-label>{{s}}</ion-label>
 		</button>
 	</ion-list>
-
+	<ion-fab bottom right>
+   		<button ion-fab (click)="openPage(addSeminarPage)"><ion-icon name="add"></ion-icon></button>
+ 	</ion-fab>
 </ion-content>
