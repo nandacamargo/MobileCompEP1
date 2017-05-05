@@ -17,12 +17,10 @@
 
 	<ion-list>
 		<ion-item>
-			<ion-label color="primary">NUSP</ion-label>
-			<ion-input type="number"></ion-input>
+			<ion-input type="number" placeholder="NUSP"></ion-input>
 		</ion-item>
 		<ion-item>
-			<ion-label color="primary">Password</ion-label>
-			<ion-input type="password"></ion-input>
+			<ion-input type="password" placeholder="Password"></ion-input>
 		</ion-item>
 		<ion-item>
 			<ion-label>I'm a teacher</ion-label>
@@ -30,7 +28,7 @@
 		</ion-item>
 	</ion-list>
 
-	<button ion-button>Log in</button>
+	<button ion-button (click)="openPage($event, seminarListPage)">Log in</button>
 	<button ion-button (click)="openPage($event, registerPage)">Register</button>
 
 </ion-content>

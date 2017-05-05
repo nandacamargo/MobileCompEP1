@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { RegisterPage } from '../register-page/register-page';
+import { SeminarListPage } from '../seminar-list-page/seminar-list-page';
 
 /**
  * Generated class for the LoginPage page.
@@ -17,6 +18,7 @@ import { RegisterPage } from '../register-page/register-page';
 export class LoginPage {
 
   registerPage = RegisterPage;
+  seminarListPage = SeminarListPage;
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }
