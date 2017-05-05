@@ -17,9 +17,6 @@ import { SeminarListPage } from '../seminar-list-page/seminar-list-page';
 
 export class LoginPage {
 
-  registerPage = RegisterPage;
-  seminarListPage = SeminarListPage;
-
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }
 
@@ -27,7 +24,11 @@ export class LoginPage {
     console.log('ionViewDidLoad LoginPage');
   }
 
-  openPage(event, page){
-  	this.navCtrl.setRoot(page)
+  logIn(){
+  	this.navCtrl.setRoot(SeminarListPage)
+  }
+
+  register() {
+    this.navCtrl.push(RegisterPage)
   }
 }
