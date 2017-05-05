@@ -12,7 +12,9 @@
     </button>
     <ion-title>Seminar List</ion-title>
   </ion-navbar>
-  <ion-searchbar></ion-searchbar>
+  <ion-searchbar 
+  	(ionInput)="getFilteredSeminars($event)">	
+  </ion-searchbar>
 
 </ion-header>
 
@@ -36,8 +38,8 @@
 
 <ion-content padding>
 	<ion-list>
-		<button ion-item *ngFor="let s of seminars" (click)="openPage(studentListPage)">
-			<ion-label>{{s}}</ion-label>
+		<button ion-item *ngFor="let s of filteredSeminars" (click)="openPage(studentListPage)">
+			<ion-label>{{s.name}}</ion-label>
 		</button>
 	</ion-list>
 	<ion-fab bottom right>

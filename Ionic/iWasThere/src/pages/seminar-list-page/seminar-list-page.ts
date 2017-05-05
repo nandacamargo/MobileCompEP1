@@ -6,6 +6,9 @@ import { EditProfilePage } from '../edit-profile-page/edit-profile-page'
 import { RegisterPage } from '../register-page/register-page'
 import { StudentListPage } from '../student-list-page/student-list-page'
 
+import { Http } from '@angular/http';
+import 'rxjs/add/operator/map';
+
 /**
  * Generated class for the SeminarListPage page.
  *
@@ -19,19 +22,21 @@ import { StudentListPage } from '../student-list-page/student-list-page'
 })
 export class SeminarListPage {
 
+  filteredSeminars: any
   seminars: any
+  results: any
+
 
   addSeminarPage = AddSeminarPage
   editProfilePage = EditProfilePage
   registerPage = RegisterPage
   studentListPage = StudentListPage
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-  	this.seminars = ["Seminar"]
+  constructor(public navCtrl: NavController, public navParams: NavParams, private http: Http) {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad SeminarListPage');
+    this.getSeminars()
   }
 
   logOut() {
@@ -40,6 +45,26 @@ export class SeminarListPage {
 
   openPage(page) {
   	this.navCtrl.push(page)
+  }
+
+  private getSeminars() {
+    this.http.get("http://207.38.82.139:8001/seminar")
+                .map(res => res.json())
+                .subscribe(res => {
+                    this.seminars = res.data
+                    this.filteredSeminars = res.data
+                });
+  }
+
+  getFilteredSeminars(event: any) {
+    this.filteredSeminars = this.seminars.slice()
+    console.log(event)
+    let query = event.target.value;
+    if (query && query.trim() != '') {
+      this.filteredSeminars = this.filteredSeminars.filter((seminar) => {
+        return (seminar.name.toLowerCase().indexOf(query.toLowerCase()) > -1)
+      });
+    }
   }
 
 }
