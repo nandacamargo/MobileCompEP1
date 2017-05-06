@@ -56,8 +56,12 @@ export class SeminarListPage {
                 .map(res => res.json())
                 .subscribe(
                   res => {
-                    this.seminars = res.data
-                    this.filteredSeminars = res.data
+                    this.seminars = res.data.sort((x, y) => {
+                        if (x.name.toLowerCase() > y.name.toLowerCase()) return 1
+                        if (x.name.toLowerCase() < y.name.toLowerCase()) return -1
+                        return 0
+                      })
+                    this.filteredSeminars = this.seminars.slice()
                   },
                   error => {
                     this.seminars = []
