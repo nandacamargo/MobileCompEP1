@@ -1,0 +1,4 @@
+#Sat May 06 12:04:58 BRT 2017
+base.0=/home/nanda/Documents/Mestrado/Semestre1/Móvel/EPs/MobileCompEP1/Android/zxing/build/intermediates/transforms/dex/debug/folders/1000/1f/main
+renamed.0=classes.dex
+file.0=/home/nanda/Documents/Mestrado/Semestre1/Móvel/EPs/MobileCompEP1/Android/zxing/build/intermediates/transforms/dex/debug/folders/1000/1f/main/classes.dex

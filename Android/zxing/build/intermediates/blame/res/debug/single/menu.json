@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "/home/nanda/Documents/Mestrado/Semestre1/Móvel/EPs/MobileCompEP1/Android/zxing/build/intermediates/res/merged/debug/menu/history.xml",
+        "source": "/home/nanda/Documents/Mestrado/Semestre1/Móvel/EPs/MobileCompEP1/Android/zxing/src/main/res/menu/history.xml"
+    },
+    {
+        "merged": "/home/nanda/Documents/Mestrado/Semestre1/Móvel/EPs/MobileCompEP1/Android/zxing/build/intermediates/res/merged/debug/menu/encode.xml",
+        "source": "/home/nanda/Documents/Mestrado/Semestre1/Móvel/EPs/MobileCompEP1/Android/zxing/src/main/res/menu/encode.xml"
+    },
+    {
+        "merged": "/home/nanda/Documents/Mestrado/Semestre1/Móvel/EPs/MobileCompEP1/Android/zxing/build/intermediates/res/merged/debug/menu/capture.xml",
+        "source": "/home/nanda/Documents/Mestrado/Semestre1/Móvel/EPs/MobileCompEP1/Android/zxing/src/main/res/menu/capture.xml"
+    }
+]
