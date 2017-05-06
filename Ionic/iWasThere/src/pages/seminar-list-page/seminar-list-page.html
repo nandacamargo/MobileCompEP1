@@ -37,11 +37,12 @@
 </ion-menu>
 
 <ion-content padding>
-	<ion-list>
+	<ion-list *ngIf="filteredSeminars.length > 0">
 		<button ion-item *ngFor="let s of filteredSeminars" (click)="openPage(studentListPage, { seminar: s })">
 			<ion-label>{{s.name}}</ion-label>
 		</button>
 	</ion-list>
+	<h3 *ngIf="filteredSeminars.length == 0">There doesn't seem to be anything here</h3>
 	<ion-fab bottom right *ngIf="user.getInstance().teacher">
    		<button ion-fab (click)="openPage(addSeminarPage)"><ion-icon name="add"></ion-icon></button>
  	</ion-fab>

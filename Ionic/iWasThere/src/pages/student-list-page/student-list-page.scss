@@ -1,5 +1,8 @@
 page-student-list-page {
-	ion-content button {
-		width: 100%;
+	h3 {
+		text-align: center;
+		color: color($colors, googleGrey);
+		padding-top: 50%;
+		font-size: 14px;
 	}
 }

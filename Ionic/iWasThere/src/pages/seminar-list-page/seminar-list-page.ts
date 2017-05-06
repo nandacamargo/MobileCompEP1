@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-angular';
 import { LoginPage } from '../login-page/login-page'
 import { AddSeminarPage } from '../add-seminar-page/add-seminar-page'
 import { EditProfilePage } from '../edit-profile-page/edit-profile-page'
@@ -26,7 +26,7 @@ export class SeminarListPage {
   filteredSeminars: any
   seminars: any
   results: any
-
+  loading: any
   user: any;
 
   addSeminarPage = AddSeminarPage
@@ -34,8 +34,9 @@ export class SeminarListPage {
   registerPage = RegisterPage
   studentListPage = StudentListPage
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private http: Http) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private http: Http, private loadingCtrl: LoadingController) {
     this.user = new UserSingleton();
+    this.filteredSeminars = []
   }
 
   ionViewDidEnter() {
@@ -52,6 +53,10 @@ export class SeminarListPage {
   }
 
   private getSeminars() {
+    this.loading = this.loadingCtrl.create({
+        content: 'Please wait...'
+    });
+    this.loading.present();
     this.http.get("http://207.38.82.139:8001/seminar")
                 .map(res => res.json())
                 .subscribe(
@@ -67,7 +72,8 @@ export class SeminarListPage {
                     this.seminars = []
                     this.filteredSeminars = []
                     console.log(error)
-                  })
+                  },
+                  () => this.loading.dismiss())
   }
 
   getFilteredSeminars(event: any) {
