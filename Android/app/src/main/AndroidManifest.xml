@@ -7,6 +7,14 @@
     <!-- Internet permission -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- QR-Code permissions -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <activity
+        android:name="com.google.zxing.client.android.CaptureActivity"
+        android:screenOrientation="landscape" >
+    </activity>
+
+
     <!-- Bluetooh permission -->
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
