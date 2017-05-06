@@ -38,11 +38,9 @@ export class LoginPage {
     var url;
     if (this.teacher) url = "http://207.38.82.139:8001/login/teacher"
     else url = "http://207.38.82.139:8001/login/student"
-    console.log(url)
     let body = new FormData()
     body.append('nusp', this.nusp)
     body.append('pass', this.password)
-    console.log(body)
     this.http.post(url, body)
               .map(res => res.json())
               .subscribe(
@@ -56,6 +54,11 @@ export class LoginPage {
   }
 
   register() {
-    this.navCtrl.push(RegisterPage)
+    var params = {
+      nusp: this.nusp,
+      password: this.password,
+      teacher: false
+    }
+    this.navCtrl.push(RegisterPage, params)
   }
 }

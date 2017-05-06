@@ -15,20 +15,33 @@
 
 <ion-content padding>
 
-<ion-list>
-	<ion-item>
-		<ion-input placeholder="Name"></ion-input>
-	</ion-item>
-	<ion-item>
-		<ion-input type="number" placeholder="NUSP"></ion-input>
-	</ion-item>
-	<ion-item>
-		<ion-input type="password" placeholder="Password"></ion-input>
-	</ion-item>
-	<ion-item>
-		<ion-input type="password" placeholder="Confirm Password"></ion-input>
-	</ion-item>
-</ion-list>
+	<ion-list>
+		<ion-item>
+			<ion-input placeholder="Name" [(ngModel)]="name" required></ion-input>
+		</ion-item>
+		<ion-item>
+			<ion-input type="number" placeholder="NUSP" [(ngModel)]="nusp" required></ion-input>
+		</ion-item>
+		<ion-item>
+			<ion-input type="password" placeholder="Password" [(ngModel)]="password" required></ion-input>
+		</ion-item>
+		<ion-item>
+			<ion-input type="password" placeholder="Confirm Password" [(ngModel)]="confirmPassword" required></ion-input>
+		</ion-item>
+	</ion-list>
 
-<button ion-button (click)="register($event)">Create an Account</button>
+	<div *ngIf="registerFailed"> 
+		<h2 class="fail-message">* User already exists!</h2>
+	</div>
+
+	<div *ngIf="missingFields"> 
+		<h2 class="fail-message">* Missing required fields!</h2>
+	</div>
+
+	<div *ngIf="passwordMismatch"> 
+		<h2 class="fail-message">* The passwords must match!</h2>
+	</div>
+
+	<button ion-button (click)="register()">Create an Account</button>
+
 </ion-content>
