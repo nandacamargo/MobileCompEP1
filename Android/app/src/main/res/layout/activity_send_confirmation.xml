@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="iwasthere.android.ime.com.iwasthere.SendConfirmationActivity">
+
+        <LinearLayout
+            android:id="@+id/send_confirmation"
+            android:layout_width="368dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:layout_editor_absoluteY="0dp"
+            tools:layout_editor_absoluteX="8dp">
+
+            <Button
+                android:id="@+id/read_qr_code"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/read_qr_code"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:background="@color/googleBlue"/>
+
+            <Button
+                android:id="@+id/send_pdf"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/send_pdf"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:background="@color/googleBlueGrey"/>
+        </LinearLayout>
+
+</LinearLayout>

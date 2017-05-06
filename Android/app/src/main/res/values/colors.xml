@@ -6,5 +6,7 @@
     <color name="black">#000000</color>
     <color name="googleRed">#F44336</color>
     <color name="googleGreen">#4CAF50</color>
+    <color name="googleBlue">#2196F3</color>
+    <color name="googleBlueGrey">#607D8B</color>
     <color name="white">#FFFFFF</color>
 </resources>

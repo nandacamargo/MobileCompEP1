@@ -1,14 +1,28 @@
 package iwasthere.android.ime.com.iwasthere;
 
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.google.zxing.Result;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
@@ -16,8 +30,10 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
  * Created by nanda on 04/05/17.
  */
 
-public class ScanQrCodeActivity  extends AppCompatActivity implements ZXingScannerView.ResultHandler {
+public class ScanQrCodeActivity  extends AppCompatActivity {
+
     private ZXingScannerView mScannerView;
+    static final String ACTION_SCAN = "com.google.zxing.client.android.SCAN";
 
     @Override
     public void onCreate(Bundle state) {
@@ -28,7 +44,7 @@ public class ScanQrCodeActivity  extends AppCompatActivity implements ZXingScann
         setContentView(mScannerView);
     }
 
-    @Override
+   /* @Override
     public void onResume() {
         super.onResume();
         // Register ourselves as a handler for scan results.
@@ -42,39 +58,54 @@ public class ScanQrCodeActivity  extends AppCompatActivity implements ZXingScann
         super.onPause();
         // Stop camera on pause
         mScannerView.stopCamera();
-    }
+    }*/
 
-    @Override
-    public void handleResult(Result rawResult) {
 
-        // Prints scan results
-        Log.d("result", rawResult.getText());
-
-        // Prints the scan format (qrcode, pdf417 etc.)
-        Log.d("result", rawResult.getBarcodeFormat().toString());
-
-        /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Scan Result");
-        builder.setMessage(rawResult.getText());
-        AlertDialog alert1 = builder.create();
-        alert1.show();*/
+    public void scanQR(View v) {
 
         //If you would like to resume scanning, call this method below:
         //mScannerView.resumeCameraPreview(this);
 
         try {
+            //start the scanning activity from the com.google.zxing.client.android.SCAN intent
             Intent intent = new Intent("com.google.zxing.client.android.SCAN");
             intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
-
             startActivityForResult(intent, 0);
 
         } catch (Exception e) {
+            //on catch, show the download dialog
+            showDialog(ScanQrCodeActivity.this, "No Scanner Found", "Download a scanner code activity?", "Yes", "No").show();
+       }
+    }
 
-            Uri marketUri = Uri.parse("market://details?id=com.google.zxing.client.android");
-            Intent marketIntent = new Intent(Intent.ACTION_VIEW,marketUri);
-            startActivity(marketIntent);
-        }
+    //alert dialog for downloadDialog
+    private static AlertDialog showDialog(final Activity act, CharSequence title, CharSequence message, CharSequence buttonYes, CharSequence buttonNo) {
 
+        AlertDialog.Builder downloadDialog = new AlertDialog.Builder(act);
+        downloadDialog.setTitle(title);
+        downloadDialog.setMessage(message);
+        downloadDialog.setPositiveButton(buttonYes, new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                Uri uri = Uri.parse("market://search?q=pname:" + "com.google.zxing.client.android");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+
+                try {
+                    act.startActivity(intent);
+                } catch (ActivityNotFoundException anfe) {
+
+                }
+            }
+        });
+
+        downloadDialog.setNegativeButton(buttonNo, new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialogInterface, int i) {
+            }
+        });
+
+        return downloadDialog.show();
     }
 
     @Override
@@ -93,4 +124,5 @@ public class ScanQrCodeActivity  extends AppCompatActivity implements ZXingScann
             }
         }
     }
+
 }

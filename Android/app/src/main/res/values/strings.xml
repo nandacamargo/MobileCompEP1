@@ -12,18 +12,6 @@
     <string name="action_delete_account">Delete account</string>
     <string name="action_save_profile">Save changes</string>
     <string name="action_sign_up">Register</string>
-    <string name="error_invalid_nusp">This NUSP is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">Invalid nusp or password</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="error_password_mismatch">The passwords must match</string>
-	<string name="error_user_exists">This NUSP is already registered</string>
-    <string name="error_connection">An error occurred. Please try again later.</string>
-    <string name="title_activity_seminar_list">Seminar List</string>
-    <string name="title_activity_sign_up">Register</string>
-    <string name="title_activity_add_seminar">New Seminar</string>
-    <string name="title_edit_profile">Edit Profile</string>
-    <string name="title_attendees_list">Attendees</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="name">Name</string>
@@ -34,12 +22,36 @@
     <string name="register">Create an account</string>
     <string name="edit_register">Edit register</string>
 
+
+    <!-- Errors -->
+    <string name="error_invalid_nusp">This NUSP is invalid</string>
+    <string name="error_invalid_seminar_id">This seminar id is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">Invalid nusp or password</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_password_mismatch">The passwords must match</string>
+    <string name="error_user_exists">This NUSP is already registered</string>
+    <string name="error_connection">An error occurred. Please try again later.</string>
+
+    <!-- Title -->
+    <string name="title_activity_seminar_list">Seminar List</string>
+    <string name="title_activity_sign_up">Register</string>
+    <string name="title_activity_add_seminar">New Seminar</string>
+    <string name="title_edit_profile">Edit Profile</string>
+    <string name="title_attendees_list">Attendees</string>
+    <string name="title_activity_send_confirmation">Send Confirmation</string>
+
+
     <!-- Strings related to seminars -->
     <string name="add_seminar">Add Seminar</string>
     <string name="seminar_section">Seminar Section</string>
     <string name="seminar_name">Seminar Name</string>
     <string name="go_to_seminars">Seminars</string>
     <string name="close_submissions">Close submissions</string>
+
+    <!-- Strings related to QR-Code -->
+    <string name="read_qr_code">Read QR-Code</string>
+    <string name="send_pdf">Send pdf</string>
 
 
     <string name="go_to_update_register">My account</string>

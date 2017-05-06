@@ -36,7 +36,9 @@
             android:layout_centerHorizontal="true"
             android:background="@color/googleGreen"
             android:text="@string/i_was_there"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:onClick="iWasThereButton" />
+
 
         <ProgressBar
             android:id="@+id/list_progress"

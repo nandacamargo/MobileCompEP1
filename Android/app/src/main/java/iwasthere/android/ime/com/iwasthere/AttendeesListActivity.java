@@ -1,6 +1,7 @@
 package iwasthere.android.ime.com.iwasthere;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -271,5 +272,11 @@ public class AttendeesListActivity extends AppCompatActivity {
             emptyText.setVisibility(View.VISIBLE);
             attendeesList.setEmptyView(emptyText);
         }
+    }
+
+    public void iWasThereButton(View v) {
+        Log.d("AttendeesList", "On iWasThereButton");
+        Intent i = new Intent(this, SendConfirmationActivity.class);
+        startActivity(i);
     }
 }
