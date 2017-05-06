@@ -12,7 +12,9 @@
     </button>
     <ion-title>Seminar List</ion-title>
   </ion-navbar>
-  <ion-searchbar></ion-searchbar>
+  <ion-searchbar 
+  	(ionInput)="getFilteredSeminars($event)">	
+  </ion-searchbar>
 
 </ion-header>
 
@@ -24,7 +26,7 @@
 		<button ion-item (click)="openPage(editProfilePage)">
 			<ion-label>My account</ion-label>
 		</button>
-		<button ion-item (click)="openPage(registerPage)">
+		<button ion-item *ngIf="user.getInstance().teacher" (click)="openPage(registerPage, { teacher: true })">
 			<ion-label>Register new teacher</ion-label>
 		</button>
 		<button ion-item (click)="logOut()">
@@ -36,11 +38,11 @@
 
 <ion-content padding>
 	<ion-list>
-		<button ion-item *ngFor="let s of seminars" (click)="openPage(studentListPage)">
-			<ion-label>{{s}}</ion-label>
+		<button ion-item *ngFor="let s of filteredSeminars" (click)="openPage(studentListPage, { seminar: s })">
+			<ion-label>{{s.name}}</ion-label>
 		</button>
 	</ion-list>
-	<ion-fab bottom right>
+	<ion-fab bottom right *ngIf="user.getInstance().teacher">
    		<button ion-fab (click)="openPage(addSeminarPage)"><ion-icon name="add"></ion-icon></button>
  	</ion-fab>
 </ion-content>

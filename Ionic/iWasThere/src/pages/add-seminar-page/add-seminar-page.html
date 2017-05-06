@@ -15,8 +15,11 @@
 
 <ion-content padding>
 	<ion-list>
-		<ion-input placeholder="Seminar Name"></ion-input>
+		<ion-input placeholder="Seminar Name" required [(ngModel)]="name"></ion-input>
 	</ion-list>
+	<div *ngIf="missingFields"> 
+		<h2 class="fail-message">* Missing required fields!</h2>
+	</div>
 	<button ion-button (click)="addSeminar()">
 		<ion-label>Add seminar</ion-label>
 	</button>

@@ -9,17 +9,20 @@
   <ion-navbar>
     <ion-title>Attendees</ion-title>
   </ion-navbar>
-  <ion-searchbar></ion-searchbar>
+  <ion-searchbar 
+  	(ionInput)="getFilteredAttendees($event)">
+  </ion-searchbar>
 
 </ion-header>
 
 <ion-content padding>
 	<ion-list>
-		<button ion-item *ngFor="let s of students">
-			<ion-label>{{s}}</ion-label>
+		<button ion-item *ngFor="let s of filteredAttendees">
+			<ion-label>{{s.name}}</ion-label>
 		</button>
 	</ion-list>
 	<ion-footer no-border>
 		<button ion-button color="googleGreen">I was there</button>
 	</ion-footer>
 </ion-content>
+	
