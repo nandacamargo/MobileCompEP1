@@ -28,6 +28,13 @@ The HttpUtil file encapsulate the post and get requests. So we can use it severa
 
 One way to confirm a student presence is using bluetooth. <br>
 
+##Libraries
+
+We are using to this project the zxing library (to do QR-Code readings) and <br>
+volley (HTTP library to help us with the requests). <br>
+
+<b> Zxing  </b> https://github.com/zxing/zxing
+<b> Volley </b> https://github.com/google/volley
 
 
 ### Ionic App
