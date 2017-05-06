@@ -9,6 +9,7 @@ import { StudentListPage } from '../student-list-page/student-list-page'
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 
+import { UserSingleton } from '../../util/user-singleton.ts'
 /**
  * Generated class for the SeminarListPage page.
  *
@@ -26,6 +27,7 @@ export class SeminarListPage {
   seminars: any
   results: any
 
+  user: any;
 
   addSeminarPage = AddSeminarPage
   editProfilePage = EditProfilePage
@@ -33,9 +35,11 @@ export class SeminarListPage {
   studentListPage = StudentListPage
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private http: Http) {
+    this.user = new UserSingleton();
   }
 
-  ionViewDidLoad() {
+  ionViewDidEnter() {
+    console.log("ionViewDidEnter SeminarListPage")
     this.getSeminars()
   }
 
@@ -43,8 +47,8 @@ export class SeminarListPage {
   	this.navCtrl.setRoot(LoginPage)
   }
 
-  openPage(page) {
-  	this.navCtrl.push(page)
+  openPage(page, params?: {}) {
+  	this.navCtrl.push(page, params)
   }
 
   private getSeminars() {

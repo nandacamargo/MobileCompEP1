@@ -6,6 +6,8 @@ import { SeminarListPage } from '../seminar-list-page/seminar-list-page';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 
+import { UserSingleton } from '../../util/user-singleton.ts'
+
 /**
  * Generated class for the LoginPage page.
  *
@@ -24,17 +26,30 @@ export class LoginPage {
   nusp: string
   teacher: boolean
   loginFailed: boolean
+  missingFields: boolean
+  user: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private http: Http) {
-    this.teacher = false;
-    this.loginFailed = false;
+  }
+
+  ionViewDidEnter() {
+    this.teacher = false
+    this.loginFailed = false
+    this.missingFields = false
+    this.user = new UserSingleton()
+    this.user.deleteInstance()
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad LoginPage');
+    console.log('ionViewDidLoad LoginPage')
   }
 
   logIn(){
+    if (!this.password || !this.nusp) {
+      this.missingFields = true
+      return false
+    }
+    this.missingFields = false
     var url;
     if (this.teacher) url = "http://207.38.82.139:8001/login/teacher"
     else url = "http://207.38.82.139:8001/login/student"
@@ -46,10 +61,12 @@ export class LoginPage {
               .subscribe(
                 res => {
                   console.log(res)
-                  if (res.success) this.navCtrl.setRoot(SeminarListPage)
+                  if (res.success) {
+                    this.getUser()
+                  }
                   else this.loginFailed = true
                 }, 
-                error => console.log(error)
+                error => console.log(error),
               )
   }
 
@@ -60,5 +77,21 @@ export class LoginPage {
       teacher: false
     }
     this.navCtrl.push(RegisterPage, params)
+  }
+
+  getUser() {
+    var url
+    if (this.teacher) url = "http://207.38.82.139:8001/teacher/get/"
+    else url = "http://207.38.82.139:8001/student/get/"
+    this.http.get(url + this.nusp)
+             .map(res => res.json())
+             .subscribe(
+                res => {
+                  this.user.setInstance(res.data.name, this.nusp, this.teacher)
+                  console.log(this.user.getInstance())
+                }, 
+                error => console.log(error),
+                () => this.navCtrl.setRoot(SeminarListPage)
+              )
   }
 }

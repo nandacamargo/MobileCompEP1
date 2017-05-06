@@ -22,9 +22,15 @@
 		<ion-item>
 			<ion-input type="password" placeholder="Password" [(ngModel)]="password" required></ion-input>
 		</ion-item>
+
 		<div *ngIf="loginFailed"> 
 			<h2 class="fail-message">* Invalid NUSP or password!</h2>
 		</div>
+
+		<div *ngIf="missingFields"> 
+			<h2 class="fail-message">* Missing required fields!</h2>
+		</div>
+		
 		<ion-item>
 			<ion-label>I'm a teacher</ion-label>
 			<ion-checkbox [(ngModel)]="teacher"></ion-checkbox>
