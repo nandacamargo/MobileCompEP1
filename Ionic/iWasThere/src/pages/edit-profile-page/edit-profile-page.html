@@ -15,10 +15,19 @@
 
 <ion-content padding>
 	<ion-list>
-		<ion-input placeholder="Name"></ion-input>
-		<ion-input type="password" placeholder="Password"></ion-input>
-		<ion-input type="password" placeholder="Confirm Password"></ion-input>
+		<ion-input placeholder="Name" required [(ngModel)]="name"></ion-input>
+		<ion-input type="password" placeholder="Password" required [(ngModel)]="password"></ion-input>
+		<ion-input type="password" placeholder="Confirm Password" required [(ngModel)]="confirmPassword"></ion-input>
 	</ion-list>
+
+	<div *ngIf="missingFields"> 
+		<h2 class="fail-message">* Missing required fields!</h2>
+	</div>
+
+	<div *ngIf="passwordMismatch"> 
+		<h2 class="fail-message">* The passwords must match!</h2>
+	</div>
+
 	<button ion-button (click)="saveChanges()">Save Changes</button>
 	<button ion-button color="googleRed" (click)="deleteAccount()">Delete Account</button>
 </ion-content>
