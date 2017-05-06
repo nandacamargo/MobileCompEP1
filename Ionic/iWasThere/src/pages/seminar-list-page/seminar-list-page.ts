@@ -50,15 +50,20 @@ export class SeminarListPage {
   private getSeminars() {
     this.http.get("http://207.38.82.139:8001/seminar")
                 .map(res => res.json())
-                .subscribe(res => {
+                .subscribe(
+                  res => {
                     this.seminars = res.data
                     this.filteredSeminars = res.data
-                });
+                  },
+                  error => {
+                    this.seminars = []
+                    this.filteredSeminars = []
+                    console.log(error)
+                  })
   }
 
   getFilteredSeminars(event: any) {
     this.filteredSeminars = this.seminars.slice()
-    console.log(event)
     let query = event.target.value;
     if (query && query.trim() != '') {
       this.filteredSeminars = this.filteredSeminars.filter((seminar) => {

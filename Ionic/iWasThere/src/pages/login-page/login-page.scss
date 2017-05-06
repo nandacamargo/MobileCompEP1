@@ -10,4 +10,11 @@ page-login-page {
 	ion-content button {
 		width: 100%;
 	}
+
+	.fail-message {
+		font-size: 15px;
+		padding-top: 1.5%;
+		margin-left: 2%;
+		color: color($colors, googleRed);
+	}
 }
