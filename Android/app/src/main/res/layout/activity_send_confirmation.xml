@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="iwasthere.android.ime.com.iwasthere.SendConfirmationActivity">
+    tools:context="iwasthere.android.ime.com.iwasthere.ValidatePresenceActivity">
 
         <LinearLayout
             android:id="@+id/send_confirmation"
@@ -23,7 +23,8 @@
                 android:text="@string/read_qr_code"
                 android:textStyle="bold"
                 android:textColor="@color/white"
-                android:background="@color/googleBlue"/>
+                android:background="@color/googleBlue"
+                android:onClick="readQrCode" />
 
             <Button
                 android:id="@+id/send_pdf"
@@ -34,7 +35,9 @@
                 android:text="@string/send_pdf"
                 android:textStyle="bold"
                 android:textColor="@color/white"
-                android:background="@color/googleBlueGrey"/>
+                android:background="@color/googleBlueGrey"
+                android:onClick="sendPdf" />
+
         </LinearLayout>
 
 </LinearLayout>

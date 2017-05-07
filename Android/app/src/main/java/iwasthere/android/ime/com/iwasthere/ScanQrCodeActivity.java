@@ -9,15 +9,16 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.google.zxing.Result;
 
 import org.json.JSONObject;
 
@@ -35,13 +36,21 @@ public class ScanQrCodeActivity  extends AppCompatActivity {
     private ZXingScannerView mScannerView;
     static final String ACTION_SCAN = "com.google.zxing.client.android.SCAN";
 
+    private EditText nuspView;
+    private EditText seminarIdView;
+
     @Override
-    public void onCreate(Bundle state) {
-        super.onCreate(state);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
         // Programmatically initialize the scanner view
         mScannerView = new ZXingScannerView(this);
         // Set the scanner view as the content view
         setContentView(mScannerView);
+
+        nuspView = (EditText) findViewById(R.id.nusp);
+        //seminarIdView = (EditText) findViewById(R.id.seminarId);
+
     }
 
    /* @Override
@@ -117,12 +126,74 @@ public class ScanQrCodeActivity  extends AppCompatActivity {
                 String contents = data.getStringExtra("SCAN_RESULT");
                 String format = data.getStringExtra("SCAN_RESULT_FORMAT");
                 Toast.makeText(this, contents, Toast.LENGTH_LONG).show();
+
                 // Handle successful scan
+                sendPresenceConfirmation();
             }
             if(resultCode == RESULT_CANCELED){
                 //handle cancel
             }
         }
+    }
+
+
+    public void sendPresenceConfirmation() {
+        final String nusp = nuspView.getText().toString();
+        //final int seminarId = seminarIdView.getText().toInt();
+        final int seminarId = 1;
+
+        Log.d("ScanQrCode", "nusp: " + nusp + " seminarId:" + seminarId);
+
+        if (nusp.length() < 2) {
+            nuspView.setError(getString(R.string.error_invalid_nusp));
+            nuspView.requestFocus();
+        } else if (seminarId  < 0) {
+            seminarIdView.setError(getString(R.string.error_invalid_seminar_id));
+            seminarIdView.requestFocus();
+        } else {
+
+            String url;
+            url = "http://207.38.82.139:8001/attendence/submit";
+
+            StringRequest strRequest = new StringRequest(Request.Method.POST, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.d("Response: ", response);
+                            JSONObject resp = HttpUtil.getJSONObject(response, "sendPresenceConfirmation");
+                            if (HttpUtil.responseWasSuccess(resp)) {
+                                Log.d("sendConfirmation", "SUCCESS");
+                                postPresenceConfirmation();
+                            }
+                            else {
+                                Snackbar.make(findViewById(android.R.id.content), "An error occurred. Please try again later.", Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+            {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("nusp", nusp);
+                    params.put("seminarId", seminarId);
+                    return params;
+                }
+            };
+            RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
+
+        }
+    }
+
+    private void postPresenceConfirmation() {
+        Intent i = new Intent(getApplicationContext(), AttendeesListActivity.class);
+        startActivity(i);
     }
 
 }

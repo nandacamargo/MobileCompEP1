@@ -242,7 +242,9 @@ public class AttendeesListActivity extends AppCompatActivity {
                     RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
                 }
                 try {
+                    Log.d("getUsersTask", "Antes do latch");
                     latch.await();
+                    Log.d("getUsersTask", "Saindo do try");
                 } catch (InterruptedException e) {
                     Log.e("Thread", "interrupted");
                 }
@@ -265,7 +267,9 @@ public class AttendeesListActivity extends AppCompatActivity {
 
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                    Log.d("AttendeesList", "On iWasThereButton");
+                    Intent i = new Intent(getApplicationContext(), SendConfirmationActivity.class);
+                    startActivity(i);
                 }
             });
             progressBar.setVisibility(View.GONE);
@@ -275,7 +279,7 @@ public class AttendeesListActivity extends AppCompatActivity {
     }
 
     public void iWasThereButton(View v) {
-        Log.d("AttendeesList", "On iWasThereButton");
+        Log.d("AttendeesList", "After click iWasThereButton");
         Intent i = new Intent(this, SendConfirmationActivity.class);
         startActivity(i);
     }
