@@ -37,7 +37,6 @@ public class ScanQrCodeActivity  extends AppCompatActivity {
     static final String ACTION_SCAN = "com.google.zxing.client.android.SCAN";
 
     private EditText nuspView;
-    private EditText seminarIdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +48,6 @@ public class ScanQrCodeActivity  extends AppCompatActivity {
         setContentView(mScannerView);
 
         nuspView = (EditText) findViewById(R.id.nusp);
-        //seminarIdView = (EditText) findViewById(R.id.seminarId);
 
     }
 
@@ -138,9 +136,9 @@ public class ScanQrCodeActivity  extends AppCompatActivity {
 
 
     public void sendPresenceConfirmation() {
+
         final String nusp = nuspView.getText().toString();
-        //final int seminarId = seminarIdView.getText().toInt();
-        final int seminarId = 1;
+        final int seminarId = getIntent().getIntExtra("id", -1);
 
         Log.d("ScanQrCode", "nusp: " + nusp + " seminarId:" + seminarId);
 
@@ -148,8 +146,8 @@ public class ScanQrCodeActivity  extends AppCompatActivity {
             nuspView.setError(getString(R.string.error_invalid_nusp));
             nuspView.requestFocus();
         } else if (seminarId  < 0) {
-            seminarIdView.setError(getString(R.string.error_invalid_seminar_id));
-            seminarIdView.requestFocus();
+            Log.e("Attenddes list", "Invalid seminar id");
+            finish();
         } else {
 
             String url;
@@ -176,8 +174,8 @@ public class ScanQrCodeActivity  extends AppCompatActivity {
                         public void onErrorResponse(VolleyError error) {
                             Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
                         }
-                    })
-            {
+                    });
+            /*{
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
@@ -185,7 +183,7 @@ public class ScanQrCodeActivity  extends AppCompatActivity {
                     params.put("seminarId", seminarId);
                     return params;
                 }
-            };
+            };*/
             RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
 
         }
