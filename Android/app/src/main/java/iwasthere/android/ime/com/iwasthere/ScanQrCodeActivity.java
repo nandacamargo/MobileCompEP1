@@ -27,6 +27,7 @@ import java.util.Map;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
+
 /**
  * Created by nanda on 04/05/17.
  */
@@ -146,7 +147,7 @@ public class ScanQrCodeActivity  extends AppCompatActivity {
             nuspView.setError(getString(R.string.error_invalid_nusp));
             nuspView.requestFocus();
         } else if (seminarId  < 0) {
-            Log.e("Attenddes list", "Invalid seminar id");
+            Log.e("Attendees list", "Invalid seminar id");
             finish();
         } else {
 
@@ -174,16 +175,16 @@ public class ScanQrCodeActivity  extends AppCompatActivity {
                         public void onErrorResponse(VolleyError error) {
                             Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
                         }
-                    });
-            /*{
+                    })
+            {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
                     params.put("nusp", nusp);
-                    params.put("seminarId", seminarId);
+                    params.put("seminarId", "" + seminarId);
                     return params;
                 }
-            };*/
+            };
             RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
 
         }

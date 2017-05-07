@@ -39,7 +39,6 @@
             android:textColor="@color/white"
             android:onClick="iWasThereButton" />
 
-
         <ProgressBar
             android:id="@+id/list_progress"
             style="?android:attr/progressBarStyleLarge"

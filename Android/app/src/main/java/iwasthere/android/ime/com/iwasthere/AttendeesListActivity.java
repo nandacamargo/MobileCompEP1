@@ -263,6 +263,7 @@ public class AttendeesListActivity extends AppCompatActivity {
             adapter = new UsersAdapter(getApplicationContext(), attendees);
             attendeesList.setAdapter(adapter);
             attendeesList.setTextFilterEnabled(false);
+            Log.d("AteendeesList", "Before the listener");
             attendeesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                 @Override
