@@ -20,7 +20,9 @@ public class SendConfirmationActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(R.string.title_activity_sign_up);
+
+        //getSupportActionBar().setTitle(R.string.title_send_confirmation);
+        Log.d("SendConfirmation", "On function create of SendConfirmationActivity");
     }
 
 

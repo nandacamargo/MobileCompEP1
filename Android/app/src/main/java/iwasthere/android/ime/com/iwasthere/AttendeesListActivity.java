@@ -263,14 +263,13 @@ public class AttendeesListActivity extends AppCompatActivity {
             adapter = new UsersAdapter(getApplicationContext(), attendees);
             attendeesList.setAdapter(adapter);
             attendeesList.setTextFilterEnabled(false);
-            Log.d("AteendeesList", "Before the listener");
             attendeesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Log.d("AttendeesList", "On iWasThereButton");
-                    Intent i = new Intent(getApplicationContext(), SendConfirmationActivity.class);
-                    startActivity(i);
+                    /*Intent i = new Intent(getApplicationContext(), SendConfirmationActivity.class);
+                    startActivity(i);*/
                 }
             });
             progressBar.setVisibility(View.GONE);
@@ -280,8 +279,9 @@ public class AttendeesListActivity extends AppCompatActivity {
     }
 
     public void iWasThereButton(View v) {
-        Log.d("AttendeesList", "After click iWasThereButton");
-        Intent i = new Intent(this, SendConfirmationActivity.class);
+
+        Intent i = new Intent(getApplicationContext(), SendConfirmationActivity.class);
+        Log.d("AttendeesList", "Before startActivitity on iWasThereButton");
         startActivity(i);
     }
 }

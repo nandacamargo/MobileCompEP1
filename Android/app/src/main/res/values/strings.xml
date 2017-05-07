@@ -39,7 +39,7 @@
     <string name="title_activity_add_seminar">New Seminar</string>
     <string name="title_edit_profile">Edit Profile</string>
     <string name="title_attendees_list">Attendees</string>
-    <string name="title_activity_send_confirmation">Send Confirmation</string>
+    <string name="title_send_confirmation">Send Confirmation</string>
 
 
     <!-- Strings related to seminars -->
