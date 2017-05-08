@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, LoadingController, PopoverController } from 'ionic-angular';
+
+import { SendConfirmationPopover } from '../../components/send-confirmation-popover/send-confirmation-popover'
 
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
@@ -17,13 +19,13 @@ import 'rxjs/add/operator/map';
 })
 export class StudentListPage {
 
-  nusps: any
+  studentList: any
   attendees: any
   filteredAttendees: any
   seminar: any
   loading: any
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private http: Http, private loadingCtrl: LoadingController) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private http: Http, private loadingCtrl: LoadingController, private popoverCtrl: PopoverController) {
     this.attendees = []
     this.filteredAttendees = []
     this.seminar = navParams.get("seminar")
@@ -46,16 +48,14 @@ export class StudentListPage {
         content: 'Please wait...'
     });
     this.loading.present();
-
     this.http.post(url, body)
               .map(res => res.json())
               .subscribe(
                 res => {
-                  console.log(res.data)
-                  this.nusps = res.data
+                  this.studentList = res.data
                 },
                 error => {
-                  this.nusps = []
+                  this.studentList = []
                   console.log(error)
                 },
                 () => {
@@ -65,38 +65,43 @@ export class StudentListPage {
 
   private getAttendees() {
     return new Promise((resolve, reject) => {
-    this.attendees = []
-    this.filteredAttendees = []
-    if (this.nusps == null || this.nusps.length < 1) this.loading.dismiss();
-    var count = 0;
-    for (let nusp in this.nusps) {
-      let url = "http://207.38.82.139:8001/student/get/" + nusp
-      this.http.get(url)
-            .map(res => res.json())
-                  .subscribe(
-                    res => {
-                      if (res.data != null)
-                        this.attendees.push(res.data)
-                    },
-                    error => {
-                      console.log(error)
-                    },
-                    () => {
-                      count += 1
-                      if (count == this.nusps.length) {
-                        this.attendees = this.attendees.sort((x, y) => {
-                        if (x.name.toLowerCase() > y.name.toLowerCase()) return 1
-                        if (x.name.toLowerCase() < y.name.toLowerCase()) return -1
-                        return 0
-                      })
-                      this.filteredAttendees = this.attendees.slice()
-                      this.loading.dismiss();
-                      }
-                    })
-    }
-    })
-
-    
+      this.attendees = []
+      this.filteredAttendees = []
+      if (this.studentList == null || this.studentList == undefined || this.studentList.length < 1) 
+        this.loading.dismiss();
+      else {
+        var count = 0;
+        for (let i = 0; i < this.studentList.length; i++) {
+          let s = this.studentList[i]
+          let url = "http://207.38.82.139:8001/student/get/" + s.student_nusp
+          this.http.get(url)
+                .map(res => res.json())
+                      .subscribe(
+                        res => {
+                          if (res.data != null) {
+                            console.log("User foi:" + res.data)
+                            this.attendees.push(res.data)
+                          }
+                        },
+                        error => {
+                          console.log(error)
+                          this.loading.dismiss();
+                        },
+                        () => {
+                          count += 1
+                          if (count == this.studentList.length) {
+                            this.attendees = this.attendees.sort((x, y) => {
+                            if (x.name.toLowerCase() > y.name.toLowerCase()) return 1
+                            if (x.name.toLowerCase() < y.name.toLowerCase()) return -1
+                            return 0
+                          })
+                          this.filteredAttendees = this.attendees.slice()
+                          this.loading.dismiss();
+                          }
+                        })
+        }
+      }
+    })    
   }
 
   getFilteredAttendees(event: any) {
@@ -107,5 +112,10 @@ export class StudentListPage {
         return (attendee.name.toLowerCase().indexOf(query.toLowerCase()) > -1)
       });
     }
+  }
+
+  iWasThere(event: Event) {
+    let popover = this.popoverCtrl.create(SendConfirmationPopover, {seminar_id: this.seminar.id});
+    popover.present({ev: event});
   }
 }

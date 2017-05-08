@@ -23,7 +23,7 @@
 	</ion-list>
 	<h3 *ngIf="filteredAttendees.length == 0">There doesn't seem to be anything here</h3>
 	<ion-footer no-border>
-		<button ion-button color="googleGreen">I was there</button>
+		<button ion-button color="googleGreen" (click)="iWasThere($event)">I was there</button>
 	</ion-footer>
 </ion-content>
 	
