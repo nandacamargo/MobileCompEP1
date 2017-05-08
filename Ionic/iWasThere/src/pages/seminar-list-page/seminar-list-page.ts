@@ -26,7 +26,6 @@ export class SeminarListPage {
   filteredSeminars: any
   seminars: any
   results: any
-  loading: any
   user: any;
 
   addSeminarPage = AddSeminarPage
@@ -37,11 +36,11 @@ export class SeminarListPage {
   constructor(public navCtrl: NavController, public navParams: NavParams, private http: Http, private loadingCtrl: LoadingController) {
     this.user = new UserSingleton();
     this.filteredSeminars = []
+    this.getSeminars()
   }
 
   ionViewDidEnter() {
     console.log("ionViewDidEnter SeminarListPage")
-    this.getSeminars()
   }
 
   logOut() {
@@ -53,28 +52,23 @@ export class SeminarListPage {
   }
 
   private getSeminars() {
-    this.loading = this.loadingCtrl.create({
-        content: 'Please wait...'
-    });
-    this.loading.present();
     this.http.get("http://207.38.82.139:8001/seminar")
-                .map(res => res.json())
-                .subscribe(
-                  res => {
-                    this.seminars = res.data.sort((x, y) => {
-                        if (x.name.toLowerCase() > y.name.toLowerCase()) return 1
-                        if (x.name.toLowerCase() < y.name.toLowerCase()) return -1
-                        return 0
-                      })
-                    this.filteredSeminars = this.seminars.slice()
-                  },
-                  error => {
-                    this.seminars = []
-                    this.filteredSeminars = []
-                    console.log(error)
-                  },
-                  () => this.loading.dismiss())
-  }
+              .map(res => res.json())
+              .subscribe(
+                res => {
+                  this.seminars = res.data.sort((x, y) => {
+                      if (x.name.toLowerCase() > y.name.toLowerCase()) return 1
+                      if (x.name.toLowerCase() < y.name.toLowerCase()) return -1
+                      return 0
+                    })
+                  this.filteredSeminars = this.seminars.slice()
+                },
+                error => {
+                  this.seminars = []
+                  this.filteredSeminars = []
+                  console.log(error)
+                })
+    }
 
   getFilteredSeminars(event: any) {
     this.filteredSeminars = this.seminars.slice()
@@ -84,6 +78,15 @@ export class SeminarListPage {
         return (seminar.name.toLowerCase().indexOf(query.toLowerCase()) > -1)
       });
     }
+  }
+
+  doRefresh(refresher) {
+    this.getSeminars()
+
+    setTimeout(() => {
+      console.log('Async operation has ended');
+      refresher.complete();
+    }, 2000);
   }
 
 }

@@ -37,7 +37,10 @@
 </ion-menu>
 
 <ion-content padding>
-	<ion-list *ngIf="filteredSeminars.length > 0">
+	<ion-refresher (ionRefresh)="doRefresh($event)">
+    	<ion-refresher-content></ion-refresher-content>
+  	</ion-refresher>
+  	<ion-list *ngIf="filteredSeminars.length > 0">
 		<button ion-item *ngFor="let s of filteredSeminars" (click)="openPage(studentListPage, { seminar: s })">
 			<ion-label>{{s.name}}</ion-label>
 		</button>

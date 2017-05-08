@@ -16,6 +16,9 @@
 </ion-header>
 
 <ion-content padding>
+	<ion-refresher (ionRefresh)="doRefresh($event)">
+    	<ion-refresher-content></ion-refresher-content>
+  	</ion-refresher>
 	<ion-list *ngIf="filteredAttendees.length > 0">
 		<button ion-item *ngFor="let s of filteredAttendees">
 			<ion-label>{{s.name}}</ion-label>

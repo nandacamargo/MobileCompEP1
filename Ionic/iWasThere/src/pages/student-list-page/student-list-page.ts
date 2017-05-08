@@ -23,31 +23,22 @@ export class StudentListPage {
   attendees: any
   filteredAttendees: any
   seminar: any
-  loading: any
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private http: Http, private loadingCtrl: LoadingController, private popoverCtrl: PopoverController) {
     this.attendees = []
     this.filteredAttendees = []
     this.seminar = navParams.get("seminar")
+    this.getNusps()
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad StudentListPage');
   }
 
-  ionViewDidEnter() {
-    this.filteredAttendees = []
-    this.getNusps()
-  }
-
   private getNusps() {
     let body = new FormData()
     body.append('seminar_id', this.seminar.id)
     let url = "http://207.38.82.139:8001/attendence/listStudents"
-    this.loading = this.loadingCtrl.create({
-        content: 'Please wait...'
-    });
-    this.loading.present();
     this.http.post(url, body)
               .map(res => res.json())
               .subscribe(
@@ -67,9 +58,7 @@ export class StudentListPage {
     return new Promise((resolve, reject) => {
       this.attendees = []
       this.filteredAttendees = []
-      if (this.studentList == null || this.studentList == undefined || this.studentList.length < 1) 
-        this.loading.dismiss();
-      else {
+      if (this.studentList != null && this.studentList != undefined) {
         var count = 0;
         for (let i = 0; i < this.studentList.length; i++) {
           let s = this.studentList[i]
@@ -85,7 +74,6 @@ export class StudentListPage {
                         },
                         error => {
                           console.log(error)
-                          this.loading.dismiss();
                         },
                         () => {
                           count += 1
@@ -96,7 +84,6 @@ export class StudentListPage {
                             return 0
                           })
                           this.filteredAttendees = this.attendees.slice()
-                          this.loading.dismiss();
                           }
                         })
         }
@@ -117,5 +104,14 @@ export class StudentListPage {
   iWasThere(event: Event) {
     let popover = this.popoverCtrl.create(SendConfirmationPopover, {seminar_id: this.seminar.id});
     popover.present({ev: event});
+  }
+
+  doRefresh(refresher) {
+    this.getNusps()
+
+    setTimeout(() => {
+      console.log('Async operation has ended');
+      refresher.complete();
+    }, 2000);
   }
 }
