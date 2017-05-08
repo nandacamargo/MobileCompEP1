@@ -50,6 +50,8 @@ public class ScanQrCodeActivity  extends AppCompatActivity {
 
         nuspView = (EditText) findViewById(R.id.nusp);
 
+
+
     }
 
    /* @Override
