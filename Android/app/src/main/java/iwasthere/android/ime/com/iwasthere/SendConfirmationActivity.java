@@ -30,6 +30,7 @@ public class SendConfirmationActivity extends AppCompatActivity {
         Log.d("SendConfirmation", "After clicking readQrCode button");
         Intent i = new Intent(getApplicationContext(), ScanQrCodeActivity.class);
         startActivity(i);
+        //TODO: call ScanQR that is on ScanQRCodeActivity
     }
 
     public void sendPdf(View v) {
