@@ -12,7 +12,6 @@ import { EditProfilePage } from '../pages/edit-profile-page/edit-profile-page'
 import { StudentListPage } from '../pages/student-list-page/student-list-page'
 import { SendConfirmationPopover } from '../components/send-confirmation-popover/send-confirmation-popover'
 
-
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 

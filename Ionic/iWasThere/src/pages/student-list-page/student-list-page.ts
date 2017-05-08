@@ -57,7 +57,6 @@ export class StudentListPage {
   private getAttendees() {
     return new Promise((resolve, reject) => {
       this.attendees = []
-      this.filteredAttendees = []
       if (this.studentList != null && this.studentList != undefined) {
         var count = 0;
         for (let i = 0; i < this.studentList.length; i++) {
