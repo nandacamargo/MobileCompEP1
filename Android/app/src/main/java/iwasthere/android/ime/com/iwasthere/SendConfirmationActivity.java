@@ -39,6 +39,8 @@ public class SendConfirmationActivity extends AppCompatActivity {
 
     private EditText nuspView;
 
+    private Seminar seminar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +48,8 @@ public class SendConfirmationActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        seminar = SeminarSingleton.getInstance();
 
         //getSupportActionBar().setTitle(R.string.title_send_confirmation);
         Log.d("SendConfirmation", "On function create of SendConfirmationActivity");
@@ -149,9 +153,11 @@ public class SendConfirmationActivity extends AppCompatActivity {
     public void sendPresenceConfirmation(String results) {
 
         final String nusp = nuspView.getText().toString();
-        final int seminarId = getIntent().getIntExtra("id", -1);
+        final int seminarId;
 
         int value = Integer.parseInt(results);
+
+        seminarId = seminar.getId();
 
         Log.d("PresenceConfirmation", "nusp: " + nusp + " seminarId:" + seminarId);
 
@@ -211,21 +217,9 @@ public class SendConfirmationActivity extends AppCompatActivity {
     }
 
 
-
-/*
-    public void readQrCode(View v) {
-        Log.d("SendConfirmation", "After clicking readQrCode button");
-        Intent i = new Intent(getApplicationContext(), ScanQrCodeActivity.class);
-        startActivity(i);
-        //TODO: call ScanQR that is on ScanQRCodeActivity
-    }
-
-*/
     public void sendPdf() {
 
-        final int seminarId = getIntent().getIntExtra("id", -1);
         Log.d("SendConfirmation", "After click sendPdf");
-        Log.d("PresenceConfirmation", " seminarId:" + seminarId);
         Intent i = new Intent(getApplicationContext(), TextConfirmationActivity.class);
         startActivity(i);
 

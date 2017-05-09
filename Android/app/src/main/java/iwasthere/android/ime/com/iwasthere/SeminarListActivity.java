@@ -39,6 +39,10 @@ public class SeminarListActivity extends AppCompatActivity {
     private SearchView mSearchView;
     private SeminarsAdapter adapter;
     private User user;
+    private SeminarSingleton seminar;
+
+    private String name;
+    private int seminarId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +118,9 @@ public class SeminarListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(getApplicationContext(), AttendeesListActivity.class);
                 i.putExtra("id", adapter.getItemAtPosition(position).getId());
+                name = adapter.getItemAtPosition(position).getName();
+                seminarId = adapter.getItemAtPosition(position).getId();
+                SeminarSingleton.getInstance(name, seminarId);
                 startActivity(i);
             }
         });

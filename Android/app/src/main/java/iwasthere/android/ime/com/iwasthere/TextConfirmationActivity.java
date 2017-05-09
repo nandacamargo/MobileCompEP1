@@ -27,11 +27,10 @@ import java.util.Map;
 public class TextConfirmationActivity extends AppCompatActivity{
 
     private User user;
+    private Seminar seminar;
     private EditText nameView;
 
     private String name;
-    private int seminarId = -1;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +44,7 @@ public class TextConfirmationActivity extends AppCompatActivity{
         nameView = (EditText) findViewById(R.id.yourName);
 
         user = UserSingleton.getInstance();
-
+        seminar = SeminarSingleton.getInstance();
     }
 
     public void confirmPresence(View v) {
@@ -57,17 +56,14 @@ public class TextConfirmationActivity extends AppCompatActivity{
         else confirmed = 0;
 
         Log.d("Confirmed = ", "" + confirmed);
+        Log.d("TextConfirmation", "seminarId: " + seminar.getId());
 
         name = nameView.getText().toString();
-        Log.d("TextConfirmation", "name: " + name);
 
         if (name.length() < 1) {
             nameView.setError(getString(R.string.error_field_required));
             nameView.requestFocus();
         }
-
-        //TODO: Fix the seminarId, it's getting the wrong id
-        seminarId = getIntent().getIntExtra("id", -1);
 
         StringRequest strRequest = new StringRequest(Request.Method.POST, url,
             new Response.Listener<String>() {
@@ -95,7 +91,7 @@ public class TextConfirmationActivity extends AppCompatActivity{
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<String, String>();
                     params.put("nusp", user.getNusp());
-                    params.put("seminar_id", "" + seminarId);
+                    params.put("seminar_id", "" + seminar.getId());
                     params.put("data", name);
                     params.put("confirmed", "" + confirmed);
                     return params;
