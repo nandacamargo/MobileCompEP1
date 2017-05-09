@@ -40,6 +40,7 @@
     <string name="title_edit_profile">Edit Profile</string>
     <string name="title_attendees_list">Attendees</string>
     <string name="title_send_confirmation">Send Confirmation</string>
+    <string name="title_text_confirmation">Send Text Confirmation</string>
 
 
     <!-- Strings related to seminars -->
@@ -51,7 +52,12 @@
 
     <!-- Strings related to QR-Code -->
     <string name="read_qr_code">Read QR-Code</string>
+
+    <!-- Strings related to Send Presence Confirmation -->
     <string name="send_pdf">Send pdf</string>
+    <string name="your_name">Your name</string>
+    <string name="confirm_presence">Confirm Presence</string>
+
 
 
     <string name="go_to_update_register">My account</string>

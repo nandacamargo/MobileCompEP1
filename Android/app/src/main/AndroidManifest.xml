@@ -80,6 +80,11 @@
             android:label="Scan QR Code"
             android:theme="@style/AppTheme.NoActionBar"/>
 
+        <activity
+            android:name=".TextConfirmationActivity"
+            android:label="Send pdf confirmation"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
     </application>
 
 </manifest>

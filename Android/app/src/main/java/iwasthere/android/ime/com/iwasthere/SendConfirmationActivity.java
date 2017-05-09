@@ -222,8 +222,12 @@ public class SendConfirmationActivity extends AppCompatActivity {
 
 */
     public void sendPdf() {
-        //TODO
+
+        final int seminarId = getIntent().getIntExtra("id", -1);
         Log.d("SendConfirmation", "After click sendPdf");
+        Log.d("PresenceConfirmation", " seminarId:" + seminarId);
+        Intent i = new Intent(getApplicationContext(), TextConfirmationActivity.class);
+        startActivity(i);
 
     }
 
