@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="iwasthere.android.ime.com.iwasthere">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
@@ -9,10 +10,15 @@
 
     <!-- QR-Code permissions -->
     <uses-permission android:name="android.permission.CAMERA" />
-    <activity
+    <!--<activity
         android:name="com.google.zxing.client.android.CaptureActivity"
         android:screenOrientation="landscape" >
-    </activity>
+    </activity>-->
+
+    <activity
+        android:name="com.journeyapps.barcodescanner.CaptureActivity"
+        android:screenOrientation="portrait"
+        tools:replace="screenOrientation" />
 
 
     <!-- Bluetooh permission -->
@@ -73,11 +79,6 @@
         <activity
             android:name=".SendConfirmationActivity"
             android:label="Send Confirmation"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
-        <activity
-            android:name=".ScanQrCodeActivity"
-            android:label="Scan QR Code"
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity

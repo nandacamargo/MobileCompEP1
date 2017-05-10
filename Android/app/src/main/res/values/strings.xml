@@ -51,7 +51,7 @@
     <string name="close_submissions">Close submissions</string>
 
     <!-- Strings related to QR-Code -->
-    <string name="read_qr_code">Read QR-Code</string>
+    <string name="scan_qr_code">Scan QR-Code</string>
 
     <!-- Strings related to Send Presence Confirmation -->
     <string name="send_pdf">Send pdf</string>

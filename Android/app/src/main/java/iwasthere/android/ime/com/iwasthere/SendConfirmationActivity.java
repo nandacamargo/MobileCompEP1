@@ -14,19 +14,21 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 /**
  * Created by nanda on 07/05/17.
@@ -34,12 +36,11 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class SendConfirmationActivity extends AppCompatActivity {
 
-    private ZXingScannerView mScannerView;
-    static final String ACTION_SCAN = "com.google.zxing.client.android.SCAN";
-
     private EditText nuspView;
-
     private Seminar seminar;
+
+    private TextView tvScanFormat, tvScanContent;
+    private LinearLayout llSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,107 +51,50 @@ public class SendConfirmationActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         seminar = SeminarSingleton.getInstance();
+        nuspView = (EditText) findViewById(R.id.nusp);
 
         //getSupportActionBar().setTitle(R.string.title_send_confirmation);
         Log.d("SendConfirmation", "On function create of SendConfirmationActivity");
 
-
-        Button readQRButton = (Button) findViewById(R.id.read_qr_code);
-        Button sendPdfButton = (Button) findViewById(R.id.send_pdf);
-
-        // Initialize the scanner view
-        mScannerView = new ZXingScannerView(this);
-
-        readQRButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-
-                //Set the scanner view as the content view
-                setContentView(mScannerView);
-
-                nuspView = (EditText) findViewById(R.id.nusp);
-                scanQRCode();
-            }
-        });
-        sendPdfButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendPdf();
-            }
-        });
+        tvScanFormat = (TextView) findViewById(R.id.tvScanFormat);
+        tvScanContent = (TextView) findViewById(R.id.tvScanContent);
+        llSearch = (LinearLayout) findViewById(R.id.llSearch);
     }
 
-    public void scanQRCode() {
+    /*******************************************************/
+    /*QR Code functions*/
+   public void scanQR(View v) {
 
-        //If you would like to resume scanning, call this method below:
-        //mScannerView.resumeCameraPreview(this);
+        Log.d("SendConfirmation", "On scanQR");
+        llSearch.setVisibility(View.GONE);
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.setPrompt("Scan a barcode or QRcode");
+        integrator.setOrientationLocked(false);
+        integrator.initiateScan();
 
-        try {
-            //start the scanning activity from the com.google.zxing.client.android.SCAN intent
-            Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-            intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
-            startActivityForResult(intent, 0);
-
-        } catch (Exception e) {
-            //on catch, show the download dialog
-            showDialog(SendConfirmationActivity.this, "No Scanner Found", "Download a scanner code activity?", "Yes", "No").show();
-        }
-    }
-
-    //alert dialog for downloadDialog
-    private static AlertDialog showDialog(final Activity act, CharSequence title, CharSequence message, CharSequence buttonYes, CharSequence buttonNo) {
-
-        AlertDialog.Builder downloadDialog = new AlertDialog.Builder(act);
-        downloadDialog.setTitle(title);
-        downloadDialog.setMessage(message);
-        downloadDialog.setPositiveButton(buttonYes, new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-                Uri uri = Uri.parse("market://search?q=pname:" + "com.google.zxing.client.android");
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-
-                try {
-                    act.startActivity(intent);
-                } catch (ActivityNotFoundException anfe) {
-
-                }
-            }
-        });
-
-        downloadDialog.setNegativeButton(buttonNo, new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Log.d("AlertBuilder", "Negative button pressed");
-                dialogInterface.dismiss();
-            }
-        });
-
-        return downloadDialog.show();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0) {
-
-            if (resultCode == RESULT_OK) {
-                String contents = data.getStringExtra("SCAN_RESULT");
-                String format = data.getStringExtra("SCAN_RESULT_FORMAT");
-                Toast.makeText(this, contents, Toast.LENGTH_LONG).show();
-
-                // Handle successful scan
-                sendPresenceConfirmation(contents);
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            if (result.getContents() == null) {
+                llSearch.setVisibility(View.GONE);
+                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                llSearch.setVisibility(View.VISIBLE);
+                tvScanContent.setText(result.getContents());
+                tvScanFormat.setText(result.getFormatName());
+                /*sendScanResults(result.getContents());*/
+                Log.d("SendConfirmation", "After scanning");
             }
-            if (resultCode == RESULT_CANCELED) {
-                //handle cancel
-            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
+    /*******************************************************/
 
-
-    public void sendPresenceConfirmation(String results) {
+    public void sendScanResults(String results) {
 
         final String nusp = nuspView.getText().toString();
         final int seminarId;
@@ -158,6 +102,7 @@ public class SendConfirmationActivity extends AppCompatActivity {
         int value = Integer.parseInt(results);
 
         seminarId = seminar.getId();
+        Log.d("SendConfirmation", "Results are: " + results);
 
         Log.d("PresenceConfirmation", "nusp: " + nusp + " seminarId:" + seminarId);
 
@@ -174,6 +119,7 @@ public class SendConfirmationActivity extends AppCompatActivity {
 
             String url;
             url = "http://207.38.82.139:8001/attendence/submit";
+
 
             StringRequest strRequest = new StringRequest(Request.Method.POST, url,
                     new Response.Listener<String>() {
@@ -207,7 +153,6 @@ public class SendConfirmationActivity extends AppCompatActivity {
                 }
             };
             RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
-
         }
     }
 
@@ -224,5 +169,4 @@ public class SendConfirmationActivity extends AppCompatActivity {
         startActivity(i);
 
     }
-
 }
