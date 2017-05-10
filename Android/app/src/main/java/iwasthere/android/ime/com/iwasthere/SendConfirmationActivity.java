@@ -36,8 +36,9 @@ import java.util.Map;
 
 public class SendConfirmationActivity extends AppCompatActivity {
 
-    private EditText nuspView;
     private Seminar seminar;
+    private User user;
+    private String nusp;
 
     private TextView tvScanFormat, tvScanContent;
     private LinearLayout llSearch;
@@ -51,7 +52,8 @@ public class SendConfirmationActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         seminar = SeminarSingleton.getInstance();
-        nuspView = (EditText) findViewById(R.id.nusp);
+        user = UserSingleton.getInstance();
+        nusp = user.getNusp();
 
         //getSupportActionBar().setTitle(R.string.title_send_confirmation);
         Log.d("SendConfirmation", "On function create of SendConfirmationActivity");
@@ -82,10 +84,12 @@ public class SendConfirmationActivity extends AppCompatActivity {
                 llSearch.setVisibility(View.GONE);
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
+                String contents = result.getContents();
                 llSearch.setVisibility(View.VISIBLE);
                 tvScanContent.setText(result.getContents());
                 tvScanFormat.setText(result.getFormatName());
-                /*sendScanResults(result.getContents());*/
+                Log.d("Contents", contents);
+                sendScanResults(contents);
                 Log.d("SendConfirmation", "After scanning");
             }
         } else {
@@ -96,9 +100,9 @@ public class SendConfirmationActivity extends AppCompatActivity {
 
     public void sendScanResults(String results) {
 
-        final String nusp = nuspView.getText().toString();
         final int seminarId;
 
+        Log.d("sendScanResults", results);
         int value = Integer.parseInt(results);
 
         seminarId = seminar.getId();
@@ -106,16 +110,17 @@ public class SendConfirmationActivity extends AppCompatActivity {
 
         Log.d("PresenceConfirmation", "nusp: " + nusp + " seminarId:" + seminarId);
 
-        if (nusp.length() < 2) {
+       /* if (nusp.length() < 2) {
             nuspView.setError(getString(R.string.error_invalid_nusp));
             nuspView.requestFocus();
-        } else if (seminarId  < 0) {
+        } else*/ if (seminarId  < 0) {
             Log.e("PresenceConfirmation", "Invalid seminar id");
             finish();
         } else if (seminarId != value) {
             Log.e("PresenceConfirmation", "This QRCode don't corresponds to the seminar");
             finish();
-        } else {
+        }
+         else {
 
             String url;
             url = "http://207.38.82.139:8001/attendence/submit";
@@ -154,6 +159,8 @@ public class SendConfirmationActivity extends AppCompatActivity {
             };
             RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
         }
+
+        Log.d("SendConfirmation", "Leaving");
     }
 
     private void postPresenceConfirmation() {
