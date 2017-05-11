@@ -1,6 +1,9 @@
 <ion-list>
     <ion-list-header>Choose confirmation method</ion-list-header>      
-    <button ion-item (click)="qrCode()">
+    <button ion-item (click)="qrCodeScan()" *ngIf="!user.teacher">
+     	<ion-icon name="qr-scanner"></ion-icon>  QR Code
+    </button>
+    <button ion-item (click)="qrCodeEncode()" *ngIf="user.teacher">
      	<ion-icon name="qr-scanner"></ion-icon>  QR Code
     </button>
     <button ion-item (click)="bluetooth()">

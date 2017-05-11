@@ -6,6 +6,8 @@ import { SendConfirmationPopover } from '../../components/send-confirmation-popo
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 
+import { UserSingleton } from '../../util/user-singleton.ts'
+
 /**
  * Generated class for the StudentListPage page.
  *
@@ -23,11 +25,18 @@ export class StudentListPage {
   attendees: any
   filteredAttendees: any
   seminar: any
+  confirmed: number
+  title: string
+  user: any
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private http: Http, private loadingCtrl: LoadingController, private popoverCtrl: PopoverController) {
     this.attendees = []
     this.filteredAttendees = []
+    this.user = new UserSingleton().getInstance()
     this.seminar = navParams.get("seminar")
+    this.confirmed = navParams.get("confirmed")
+    if (this.confirmed == 1) this.title = "Confirmed attendees of " + this.seminar.name
+    else this.title = "Unconfirmed attendees of " + this.seminar.name
     this.getNusps()
   }
 
@@ -61,13 +70,14 @@ export class StudentListPage {
         var count = 0;
         for (let i = 0; i < this.studentList.length; i++) {
           let s = this.studentList[i]
+          if (s.confirmed != this.confirmed) continue
           let url = "http://207.38.82.139:8001/student/get/" + s.student_nusp
           this.http.get(url)
                 .map(res => res.json())
                       .subscribe(
                         res => {
                           if (res.data != null) {
-                            console.log("User foi:" + res.data)
+                            console.log(res)
                             this.attendees.push(res.data)
                           }
                         },

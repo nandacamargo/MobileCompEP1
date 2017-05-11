@@ -41,7 +41,7 @@
     	<ion-refresher-content></ion-refresher-content>
   	</ion-refresher>
   	<ion-list *ngIf="filteredSeminars.length > 0">
-		<button ion-item *ngFor="let s of filteredSeminars" (click)="openPage(studentListPage, { seminar: s })">
+		<button ion-item *ngFor="let s of filteredSeminars" (click)="openPage(studentListPage, { seminar: s, confirmed: 1 })">
 			<ion-label>{{s.name}}</ion-label>
 		</button>
 	</ion-list>
