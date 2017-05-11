@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -17,13 +18,19 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.Context;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import org.json.JSONObject;
 
@@ -43,6 +50,9 @@ public class SendConfirmationActivity extends AppCompatActivity {
     private TextView tvScanFormat, tvScanContent;
     private LinearLayout llSearch;
 
+    private Button qrCodeButton;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,11 +71,51 @@ public class SendConfirmationActivity extends AppCompatActivity {
         tvScanFormat = (TextView) findViewById(R.id.tvScanFormat);
         tvScanContent = (TextView) findViewById(R.id.tvScanContent);
         llSearch = (LinearLayout) findViewById(R.id.llSearch);
+
+        final Button qrCodeButton = (Button) findViewById(R.id.qr_code_button);
+        if (user.isTeacher())  qrCodeButton.setText("Generate QR Code");
+
+        qrCodeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (user.isTeacher()) {
+                    generateQR();
+                }
+                else {
+                    scanQR();
+                }
+            }
+        });
+
     }
 
     /*******************************************************/
     /*QR Code functions*/
-   public void scanQR(View v) {
+
+    public void generateQR() {
+
+        Log.d("SendConfirmation", "On generateQR");
+        //String text2Qr = editText.getText().toString();
+        String text2Qr = "" + seminar.getId();
+        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+        try {
+            BitMatrix bitMatrix = multiFormatWriter.encode(text2Qr, BarcodeFormat.QR_CODE,200,200);
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+            Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+            Intent intent = new Intent(getApplicationContext(), QrActivity.class);
+            intent.putExtra("pic",bitmap);
+            startActivity(intent);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+
+        //IntentIntegrator integrator = new IntentIntegrator(this);
+        /*integrator.shareText("1");*/
+        //integrator.addExtra("PROMPT_MESSAGE", "1");
+
+    }
+
+    public void scanQR() {
 
         Log.d("SendConfirmation", "On scanQR");
         llSearch.setVisibility(View.GONE);
@@ -80,11 +130,14 @@ public class SendConfirmationActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
+            String contents = result.getContents();
             if (result.getContents() == null) {
+                //showDialog(-1, "Cancelled due to errors");
                 llSearch.setVisibility(View.GONE);
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+
             } else {
-                String contents = result.getContents();
+                /*showDialog(0, result.toString());*/
                 llSearch.setVisibility(View.VISIBLE);
                 tvScanContent.setText(result.getContents());
                 tvScanFormat.setText(result.getFormatName());
@@ -95,6 +148,14 @@ public class SendConfirmationActivity extends AppCompatActivity {
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private void showDialog(int title, CharSequence message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton("Ok", null);
+        builder.show();
     }
     /*******************************************************/
 
@@ -110,10 +171,7 @@ public class SendConfirmationActivity extends AppCompatActivity {
 
         Log.d("PresenceConfirmation", "nusp: " + nusp + " seminarId:" + seminarId);
 
-       /* if (nusp.length() < 2) {
-            nuspView.setError(getString(R.string.error_invalid_nusp));
-            nuspView.requestFocus();
-        } else*/ if (seminarId  < 0) {
+       if (seminarId  < 0) {
             Log.e("PresenceConfirmation", "Invalid seminar id");
             finish();
         } else if (seminarId != value) {

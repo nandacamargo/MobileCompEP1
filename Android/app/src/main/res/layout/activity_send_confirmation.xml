@@ -53,19 +53,29 @@
         android:onClick="send_pdf" />-->
 
     <Button
-        android:id="@+id/scan_qr_code"
+        android:id="@+id/qr_code_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:text="@string/scan_qr_code"
         android:onClick="scanQR"/>
 
+   <!-- <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />-->
+
     <LinearLayout
 
         android:id="@+id/llSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/scan_qr_code"
+        android:layout_below="@id/qr_code_button"
         android:layout_marginTop="20dp"
         android:orientation="vertical"
         android:visibility="gone">

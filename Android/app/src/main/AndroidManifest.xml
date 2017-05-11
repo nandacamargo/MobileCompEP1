@@ -5,25 +5,27 @@
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
 
+
     <!-- Internet permission -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- QR-Code permissions -->
     <uses-permission android:name="android.permission.CAMERA" />
-    <!--<activity
+    <!--
+    <activity
         android:name="com.google.zxing.client.android.CaptureActivity"
         android:screenOrientation="landscape" >
-    </activity>-->
+    </activity>
+    -->
 
     <activity
         android:name="com.journeyapps.barcodescanner.CaptureActivity"
         android:screenOrientation="portrait"
         tools:replace="screenOrientation" />
 
-
     <!-- Bluetooh permission -->
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <application
         android:allowBackup="true"
@@ -53,20 +55,16 @@
             android:name=".SignUpActivity"
             android:label="@string/title_activity_sign_up"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".AddSeminarActivity"
             android:label="@string/title_activity_add_seminar"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
-
-        <activity android:name=".BluetoothActivity"></activity>
-
+        <activity android:name=".BluetoothActivity" />
         <activity
             android:name=".EditProfileActivity"
             android:label="@string/title_edit_profile"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".AttendeesListActivity"
             android:label="@string/title_attendees_list"
@@ -75,17 +73,15 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-
         <activity
             android:name=".SendConfirmationActivity"
             android:label="Send Confirmation"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TextConfirmationActivity"
             android:label="Send pdf confirmation"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".QrActivity"></activity>
     </application>
 
 </manifest>
