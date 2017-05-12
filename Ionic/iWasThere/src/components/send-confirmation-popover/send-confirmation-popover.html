@@ -6,7 +6,10 @@
     <button ion-item (click)="qrCodeEncode()" *ngIf="user.teacher">
      	<ion-icon name="qr-scanner"></ion-icon>  QR Code
     </button>
-    <button ion-item (click)="bluetooth()">
-     	<ion-icon name="bluetooth"></ion-icon>  Bluetooth
+    <button ion-item (click)="requestConfirmation()" *ngIf="!user.teacher">
+     	<ion-icon name="attach"></ion-icon>  PDF
+    </button>
+    <button ion-item (click)="confirmation()" *ngIf="user.teacher">
+     	<ion-icon name="attach"></ion-icon>  PDF
     </button>
 </ion-list>

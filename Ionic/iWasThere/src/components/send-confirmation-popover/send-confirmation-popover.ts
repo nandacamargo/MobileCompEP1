@@ -3,6 +3,7 @@ import { NavController, ToastController, NavParams } from 'ionic-angular';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
 import { UserSingleton } from '../../util/user-singleton.ts'
+import { StudentListPage } from '../../pages/student-list-page/student-list-page'
 
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
@@ -104,8 +105,51 @@ export class SendConfirmationPopover {
     barcodeScanner.encode(barcodeScanner.Encode.TEXT_TYPE, this.seminar_id)
   }
 
-  bluetooth() {
-
+  confirmation() {
+    let s = {name: "", id: this.seminar_id}
+    this.navCtrl.push(StudentListPage, { seminar: s, confirmed: 0 })
   }
 
+  requestConfirmation() {
+    var url = "http://207.38.82.139:8001/attendence/submit"
+    let body = new FormData()
+    body.append('nusp', this.user.nusp)
+    body.append('seminar_id', this.seminar_id)
+    body.append('data', {})
+    body.append('confirmed', 0)
+    this.http.post(url, body)
+              .map(res => res.json())
+              .subscribe(
+                res => {
+                  console.log(res)
+                  if (res.success) {
+                    let toast = this.toastCtrl.create({
+                      message: "Confirmation request successfully sent",
+                      duration: 3000,
+                      position: 'middle'
+                    });
+
+                    toast.onDidDismiss(() => {
+                      console.log('Dismissed toast');
+                    });
+
+                    toast.present();
+                  }
+                  else {
+                    let toast = this.toastCtrl.create({
+                      message: "Something went wrong. Please try again later.",
+                      duration: 3000,
+                      position: 'middle'
+                    });
+
+                    toast.onDidDismiss(() => {
+                      console.log('Dismissed toast');
+                    });
+
+                    toast.present();
+                  }
+                }, 
+                error => console.log(error),
+              )
+  }
 }

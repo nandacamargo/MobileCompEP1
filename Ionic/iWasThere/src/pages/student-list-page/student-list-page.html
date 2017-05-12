@@ -22,12 +22,16 @@
 	<ion-list *ngIf="filteredAttendees.length > 0">
 		<button ion-item *ngFor="let s of filteredAttendees">
 			<ion-label>{{s.name}}</ion-label>
+			<ion-checkbox *ngIf="!confirmed" [(ngModel)]="s.data"></ion-checkbox>
 		</button>
 	</ion-list>
 	<h3 *ngIf="filteredAttendees.length == 0">There doesn't seem to be anything here</h3>
 	<ion-footer no-border *ngIf="confirmed">
 		<button ion-button color="googleGreen" (click)="iWasThere($event)" *ngIf="!user.teacher">I was there!</button>
 		<button ion-button color="googleGreen" (click)="iWasThere($event)" *ngIf="user.teacher">Who was there?</button>
+	</ion-footer>
+	<ion-footer no-border *ngIf="!confirmed">
+		<button ion-button color="googleGreen" (click)="iWasThere($event)">Confirm selected</button>
 	</ion-footer>
 </ion-content>
 	
