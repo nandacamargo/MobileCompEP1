@@ -1,14 +1,10 @@
 package iwasthere.android.ime.com.iwasthere;
 
-import android.app.LocalActivityManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,11 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,22 +34,28 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
-public class AttendeesListActivity extends AppCompatActivity {
+/**
+ * Created by nanda on 13/05/17.
+ */
+
+public class AcceptConfirmationActivity extends AppCompatActivity {
+
+    private Seminar seminar;
+    private int seminarId = 0;
+    private CheckAdapter adapter;
+    private CheckBox cb;
 
     private ArrayList<User> allAttendees = new ArrayList<>();
     private ArrayList<User> attendees = new ArrayList<>();
-    private UsersAdapter adapter;
-    private SearchView mSearchView;
+    private ArrayList<CheckboxModel> modelItems  = new ArrayList<>();;
+
     private ProgressBar progressBar;
     private TextView emptyText;
-
-    private User user;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_attendees_list);
+        setContentView(R.layout.activity_accept_confirmation);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -64,24 +66,16 @@ public class AttendeesListActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.list_progress);
         progressBar.setVisibility(View.VISIBLE);
 
+        seminar = SeminarSingleton.getInstance();
+        seminarId = seminar.getId();
 
-        /*TabHost.TabSpec spec;
-        Intent intent;
-
-        FragmentTabHost mTabHost = (FragmentTabHost)findViewById(R.id.tabHost);
-        mTabHost.setup(AttendeesListActivity.this, getSupportFragmentManager(), android.R.id.tabcontent);
-
-        mTabHost.addTab(mTabHost.newTabSpec("First Tab").setIndicator("First Tab"), new FirstFragment().getClass(), null);
-        mTabHost.addTab(mTabHost.newTabSpec("Second Tab").setIndicator("Second Tab"), new SecondFragment().getClass(), null);
-        mTabHost.addTab(mTabHost.newTabSpec("Third Tab").setIndicator("Third Tab"), new ThirdQrActivity().getClass(), null);
-        TabHost host = (TabHost)findViewById(R.id.tabHost);
-        host.setup();*/
+        acceptRequests();
+    }
 
 
-        final int id = getIntent().getIntExtra("id", -1);
-        if (id < 0) finish();
+    public void acceptRequests() {
 
-        user = UserSingleton.getInstance();
+        Log.d("AcceptConfirmation", "On acceptRequest");
 
         String url = "http://207.38.82.139:8001/attendence/listStudents";
 
@@ -90,11 +84,11 @@ public class AttendeesListActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Log.d("Response: ", response);
-                        JSONObject resp = HttpUtil.getJSONObject(response, "AttendeesListActivity");
+                        JSONObject resp = HttpUtil.getJSONObject(response, "AcceptConfirmationActivity");
                         if (HttpUtil.responseWasSuccess(resp)) {
-                            Log.d("AttendeesListActivity", resp.toString());
+                            Log.d("AcceptConfirmation", resp.toString());
                             JSONArray data = HttpUtil.getResponseDataArray(resp);
-                            new getUsersTask().execute(data);
+                            new AcceptConfirmationActivity.getUsersTask().execute(data);
                         } else {
                             Snackbar.make(findViewById(android.R.id.content), R.string.error_connection, Snackbar.LENGTH_LONG)
                                     .setAction("Action", null).show();
@@ -113,51 +107,70 @@ public class AttendeesListActivity extends AppCompatActivity {
             protected Map<String, String> getParams()
             {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("seminar_id", "" + id);
+                params.put("seminar_id", "" + seminarId);
                 return params;
             }
         };
         RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
 
-        mSearchView = (SearchView) findViewById(R.id.search_view);
-        mSearchView.setIconifiedByDefault(false);
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
-                return true;
-            }
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-        });
-        mSearchView.setSubmitButtonEnabled(false);
-        mSearchView.setQueryHint(getString(R.string.search_hint));
     }
 
-    public class UsersAdapter extends ArrayAdapter<User> implements Filterable {
+    public class CheckAdapter extends ArrayAdapter<CheckboxModel> implements Filterable {
 
         private ArrayList<User> userList;
         private ArrayList<User> filteredUserList;
+        private ArrayList<CheckboxModel> checkboxList;
 
-        public UsersAdapter(Context context, ArrayList<User> users) {
-            super(context, 0, users);
-            this.userList = users;
-            filteredUserList = users;
+        //private CheckboxModel[] modelItems;
+        private Context context;
+
+        public CheckAdapter(Context context, ArrayList<CheckboxModel> checkboxList) {
+
+            super(context, 0, checkboxList);
+
+            this.context = context;
+            this.checkboxList = checkboxList;
+
+            this.userList = attendees;
+            this.filteredUserList = attendees;
         }
+
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            User user = getItem(position);
+
+            Log.d("AcceptConfirmation", "User: " + "On get view");
+            User user = getUser(position);
             if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.row, parent, false);
             }
-            TextView name = (TextView) convertView.findViewById(R.id.item_name);
+            TextView name = (TextView) convertView.findViewById(R.id.textView1);
             name.setText(user.getName());
+
+            cb = (CheckBox) convertView.findViewById(R.id.checkBox1);
+
+            cb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    checkboxClicked(view);
+                }
+            });
+
             return convertView;
+
         }
 
+        public void checkboxClicked(View v) {
+
+            if(cb.isChecked()) {
+                Log.d("AcceptConfirmation", "Checkbox is checked. Id = " + cb.getId());
+
+                //modelItems.get(i).setValue(1);
+                // true,do the task
+            }
+            else {
+            }
+        }
         public User getItemAtPosition(int pos) {
             return filteredUserList.get(pos);
         }
@@ -167,9 +180,9 @@ public class AttendeesListActivity extends AppCompatActivity {
             return userList.size();
         }
 
-        @Override
-        public User getItem(int i) {
-            return userList.get(i);
+        /*@Override*/
+        public User getUser(int i) {
+            return checkboxList.get(i).getUser();
         }
 
         @Override
@@ -224,6 +237,8 @@ public class AttendeesListActivity extends AppCompatActivity {
         protected Void doInBackground(JSONArray... params) {
             JSONArray data = params[0];
 
+            Log.d("AcceptConfirmation", "On getUsersTask");
+
             if (data != null && data.length() > 0) {
                 latch = new CountDownLatch(data.length());
 
@@ -233,6 +248,7 @@ public class AttendeesListActivity extends AppCompatActivity {
                     try {
                         user = data.getJSONObject(i);
                         url = "http://207.38.82.139:8001/student/get/" + user.getString("student_nusp");
+                        Log.d("AcceptConfirmation", "url: " + url);
                     } catch (JSONException e) {
                         Log.e("getUsersTask", e.getMessage());
                     }
@@ -247,6 +263,9 @@ public class AttendeesListActivity extends AppCompatActivity {
                                         User user = new User(data, false);
                                         attendees.add(user);
                                         allAttendees.add(user);
+
+                                        CheckboxModel check = new CheckboxModel(user, 0);
+                                        modelItems.add(check);
                                         latch.countDown();
                                     } else {
                                         Snackbar.make(findViewById(android.R.id.content), R.string.error_connection, Snackbar.LENGTH_LONG)
@@ -278,27 +297,29 @@ public class AttendeesListActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            ListView attendeesList = (ListView) findViewById(R.id.list);
-            adapter = new UsersAdapter(getApplicationContext(), attendees);
-            attendeesList.setAdapter(adapter);
-            attendeesList.setTextFilterEnabled(false);
-            attendeesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            Log.d("AcceptConfirmation", "onPostExecute");
+            ListView requestList = (ListView) findViewById(R.id.list_requests);
+
+            adapter = new AcceptConfirmationActivity.CheckAdapter(getApplicationContext(), modelItems);
+
+            requestList.setAdapter(adapter);
+            requestList.setTextFilterEnabled(false);
+
+            requestList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Log.d("AttendeesList", "On iWasThereButton");
+                    Log.d("AcceptConfirmation", "On confirmPresenceButton");
 
                 }
             });
+
             progressBar.setVisibility(View.GONE);
             emptyText.setVisibility(View.VISIBLE);
-            attendeesList.setEmptyView(emptyText);
+            requestList.setEmptyView(emptyText);
         }
     }
 
-    public void iWasThereButton(View v) {
 
-        Intent i = new Intent(getApplicationContext(), SendConfirmationActivity.class);
-        startActivity(i);
-    }
 }
