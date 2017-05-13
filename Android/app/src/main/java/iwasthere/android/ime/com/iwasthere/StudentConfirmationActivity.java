@@ -1,11 +1,6 @@
 package iwasthere.android.ime.com.iwasthere;
 
-import android.app.Activity;
-import android.content.ActivityNotFoundException;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -14,23 +9,16 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.content.Context;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import org.json.JSONObject;
 
@@ -41,7 +29,7 @@ import java.util.Map;
  * Created by nanda on 07/05/17.
  */
 
-public class SendConfirmationActivity extends AppCompatActivity {
+public class StudentConfirmationActivity extends AppCompatActivity {
 
     private Seminar seminar;
     private User user;
@@ -50,13 +38,10 @@ public class SendConfirmationActivity extends AppCompatActivity {
     private TextView tvScanFormat, tvScanContent;
     private LinearLayout llSearch;
 
-    private Button qrCodeButton;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_send_confirmation);
+        setContentView(R.layout.activity_student_confirmation);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -66,7 +51,7 @@ public class SendConfirmationActivity extends AppCompatActivity {
         nusp = user.getNusp();
 
         //getSupportActionBar().setTitle(R.string.title_send_confirmation);
-        Log.d("SendConfirmation", "On function create of SendConfirmationActivity");
+        Log.d("StudentConfirmation", "On function create of StudentConfirmationActivity");
 
         tvScanFormat = (TextView) findViewById(R.id.tvScanFormat);
         tvScanContent = (TextView) findViewById(R.id.tvScanContent);
@@ -78,12 +63,7 @@ public class SendConfirmationActivity extends AppCompatActivity {
         qrCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (user.isTeacher()) {
-                    generateQR();
-                }
-                else {
-                    scanQR();
-                }
+               scanQR();
             }
         });
 
@@ -91,29 +71,6 @@ public class SendConfirmationActivity extends AppCompatActivity {
 
     /*******************************************************/
     /*QR Code functions*/
-
-    public void generateQR() {
-
-        Log.d("SendConfirmation", "On generateQR");
-        //String text2Qr = editText.getText().toString();
-        String text2Qr = "" + seminar.getId();
-        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-        try {
-            BitMatrix bitMatrix = multiFormatWriter.encode(text2Qr, BarcodeFormat.QR_CODE,200,200);
-            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-            Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
-            Intent intent = new Intent(getApplicationContext(), QrActivity.class);
-            intent.putExtra("pic",bitmap);
-            startActivity(intent);
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
-
-        //IntentIntegrator integrator = new IntentIntegrator(this);
-        /*integrator.shareText("1");*/
-        //integrator.addExtra("PROMPT_MESSAGE", "1");
-
-    }
 
     public void scanQR() {
 
@@ -167,7 +124,7 @@ public class SendConfirmationActivity extends AppCompatActivity {
         int value = Integer.parseInt(results);
 
         seminarId = seminar.getId();
-        Log.d("SendConfirmation", "Results are: " + results);
+        Log.d("StudentConfirmation", "Results are: " + results);
 
         Log.d("PresenceConfirmation", "nusp: " + nusp + " seminarId:" + seminarId);
 
@@ -218,20 +175,11 @@ public class SendConfirmationActivity extends AppCompatActivity {
             RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
         }
 
-        Log.d("SendConfirmation", "Leaving");
+        Log.d("StudentConfirmation", "Leaving");
     }
 
     private void postPresenceConfirmation() {
         Intent i = new Intent(getApplicationContext(), AttendeesListActivity.class);
         startActivity(i);
-    }
-
-
-    public void sendPdf() {
-
-        Log.d("SendConfirmation", "After click sendPdf");
-        Intent i = new Intent(getApplicationContext(), TextConfirmationActivity.class);
-        startActivity(i);
-
     }
 }

@@ -74,14 +74,22 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".SendConfirmationActivity"
+            android:name=".StudentConfirmationActivity"
             android:label="Send Confirmation"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".TeacherConfirmationActivity"
+            android:label="Confirm student's presence"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".TextConfirmationActivity"
             android:label="Send pdf confirmation"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".QrActivity"></activity>
+
+        <activity android:name=".QrActivity" />
+
     </application>
 
 </manifest>

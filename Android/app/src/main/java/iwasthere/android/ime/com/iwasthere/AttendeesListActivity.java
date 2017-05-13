@@ -44,6 +44,7 @@ public class AttendeesListActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private TextView emptyText;
 
+    private User user;
 
 
     @Override
@@ -61,6 +62,8 @@ public class AttendeesListActivity extends AppCompatActivity {
 
         final int id = getIntent().getIntExtra("id", -1);
         if (id < 0) finish();
+
+        user = UserSingleton.getInstance();
 
         String url = "http://207.38.82.139:8001/attendence/listStudents";
 
@@ -268,8 +271,7 @@ public class AttendeesListActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Log.d("AttendeesList", "On iWasThereButton");
-                    /*Intent i = new Intent(getApplicationContext(), SendConfirmationActivity.class);
-                    startActivity(i);*/
+
                 }
             });
             progressBar.setVisibility(View.GONE);
@@ -280,8 +282,15 @@ public class AttendeesListActivity extends AppCompatActivity {
 
     public void iWasThereButton(View v) {
 
-        Intent i = new Intent(getApplicationContext(), SendConfirmationActivity.class);
-        Log.d("AttendeesList", "Before startActivitity on iWasThereButton");
-        startActivity(i);
+        if (user.isTeacher()) {
+            Intent i = new Intent(getApplicationContext(), TeacherConfirmationActivity.class);
+            Log.d("AttendeesList", "Before startActivitity on iWasThereButton");
+            startActivity(i);
+        }
+        else {
+            Intent i = new Intent(getApplicationContext(), StudentConfirmationActivity.class);
+            startActivity(i);
+        }
+
     }
 }
