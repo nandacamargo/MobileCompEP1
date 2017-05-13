@@ -74,13 +74,8 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".StudentConfirmationActivity"
+            android:name=".SendConfirmationActivity"
             android:label="Send Confirmation"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity
-            android:name=".TeacherConfirmationActivity"
-            android:label="Confirm student's presence"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity

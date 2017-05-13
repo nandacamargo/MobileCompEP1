@@ -245,9 +245,7 @@ public class AttendeesListActivity extends AppCompatActivity {
                     RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
                 }
                 try {
-                    Log.d("getUsersTask", "Antes do latch");
                     latch.await();
-                    Log.d("getUsersTask", "Saindo do try");
                 } catch (InterruptedException e) {
                     Log.e("Thread", "interrupted");
                 }
@@ -282,15 +280,7 @@ public class AttendeesListActivity extends AppCompatActivity {
 
     public void iWasThereButton(View v) {
 
-        if (user.isTeacher()) {
-            Intent i = new Intent(getApplicationContext(), TeacherConfirmationActivity.class);
-            Log.d("AttendeesList", "Before startActivitity on iWasThereButton");
-            startActivity(i);
-        }
-        else {
-            Intent i = new Intent(getApplicationContext(), StudentConfirmationActivity.class);
-            startActivity(i);
-        }
-
+        Intent i = new Intent(getApplicationContext(), SendConfirmationActivity.class);
+        startActivity(i);
     }
 }

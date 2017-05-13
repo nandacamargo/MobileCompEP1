@@ -17,6 +17,11 @@ public class SeminarSingleton {
         return ourInstance;
     }
 
+    public static Seminar updateInstance(String name, int id) {
+        ourInstance = new Seminar(name, id);
+        return ourInstance;
+    }
+
     public static Seminar getInstance() {
         if (ourInstance == null) {
             ourInstance = new Seminar("-1", -1);
@@ -25,9 +30,11 @@ public class SeminarSingleton {
         return ourInstance;
     }
 
-    public static void deleteInstance() {
+    public static Seminar deleteInstance() {
         Log.d("SeminarSingleton", "Deleted");
         ourInstance = null;
+
+        return ourInstance;
     }
 
     private SeminarSingleton() {

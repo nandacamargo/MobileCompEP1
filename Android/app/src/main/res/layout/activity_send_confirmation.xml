@@ -20,15 +20,18 @@
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin"
-            tools:context="iwasthere.android.ime.com.iwasthere.StudentConfirmationActivity">
+            tools:context="iwasthere.android.ime.com.iwasthere.SendConfirmationActivity">
+
 
             <Button
                 android:id="@+id/qr_code_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
+                android:layout_marginTop="25dp"
                 android:text="@string/scan_qr_code"
-                android:onClick="scanQR" />
+                android:onClick="scanQR"
+                android:layout_below="@+id/second_confirmation"
+                android:layout_centerHorizontal="true" />
 
 
             <LinearLayout
@@ -106,13 +109,11 @@
                 android:id="@+id/second_confirmation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/qr_code_button"
-                android:layout_alignStart="@+id/qr_code_button"
-                android:layout_below="@+id/qr_code_button"
-                android:layout_marginTop="28dp"
                 android:text="@string/other_confirmation"
-                android:layout_alignRight="@+id/qr_code_button"
-                android:layout_alignEnd="@+id/qr_code_button" />
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp" />
+
 
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>

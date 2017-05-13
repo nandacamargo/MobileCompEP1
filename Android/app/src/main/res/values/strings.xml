@@ -53,12 +53,17 @@
     <!-- Strings related to QR-Code -->
     <string name="scan_qr_code">Confirm by QR-Code</string>
     <string name="generate_qr_code">Generate QR-Code</string>
+    <string name="error_null_qr_code">The contents from QR are weird. Try another QR-Code</string>
+    <string name="error_wrong_seminar_id">This QRCode doesn\'t correspond to the seminar. Try again with the seminar QR Code</string>
+    <string name="confirmation_successed">Your presence was confirmed with success</string>
+
+
 
     <!-- Strings related to Send Presence Confirmation -->
     <string name="your_name">Your name</string>
     <string name="confirm_presence">Confirm Presence</string>
     <string name="other_confirmation">Other form to confirm</string>
-
+    <string name="pending_request">Your request was done with success. Waiting teacher\'s approval</string>
 
     <string name="go_to_update_register">My account</string>
     <string name="search_hint">Search</string>
