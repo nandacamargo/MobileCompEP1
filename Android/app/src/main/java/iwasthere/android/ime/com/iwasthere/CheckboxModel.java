@@ -1,5 +1,7 @@
 package iwasthere.android.ime.com.iwasthere;
 
+import android.widget.CheckBox;
+
 import java.util.ArrayList;
 
 /**
@@ -9,11 +11,11 @@ import java.util.ArrayList;
 public class CheckboxModel {
 
     User user;
-    int value; /* 0 -&gt; checkbox disable, 1 -&gt; checkbox enable */
+    CheckBox checkbox; /* 0 -&gt; checkbox disable, 1 -&gt; checkbox enable */
 
-    CheckboxModel(User user, int value){
+    CheckboxModel(User user, CheckBox checkbox){
         this.user = user;
-        this.value = value;
+        this.checkbox = checkbox;
     }
 
     /*public ArrayList<User> getUsers() { return  this.users; }
@@ -32,12 +34,10 @@ public class CheckboxModel {
         return this.user.getNusp();
     }
 
-    public int getValue(){
-        return this.value;
+    public boolean getIsChecked(){
+        return this.checkbox.isChecked();
     }
 
-    public int setValue(int value){
-        return this.value = value;
-    }
+
 
 }

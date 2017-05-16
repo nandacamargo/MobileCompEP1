@@ -56,6 +56,7 @@
     <string name="error_null_qr_code">The contents from QR are weird. Try another QR-Code</string>
     <string name="error_wrong_seminar_id">This QRCode doesn\'t correspond to the seminar. Try again with the seminar QR Code</string>
     <string name="confirmation_successed">Your presence was confirmed with success</string>
+    <string name="students_confirmation_successed">Presence of selected students was confirmed with success</string>
 
 
     <!-- Strings related to Send Presence Confirmation -->
@@ -71,6 +72,7 @@
     <string name="password_placeholder">password</string>
 
     <string name="i_was_there">I was there</string>
+    <string name="students_were_there">Students were there</string>
     <string name="empty_list">There doesn\'t seem to be anything here yet</string>
 
     <string name="large_text">

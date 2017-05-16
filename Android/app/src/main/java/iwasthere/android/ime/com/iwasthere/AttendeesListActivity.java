@@ -230,13 +230,16 @@ public class AttendeesListActivity extends AppCompatActivity {
                 for (int i = 0; i < data.length(); i++) {
                     JSONObject user;
                     String url = null;
+                    String confirmed = "0";
                     try {
                         user = data.getJSONObject(i);
+                        confirmed = user.getString("confirmed");
                         url = "http://207.38.82.139:8001/student/get/" + user.getString("student_nusp");
                     } catch (JSONException e) {
                         Log.e("getUsersTask", e.getMessage());
                     }
 
+                    final int finalConfirmed = Integer.parseInt(confirmed);
                     StringRequest strRequest = new StringRequest(Request.Method.GET, url,
                             new Response.Listener<String>() {
                                 @Override
@@ -245,8 +248,10 @@ public class AttendeesListActivity extends AppCompatActivity {
                                     if (HttpUtil.responseWasSuccess(resp)) {
                                         String data = HttpUtil.getResponseDataString(resp);
                                         User user = new User(data, false);
-                                        attendees.add(user);
-                                        allAttendees.add(user);
+                                        if (finalConfirmed == 1) {
+                                            attendees.add(user);
+                                            allAttendees.add(user);
+                                        }
                                         latch.countDown();
                                     } else {
                                         Snackbar.make(findViewById(android.R.id.content), R.string.error_connection, Snackbar.LENGTH_LONG)
@@ -255,21 +260,24 @@ public class AttendeesListActivity extends AppCompatActivity {
                                 }
                             },
                             new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    Toast.makeText(getApplicationContext(), R.string.error_connection, Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Toast.makeText(getApplicationContext(), R.string.error_connection, Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                     RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
                 }
+
+
                 try {
                     latch.await();
                 } catch (InterruptedException e) {
                     Log.e("Thread", "interrupted");
                 }
+
             }
-            else {
-                Log.e("getUsersTask", "data is null");
+            else{
+                    Log.e("getUsersTask", "data is null");
             }
 
             return null;

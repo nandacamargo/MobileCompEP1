@@ -37,10 +37,10 @@ public class UserAdapter extends ArrayAdapter<CheckboxModel> {
         CheckBox cb = (CheckBox) convertView.findViewById(R.id.checkBox1);
 
         name.setText(modelItems[position].getName());
-        if(modelItems[position].getValue() == 1)
+        /*if(modelItems[position].getValue() == 1)
             cb.setChecked(true);
         else
-            cb.setChecked(false);
+            cb.setChecked(false);*/
         return convertView;
     }
 }

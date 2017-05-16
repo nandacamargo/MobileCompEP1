@@ -15,6 +15,7 @@ public class User {
     private String nusp;
     private String name;
     private Boolean teacher;
+    private Boolean selected = false;
 
     public User(String nusp, String name, Boolean teacher) {
         this.nusp = nusp;
@@ -34,6 +35,14 @@ public class User {
         }
         Log.d("Novo user com teacher ", this.teacher.toString());
         Log.d("user: ", this.toString());
+    }
+
+    public User(String nusp, String name, Boolean teacher, Boolean selected) {
+        this.nusp = nusp;
+        this.name = name;
+        this.teacher = teacher;
+        this.selected = selected;
+        Log.d("Novo user com teacher ", this.teacher.toString());
     }
 
     public User(Parcel p){
@@ -61,6 +70,13 @@ public class User {
         return this.teacher;
     }
 
+    public boolean isSelected() {
+        return selected;
+    }
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -84,6 +100,7 @@ public class User {
     public int hashCode() {
         return nusp.hashCode();
     }
+
 }
 
 

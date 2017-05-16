@@ -1,6 +1,7 @@
 package iwasthere.android.ime.com.iwasthere;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -119,7 +120,7 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
 
         private ArrayList<User> userList;
         private ArrayList<User> filteredUserList;
-        private ArrayList<CheckboxModel> checkboxList;
+        //private ArrayList<CheckboxModel> checkboxList;
 
         //private CheckboxModel[] modelItems;
         private Context context;
@@ -129,48 +130,58 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
             super(context, 0, checkboxList);
 
             this.context = context;
-            this.checkboxList = checkboxList;
-
             this.userList = attendees;
             this.filteredUserList = attendees;
         }
 
 
+        private class ViewHolder {
+            //TextView nusp;
+            CheckBox name;
+        }
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
             Log.d("AcceptConfirmation", "User: " + "On get view");
-            User user = getUser(position);
+
+            ViewHolder holder = null;
+            Log.v("ConvertView", String.valueOf(position));
+
             if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.row, parent, false);
-            }
-            TextView name = (TextView) convertView.findViewById(R.id.textView1);
-            name.setText(user.getName());
+                LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = vi.inflate(R.layout.row, null);
 
-            cb = (CheckBox) convertView.findViewById(R.id.checkBox1);
+                holder = new ViewHolder();
+                //holder.nusp = (TextView) convertView.findViewById(R.id.textView1);
+                holder.name = (CheckBox) convertView.findViewById(R.id.checkBox1);
+                convertView.setTag(holder);
 
-            cb.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    checkboxClicked(view);
-                }
-            });
-
-            return convertView;
-
-        }
-
-        public void checkboxClicked(View v) {
-
-            if(cb.isChecked()) {
-                Log.d("AcceptConfirmation", "Checkbox is checked. Id = " + cb.getId());
-
-                //modelItems.get(i).setValue(1);
-                // true,do the task
+                holder.name.setOnClickListener( new View.OnClickListener() {
+                    public void onClick(View v) {
+                        CheckBox cb = (CheckBox) v ;
+                        User user = (User) cb.getTag();
+                        Toast.makeText(getApplicationContext(),
+                                "Clicked on Checkbox: " + cb.getText() +
+                                        " is " + cb.isChecked(),
+                                Toast.LENGTH_LONG).show();
+                        user.setSelected(cb.isChecked());
+                    }
+                });
             }
             else {
+                holder = (ViewHolder) convertView.getTag();
             }
+
+            User user = userList.get(position);
+            //holder.user_name.setText(" (" +  user.getName() + ")");
+            holder.name.setText(user.getName());
+            holder.name.setChecked(user.isSelected());
+            holder.name.setTag(user);
+
+            return convertView;
         }
+
         public User getItemAtPosition(int pos) {
             return filteredUserList.get(pos);
         }
@@ -182,7 +193,7 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
 
         /*@Override*/
         public User getUser(int i) {
-            return checkboxList.get(i).getUser();
+            return userList.get(i);
         }
 
         @Override
@@ -226,6 +237,63 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
         }
     }
 
+    public void studentsWereThere(View view) {
+
+        StringBuffer responseText = new StringBuffer();
+        String url = "http://207.38.82.139:8001/attendence/submit";
+        responseText.append("The following were selected...\n");
+
+        ArrayList<User> userList = adapter.userList;
+
+        for (int i = 0; i < userList.size(); i++) {
+            final User user = userList.get(i);
+            if (user.isSelected()){
+                responseText.append("\n" + user.getName());
+
+                StringRequest strRequest = new StringRequest(Request.Method.POST, url,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                Log.d("Response: ", response);
+                                JSONObject resp = HttpUtil.getJSONObject(response, "sendPresenceConfirmation");
+                                if (HttpUtil.responseWasSuccess(resp)) {
+                                    Log.d("sendConfirmation", "SUCCESS");
+                                }
+                                else {
+                                    Snackbar.make(findViewById(android.R.id.content), "An error occurred. Please try again later.", Snackbar.LENGTH_LONG)
+                                            .setAction("Action", null).show();
+                                }
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                {
+                    @Override
+                    protected Map<String, String> getParams() {
+                        Map<String, String> params = new HashMap<String, String>();
+                        params.put("nusp", user.getNusp());
+                        params.put("seminar_id", "" + seminarId);
+                        params.put("data", "confirmed");
+                        params.put("confirmed", "" + 1);
+                        return params;
+                    }
+                };
+                RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
+
+            }
+        }
+        Log.d("AcceptConfirmation", "Leaving studentsWereThere");
+        Intent i = new Intent(getApplicationContext(), AttendeesListActivity.class);
+        startActivity(i);
+
+        Toast.makeText(getApplicationContext(),
+                R.string.students_confirmation_successed, Toast.LENGTH_LONG).show();
+    }
+
     // The getUserTask is responsible for synchronizing the threads that get the attendees infor-
     // mation. This is important because otherwise the ListView ends up empty since it ends up
     // being initialized before any of the http get requests are done.
@@ -243,49 +311,58 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
                 latch = new CountDownLatch(data.length());
 
                 for (int i = 0; i < data.length(); i++) {
-                    JSONObject user;
+                    JSONObject info;
                     String url = null;
+                    String confirmed = "1";
+                    String data_field = "";
+
+                    Log.d("AcceptConfirmation", "data: " + data);
+
                     try {
-                        user = data.getJSONObject(i);
-                        url = "http://207.38.82.139:8001/student/get/" + user.getString("student_nusp");
+                        info = data.getJSONObject(i);
+                        confirmed = info.getString("confirmed");
+                        data_field = info.getString("data");
+                        url = "http://207.38.82.139:8001/student/get/" + info.getString("student_nusp");
                         Log.d("AcceptConfirmation", "url: " + url);
                     } catch (JSONException e) {
                         Log.e("getUsersTask", e.getMessage());
                     }
 
-                    StringRequest strRequest = new StringRequest(Request.Method.GET, url,
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    JSONObject resp = HttpUtil.getJSONObject(response, "getUsersTask");
-                                    if (HttpUtil.responseWasSuccess(resp)) {
-                                        String data = HttpUtil.getResponseDataString(resp);
-                                        User user = new User(data, false);
-                                        attendees.add(user);
-                                        allAttendees.add(user);
-
-                                        CheckboxModel check = new CheckboxModel(user, 0);
-                                        modelItems.add(check);
-                                        latch.countDown();
-                                    } else {
-                                        Snackbar.make(findViewById(android.R.id.content), R.string.error_connection, Snackbar.LENGTH_LONG)
-                                                .setAction("Action", null).show();
+                    final int finalconfirmed = Integer.parseInt(confirmed);
+                    final String field = data_field;
+                        StringRequest strRequest = new StringRequest(Request.Method.GET, url,
+                                new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        JSONObject resp = HttpUtil.getJSONObject(response, "getUsersTask");
+                                        if (HttpUtil.responseWasSuccess(resp)) {
+                                            String data = HttpUtil.getResponseDataString(resp);
+                                            User user = new User(data, false);
+                                            if (finalconfirmed == 0 || field == "pending") {
+                                                attendees.add(user);
+                                                allAttendees.add(user);
+                                            }
+                                            latch.countDown();
+                                        } else {
+                                            Snackbar.make(findViewById(android.R.id.content), R.string.error_connection, Snackbar.LENGTH_LONG)
+                                                    .setAction("Action", null).show();
+                                        }
                                     }
-                                }
-                            },
-                            new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    Toast.makeText(getApplicationContext(), R.string.error_connection, Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                    RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
+                                }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Toast.makeText(getApplicationContext(), R.string.error_connection, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
+                    //}
                 }
                 try {
                     latch.await();
                 } catch (InterruptedException e) {
                     Log.e("Thread", "interrupted");
                 }
+
             }
             else {
                 Log.e("getUsersTask", "data is null");
@@ -312,6 +389,11 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Log.d("AcceptConfirmation", "On confirmPresenceButton");
 
+                    // When clicked, show a toast with the TextView text
+                    User user_to_confirm = (User) parent.getItemAtPosition(position);
+                    Toast.makeText(getApplicationContext(),
+                    "Clicked on Row: " + user_to_confirm.getName(),
+                    Toast.LENGTH_LONG).show();
                 }
             });
 

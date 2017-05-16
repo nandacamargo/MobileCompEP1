@@ -27,15 +27,11 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by nanda on 07/05/17.
@@ -101,7 +97,7 @@ public class SendConfirmationActivity extends AppCompatActivity {
                     //acceptRequests();
                     //confirmPresence(1);
                     Intent i = new Intent(getApplicationContext(), AcceptConfirmationActivity.class);
-                    Log.d("SendCOnfirmation", "Before start activity");
+                    Log.d("SendConfirmation", "Before start activity");
                     startActivity(i);
                 }
                 else
@@ -207,7 +203,13 @@ public class SendConfirmationActivity extends AppCompatActivity {
         Log.d("sendScanResults", "On method confirmPresence");
         Log.d("sendScanResults", "Confirmed is: " + confirmed);
         String url;
+        final String data;
         url = "http://207.38.82.139:8001/attendence/submit";
+
+        if (confirmed == 1)
+            data = "confirmed";
+        else
+            data = "pending";
 
         StringRequest strRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -217,7 +219,7 @@ public class SendConfirmationActivity extends AppCompatActivity {
                         JSONObject resp = HttpUtil.getJSONObject(response, "sendPresenceConfirmation");
                         if (HttpUtil.responseWasSuccess(resp)) {
                             Log.d("sendConfirmation", "SUCCESS");
-                            postPresenceConfirmation();
+                            postPresenceConfirmation(confirmed);
                         }
                         else {
                             Snackbar.make(findViewById(android.R.id.content), "An error occurred. Please try again later.", Snackbar.LENGTH_LONG)
@@ -237,7 +239,7 @@ public class SendConfirmationActivity extends AppCompatActivity {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("nusp", nusp);
                 params.put("seminar_id", "" + seminarId);
-                params.put("data", "teste");
+                params.put("data", data);
                 params.put("confirmed", "" + confirmed);
                 return params;
             }
@@ -246,11 +248,14 @@ public class SendConfirmationActivity extends AppCompatActivity {
         Log.d("SendConfirmation", "Leaving confirmPresence");
     }
 
-    private void postPresenceConfirmation() {
+    private void postPresenceConfirmation(int confirmed) {
         Intent i = new Intent(getApplicationContext(), AttendeesListActivity.class);
         startActivity(i);
-        /*showDialog("Success",  getApplicationContext().getString(R.string.confirmation_successed));*/
-        showDialog("Success",  getApplicationContext().getString(R.string.pending_request));
+
+        if (confirmed != 0)
+            showDialog("Success",  getApplicationContext().getString(R.string.pending_request));
+        else
+            showDialog("Success",  getApplicationContext().getString(R.string.confirmation_successed));
     }
 
 
