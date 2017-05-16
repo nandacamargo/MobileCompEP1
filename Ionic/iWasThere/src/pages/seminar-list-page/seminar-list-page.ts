@@ -33,10 +33,13 @@ export class SeminarListPage {
   registerPage = RegisterPage
   studentListPage = StudentListPage
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private http: Http, private loadingCtrl: LoadingController) {
-    this.user = new UserSingleton();
-    this.filteredSeminars = []
-    this.getSeminars()
+  constructor(public navCtrl: NavController, 
+    public navParams: NavParams, 
+    private http: Http, 
+    private loadingCtrl: LoadingController) {
+      this.user = new UserSingleton();
+      this.filteredSeminars = []
+      this.getSeminars()
   }
 
   ionViewDidEnter() {

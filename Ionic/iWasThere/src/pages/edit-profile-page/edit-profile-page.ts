@@ -27,7 +27,10 @@ export class EditProfilePage {
   confirmPassword: string;
   user: any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private http: Http, private alertCtrl: AlertController) {
+  constructor(public navCtrl: NavController, 
+    public navParams: NavParams, 
+    private http: Http, 
+    private alertCtrl: AlertController) {
   }
 
   ionViewDidLoad() {

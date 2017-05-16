@@ -22,10 +22,13 @@ export class SendConfirmationPopover {
   user: any
   seminar_id: any
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private toastCtrl: ToastController, private http: Http) {
-    console.log('Hello SendConfirmationPopover Component');
-    this.user = new UserSingleton().getInstance()
-    this.seminar_id = this.navParams.get("seminar_id")
+  constructor(public navCtrl: NavController, 
+    public navParams: NavParams, 
+    private toastCtrl: ToastController, 
+    private http: Http) {
+      console.log('Hello SendConfirmationPopover Component');
+      this.user = new UserSingleton().getInstance()
+      this.seminar_id = this.navParams.get("seminar_id")
   }
 
   openPage(page) {
@@ -90,10 +93,6 @@ export class SendConfirmationPopover {
                         )
             }
 
-           
-
-            
-
             console.log(barcodeData.text)
           }, (err) => {
             console.log("Deu ruim")
@@ -115,7 +114,6 @@ export class SendConfirmationPopover {
     let body = new FormData()
     body.append('nusp', this.user.nusp)
     body.append('seminar_id', this.seminar_id)
-    body.append('data', {})
     body.append('confirmed', 0)
     this.http.post(url, body)
               .map(res => res.json())

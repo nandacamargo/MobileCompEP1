@@ -10,7 +10,8 @@
     <ion-title>{{title}}</ion-title>
   </ion-navbar>
   <ion-searchbar 
-  	(ionInput)="getFilteredAttendees($event)">
+  	(ionInput)="getFilteredAttendees($event)"
+  	[(ngModel)]="searchQuery">
   </ion-searchbar>
 
 </ion-header>
@@ -27,11 +28,11 @@
 	</ion-list>
 	<h3 *ngIf="filteredAttendees.length == 0">There doesn't seem to be anything here</h3>
 	<ion-footer no-border *ngIf="confirmed">
-		<button ion-button color="googleGreen" (click)="iWasThere($event)" *ngIf="!user.teacher">I was there!</button>
+		<button ion-button color="googleGreen" (click)="iWasThere($event)" *ngIf="!user.teacher && !alreadyConfirmed">I was there!</button>
 		<button ion-button color="googleGreen" (click)="iWasThere($event)" *ngIf="user.teacher">Who was there?</button>
 	</ion-footer>
 	<ion-footer no-border *ngIf="!confirmed">
-		<button ion-button color="googleGreen" (click)="iWasThere($event)">Confirm selected</button>
+		<button ion-button color="googleGreen" (click)="confirmSelected()">Confirm selected</button>
 	</ion-footer>
 </ion-content>
 	
