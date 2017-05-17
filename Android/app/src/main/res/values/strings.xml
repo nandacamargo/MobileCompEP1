@@ -57,7 +57,7 @@
     <string name="error_wrong_seminar_id">This QRCode doesn\'t correspond to the seminar. Try again with the seminar QR Code</string>
     <string name="confirmation_successed">Your presence was confirmed with success</string>
     <string name="students_confirmation_successed">Presence of selected students was confirmed with success</string>
-
+    <string name="back_button">Back to attendees</string>
 
     <!-- Strings related to Send Presence Confirmation -->
     <string name="your_name">Your name</string>

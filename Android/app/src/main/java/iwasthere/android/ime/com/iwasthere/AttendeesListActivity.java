@@ -12,6 +12,9 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -304,9 +307,46 @@ public class AttendeesListActivity extends AppCompatActivity {
         }
     }
 
-    public void iWasThereButton(View v) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.attendees_menu, menu);
+        if (!user.isTeacher()) {
+            MenuItem menuItem = menu.findItem(R.id.generate_qr_code);
+            menuItem.setVisible(false);
+        }
+        if (user.isTeacher()) {
+            MenuItem menuItem = menu.findItem(R.id.scan_qr_code);
+            menuItem.setVisible(false);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.generate_qr_code:
+                Intent i = new Intent(getApplicationContext(), SendConfirmationActivity.class);
+                startActivity(i);
+                return true;
+            case R.id.scan_qr_code:
+                Intent i2 = new Intent(getApplicationContext(), SendConfirmationActivity.class);
+                startActivity(i2);
+                return true;
+            case R.id.other_confirmation:
+                Intent conf = new Intent(getApplicationContext(), AcceptConfirmationActivity.class);
+                startActivity(conf);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /*public void iWasThereButton(View v) {
 
         Intent i = new Intent(getApplicationContext(), SendConfirmationActivity.class);
         startActivity(i);
-    }
+    }*/
 }

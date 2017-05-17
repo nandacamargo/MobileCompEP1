@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -41,6 +42,8 @@ import java.util.concurrent.CountDownLatch;
 
 public class AcceptConfirmationActivity extends AppCompatActivity {
 
+    private User user;
+    private String nusp;
     private Seminar seminar;
     private int seminarId = 0;
     private CheckAdapter adapter;
@@ -61,6 +64,9 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        user = UserSingleton.getInstance();
+        nusp = user.getNusp();
+
         emptyText = (TextView)findViewById(android.R.id.empty);
         emptyText.setVisibility(View.GONE);
 
@@ -70,7 +76,10 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
         seminar = SeminarSingleton.getInstance();
         seminarId = seminar.getId();
 
-        acceptRequests();
+        if (user.isTeacher())
+            acceptRequests();
+        else
+            confirmPresence(user, 0);
     }
 
 
@@ -137,6 +146,7 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
 
         private class ViewHolder {
             //TextView nusp;
+            String nusp;
             CheckBox name;
         }
 
@@ -154,6 +164,7 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
 
                 holder = new ViewHolder();
                 //holder.nusp = (TextView) convertView.findViewById(R.id.textView1);
+                holder.nusp = user.getNusp();
                 holder.name = (CheckBox) convertView.findViewById(R.id.checkBox1);
                 convertView.setTag(holder);
 
@@ -174,7 +185,7 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
             }
 
             User user = userList.get(position);
-            //holder.user_name.setText(" (" +  user.getName() + ")");
+            //holder.nusp.setText(" (" +  user.getNusp() + ")");
             holder.name.setText(user.getName());
             holder.name.setChecked(user.isSelected());
             holder.name.setTag(user);
@@ -246,11 +257,12 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
         ArrayList<User> userList = adapter.userList;
 
         for (int i = 0; i < userList.size(); i++) {
-            final User user = userList.get(i);
-            if (user.isSelected()){
-                responseText.append("\n" + user.getName());
+            final User curr_user = userList.get(i);
+            if (curr_user.isSelected()){
+                responseText.append("\n" + curr_user.getName());
 
-                StringRequest strRequest = new StringRequest(Request.Method.POST, url,
+                confirmPresence(curr_user, 1);
+                /*StringRequest strRequest = new StringRequest(Request.Method.POST, url,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
@@ -282,7 +294,7 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
                         return params;
                     }
                 };
-                RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
+                RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);*/
 
             }
         }
@@ -403,5 +415,78 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
         }
     }
 
+    /*******************************************************/
+
+    private void showDialog(String title, String message) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(AcceptConfirmationActivity.this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+
+        builder.setPositiveButton("Ok", null);
+        builder.setCancelable(true);
+        builder.create().show();
+    }
+
+
+    public void confirmPresence(final User curr_user, final int confirmed) {
+
+        String url;
+        final String data;
+        url = "http://207.38.82.139:8001/attendence/submit";
+
+        if (confirmed == 1)
+            data = "confirmed";
+        else
+            data = "pending";
+
+        Log.d("AcceptConfirmation", "User name: " + curr_user.getName());
+
+        StringRequest strRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Response: ", response);
+                        JSONObject resp = HttpUtil.getJSONObject(response, "sendPresenceConfirmation");
+                        if (HttpUtil.responseWasSuccess(resp)) {
+                            Log.d("sendConfirmation", "SUCCESS");
+                            postPresenceConfirmation(confirmed);
+                        }
+                        else {
+                            Snackbar.make(findViewById(android.R.id.content), "An error occurred. Please try again later.", Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+        {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("nusp", curr_user.getNusp());
+                params.put("seminar_id", "" + seminarId);
+                params.put("data", data);
+                params.put("confirmed", "" + confirmed);
+                return params;
+            }
+        };
+        RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
+        Log.d("SendConfirmation", "Leaving confirmPresence");
+    }
+
+    private void postPresenceConfirmation(int confirmed) {
+        Intent i = new Intent(getApplicationContext(), AttendeesListActivity.class);
+        startActivity(i);
+
+        if (confirmed != 0)
+            showDialog("Success",  getApplicationContext().getString(R.string.pending_request));
+        else
+            showDialog("Success",  getApplicationContext().getString(R.string.confirmation_successed));
+    }
 
 }

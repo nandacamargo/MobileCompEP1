@@ -57,6 +57,7 @@ public class SendConfirmationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_confirmation);
+        //setContentView(R.layout.activity_attendees_list);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -73,37 +74,10 @@ public class SendConfirmationActivity extends AppCompatActivity {
         tvScanContent = (TextView) findViewById(R.id.tvScanContent);
         llSearch = (LinearLayout) findViewById(R.id.llSearch);
 
-        final Button qrCodeButton = (Button) findViewById(R.id.qr_code_button);
-        if (user.isTeacher())  qrCodeButton.setText(R.string.generate_qr_code);
-
-        qrCodeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (user.isTeacher())
-                    generateQR();
-                 else
-                    scanQR();
-            }
-        });
-
-        final Button confirmButton = (Button) findViewById(R.id.second_confirmation);
-        if (user.isTeacher())  confirmButton.setText(R.string.other_confirmation);
-
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (user.isTeacher()) {
-                    //getRequests();
-                    //acceptRequests();
-                    //confirmPresence(1);
-                    Intent i = new Intent(getApplicationContext(), AcceptConfirmationActivity.class);
-                    Log.d("SendConfirmation", "Before start activity");
-                    startActivity(i);
-                }
-                else
-                    confirmPresence(0);
-            }
-        });
+        if (user.isTeacher())
+            generateQR();
+        else
+            scanQR();
 
     }
 
@@ -134,7 +108,6 @@ public class SendConfirmationActivity extends AppCompatActivity {
                 showDialog("Your confirmation failed",  getApplicationContext().getString(R.string.error_null_qr_code));
 
             } else {
-                /*showDialog(0, result.toString());*/
                 llSearch.setVisibility(View.VISIBLE);
                 tvScanContent.setText(result.getContents());
                 tvScanFormat.setText(result.getFormatName());
@@ -196,9 +169,7 @@ public class SendConfirmationActivity extends AppCompatActivity {
     }
 
 
-
     public void confirmPresence(final int confirmed) {
-
 
         Log.d("sendScanResults", "On method confirmPresence");
         Log.d("sendScanResults", "Confirmed is: " + confirmed);
@@ -258,22 +229,9 @@ public class SendConfirmationActivity extends AppCompatActivity {
             showDialog("Success",  getApplicationContext().getString(R.string.confirmation_successed));
     }
 
-
-    public void getRequests() {
-
-
-        lv = (ListView) findViewById(R.id.listView1);
-
-
-        UserAdapter adapter = new UserAdapter(this, modelItems);
-        lv.setAdapter(adapter);
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }*/
+    public void backToAttendees(View view) {
+        Log.d("SendConfirmation", "On backToAttendees");
+        Intent i = new Intent(getApplicationContext(), AttendeesListActivity.class);
+        startActivity(i);
     }
-
 }
