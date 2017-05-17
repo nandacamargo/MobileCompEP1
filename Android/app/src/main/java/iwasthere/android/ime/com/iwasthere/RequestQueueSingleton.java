@@ -1,5 +1,6 @@
 package iwasthere.android.ime.com.iwasthere;
 
+import android.app.Application;
 import android.content.Context;
 
 import com.android.volley.Request;
@@ -10,9 +11,9 @@ import com.android.volley.toolbox.Volley;
  * Created by dududcbier on 30/04/17.
  */
 
-public class RequestQueueSingleton {
+public class RequestQueueSingleton extends Application{
     private static RequestQueueSingleton mInstance;
-    private RequestQueue mRequestQueue;
+    private static RequestQueue mRequestQueue;
     private static Context mCtx;
 
     private RequestQueueSingleton(Context context) {
@@ -27,7 +28,7 @@ public class RequestQueueSingleton {
         return mInstance;
     }
 
-    public RequestQueue getRequestQueue() {
+    public static RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
             // getApplicationContext() is key, it keeps you from leaking the
             // Activity or BroadcastReceiver if someone passes one in.
