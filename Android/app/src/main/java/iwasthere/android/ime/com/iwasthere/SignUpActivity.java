@@ -39,8 +39,8 @@ public class SignUpActivity extends AppCompatActivity {
 
         nameView = (EditText) findViewById(R.id.name);
         nuspView = (EditText) findViewById(R.id.nusp);
-        passwordView = (EditText) findViewById(R.id.passwd);
-        confirmPasswordView = (EditText) findViewById(R.id.confirmPasswd);
+        passwordView = (EditText) findViewById(R.id.password);
+        confirmPasswordView = (EditText) findViewById(R.id.confirm_password);
 
         nuspView.setText(getIntent().getStringExtra("nusp"));
         passwordView.setText(getIntent().getStringExtra("password"));

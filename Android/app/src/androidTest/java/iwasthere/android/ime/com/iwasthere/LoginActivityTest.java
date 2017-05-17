@@ -1,7 +1,5 @@
 package iwasthere.android.ime.com.iwasthere;
 
-import android.content.Context;
-import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.assertion.ViewAssertions;
 import android.support.test.espresso.intent.Intents;
@@ -38,14 +36,9 @@ import static org.hamcrest.core.AllOf.allOf;
 @RunWith(AndroidJUnit4.class)
 public class LoginActivityTest {
 
-    @Rule
-    public ActivityTestRule<LoginActivity> mActivityRule = new ActivityTestRule<>(
-            LoginActivity.class);
+    private VolleyIdlingResource volleyResources;
 
-    @Before
-    public void setup() {
-        Intents.init();
-        VolleyIdlingResource volleyResources;
+    public LoginActivityTest() {
         RequestQueueSingleton.getInstance(InstrumentationRegistry.getTargetContext());
         try {
             volleyResources = new VolleyIdlingResource();
@@ -53,6 +46,15 @@ public class LoginActivityTest {
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
+    }
+
+    @Rule
+    public ActivityTestRule<LoginActivity> mActivityRule = new ActivityTestRule<>(
+            LoginActivity.class);
+
+    @Before
+    public void setup() {
+        Intents.init();
     }
 
     @After
