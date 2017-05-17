@@ -49,8 +49,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_name"
                     android:inputType="text"
-                    android:maxLines="1"
-                    android:singleLine="true" />
+                    android:maxLines="1" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -65,8 +64,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_new_password"
                     android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:singleLine="true" />
+                    android:maxLines="1" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -80,8 +78,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_confirm_new_password"
                     android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:singleLine="true" />
+                    android:maxLines="1" />
 
             </android.support.design.widget.TextInputLayout>
 

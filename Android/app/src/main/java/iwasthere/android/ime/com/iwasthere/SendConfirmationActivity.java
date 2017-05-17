@@ -52,7 +52,6 @@ public class SendConfirmationActivity extends AppCompatActivity {
 
     private ArrayList<User> allAttendees = new ArrayList<>();
     private ArrayList<User> attendees = new ArrayList<>();
-    /*private CheckboxModel[] modelItems;*/
 
     ImageView imageView;
 
@@ -72,7 +71,6 @@ public class SendConfirmationActivity extends AppCompatActivity {
         imageView = (ImageView) this.findViewById(R.id.imageView);
         if (!user.isTeacher()) imageView.setVisibility(View.GONE);
 
-        //getSupportActionBar().setTitle(R.string.title_send_confirmation);
         Log.d("SendConfirmation", "On function create of SendConfirmationActivity");
 
         tvScanFormat = (TextView) findViewById(R.id.tvScanFormat);
