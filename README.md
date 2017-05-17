@@ -21,7 +21,11 @@ Ionic 2 <br>
 
 One way to confirm a student presence is using QR Code. <br>
 The other form of confirmation works like this: the student send a request to the server. <br>
-This request stays pending until the teacher confirm.
+This request stays pending until the teacher confirm. <br>
+However, it is important to note that this request needs to be done twice by the student <br>
+because the server only works on the second submit. Even though we send the boolean <br>
+confirmed = 0 in the request, only in the second submit, for the same user, the server <br>
+is recognizing that confirmed is false. <br>
 
 
 ### Android and Ionic app
@@ -46,8 +50,8 @@ volley (HTTP library to help us with the requests). <br>
 We are using to this project the BarCodeScanner library (to do the QR-Code confirmation) <br>
 and Http (to make the requests)
 
-<b> Http </b> from Angular
-<b> BarCodeScanner </b> from Ionic
+<b> Http </b> from Angular <br>
+<b> BarCodeScanner </b> from Ionic <br>
 
 
 ### Emulator test
@@ -57,4 +61,4 @@ We tested using these emulators: <br>
 - Galaxy Nexus, Android version 7.1.1 <br>
 - Pixel, version 7.1.1 <br>
 
-
+We also tested in our mobile phones.

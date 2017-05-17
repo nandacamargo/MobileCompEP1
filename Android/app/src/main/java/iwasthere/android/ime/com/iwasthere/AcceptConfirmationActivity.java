@@ -145,12 +145,12 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
 
 
         private class ViewHolder {
-            TextView nusp;
+            TextView user_name;
             CheckBox name;
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
 
             Log.d("AcceptConfirmation", "User: " + "On get view");
 
@@ -162,8 +162,7 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
                 convertView = vi.inflate(R.layout.row, null);
 
                 holder = new ViewHolder();
-                holder.nusp = (TextView) convertView.findViewById(R.id.textView1);
-                holder.nusp.setText(user.getName());
+                holder.user_name = (TextView) convertView.findViewById(R.id.textView1);
 
                 holder.name = (CheckBox) convertView.findViewById(R.id.checkBox1);
                 holder.name.setText("");
@@ -172,12 +171,13 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
                 holder.name.setOnClickListener( new View.OnClickListener() {
                     public void onClick(View v) {
                         CheckBox cb = (CheckBox) v ;
-                        User user = (User) cb.getTag();
-                        Toast.makeText(getApplicationContext(),
+                        User user_showed = (User) cb.getTag();
+                        /*Toast.makeText(getApplicationContext(),
                                 "Clicked on Checkbox: " + cb.getText() +
                                         " is " + cb.isChecked(),
-                                Toast.LENGTH_LONG).show();
-                        user.setSelected(cb.isChecked());
+                                Toast.LENGTH_LONG).show();*/
+                        user_showed.setSelected(cb.isChecked());
+                        userList.get(position).setSelected(cb.isChecked());
                     }
                 });
             }
@@ -185,12 +185,11 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            User user = userList.get(position);
+            User user_showed = userList.get(position);
+            holder.user_name.setText(user_showed.getName());
 
-            /*holder.name.setText(user.getName());*/
             holder.name.setChecked(user.isSelected());
             holder.name.setTag(user);
-
 
             return convertView;
         }
@@ -253,25 +252,25 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
     public void studentsWereThere(View view) {
 
         StringBuffer responseText = new StringBuffer();
-        String url = "http://207.38.82.139:8001/attendence/submit";
         responseText.append("The following were selected...\n");
 
         ArrayList<User> userList = adapter.userList;
 
         for (int i = 0; i < userList.size(); i++) {
             final User curr_user = userList.get(i);
+            Log.d("AcceptConfirmation", "size userlist: " + userList.size());
+
             if (curr_user.isSelected()){
                 responseText.append("\n" + curr_user.getName());
 
+                Log.d("AcceptConfirmation", "Confirming user: " + curr_user);
                 confirmPresence(curr_user, 1);
             }
         }
         Log.d("AcceptConfirmation", "Leaving studentsWereThere");
-        Intent i = new Intent(getApplicationContext(), AttendeesListActivity.class);
-        startActivity(i);
 
-        Toast.makeText(getApplicationContext(),
-                R.string.students_confirmation_successed, Toast.LENGTH_LONG).show();
+        showDialog("Success", getApplicationContext().getString(R.string.students_confirmation_successed));
+
     }
 
     // The getUserTask is responsible for synchronizing the threads that get the attendees infor-
@@ -284,8 +283,6 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(JSONArray... params) {
             JSONArray data = params[0];
-
-            Log.d("AcceptConfirmation", "On getUsersTask");
 
             if (data != null && data.length() > 0) {
                 latch = new CountDownLatch(data.length());
@@ -368,7 +365,6 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Log.d("AcceptConfirmation", "On confirmPresenceButton");
 
-                    // When clicked, show a toast with the TextView text
                     User user_to_confirm = (User) parent.getItemAtPosition(position);
                     Toast.makeText(getApplicationContext(),
                     "Clicked on Row: " + user_to_confirm.getName(),
@@ -406,7 +402,7 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
         else
             data = "pending";
 
-        Log.d("AcceptConfirmation", "User name: " + curr_user.getName());
+        Log.d("AcceptConfirmation", "User name: " + curr_user.getName() + " Nusp: " + curr_user.getNusp());
 
         StringRequest strRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -446,13 +442,10 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
     }
 
     private void postPresenceConfirmation(int confirmed) {
-        /*Intent i = new Intent(getApplicationContext(), SeminarListActivity.class);
-        startActivity(i);*/
 
         if (confirmed == 0)
             showDialog("Success",  getApplicationContext().getString(R.string.pending_request));
-        else
-            showDialog("Success",  getApplicationContext().getString(R.string.confirmation_successed));
+
     }
 
 }
