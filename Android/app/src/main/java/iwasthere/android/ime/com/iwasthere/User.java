@@ -21,7 +21,6 @@ public class User {
         this.nusp = nusp;
         this.name = name;
         this.teacher = teacher;
-        Log.d("Novo user com teacher ", this.teacher.toString());
     }
 
     public User(String user, Boolean teacher){
@@ -42,7 +41,6 @@ public class User {
         this.name = name;
         this.teacher = teacher;
         this.selected = selected;
-        Log.d("Novo user com teacher ", this.teacher.toString());
     }
 
     public User(Parcel p){

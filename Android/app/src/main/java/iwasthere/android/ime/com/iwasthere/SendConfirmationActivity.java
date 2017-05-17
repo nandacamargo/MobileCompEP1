@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -51,13 +52,13 @@ public class SendConfirmationActivity extends AppCompatActivity {
 
     private ArrayList<User> allAttendees = new ArrayList<>();
     private ArrayList<User> attendees = new ArrayList<>();
-    private CheckboxModel[] modelItems;
+
+    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_confirmation);
-        //setContentView(R.layout.activity_attendees_list);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -67,7 +68,9 @@ public class SendConfirmationActivity extends AppCompatActivity {
         user = UserSingleton.getInstance();
         nusp = user.getNusp();
 
-        //getSupportActionBar().setTitle(R.string.title_send_confirmation);
+        imageView = (ImageView) this.findViewById(R.id.imageView);
+        if (!user.isTeacher()) imageView.setVisibility(View.GONE);
+
         Log.d("SendConfirmation", "On function create of SendConfirmationActivity");
 
         tvScanFormat = (TextView) findViewById(R.id.tvScanFormat);
@@ -109,8 +112,8 @@ public class SendConfirmationActivity extends AppCompatActivity {
 
             } else {
                 llSearch.setVisibility(View.VISIBLE);
-                tvScanContent.setText(result.getContents());
-                tvScanFormat.setText(result.getFormatName());
+                tvScanFormat.setText(result.getContents());
+                tvScanContent.setText(result.getFormatName());
                 Log.d("Contents", contents);
 
                 int value = Integer.parseInt(contents);
@@ -137,19 +140,24 @@ public class SendConfirmationActivity extends AppCompatActivity {
 
 
     public void generateQR() {
+
         Log.d("SendConfirmation", "On generateQR");
 
         seminar = SeminarSingleton.getInstance();
         String text2Qr = "" + seminar.getId();
+        Log.d("SendConfirmation","seminar_id: " + text2Qr);
 
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         try {
-            BitMatrix bitMatrix = multiFormatWriter.encode(text2Qr, BarcodeFormat.QR_CODE,200,200);
+            BitMatrix bitMatrix = multiFormatWriter.encode(text2Qr, BarcodeFormat.QR_CODE,250,250);
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
-            Intent intent = new Intent(getApplicationContext(), QrActivity.class);
+
+            imageView.setImageBitmap(bitmap);
+
+            /*Intent intent = new Intent(getApplicationContext(), QrActivity.class);
             intent.putExtra("pic",bitmap);
-            startActivity(intent);
+            startActivity(intent);*/
         } catch (WriterException e) {
             e.printStackTrace();
         }
@@ -223,7 +231,7 @@ public class SendConfirmationActivity extends AppCompatActivity {
         Intent i = new Intent(getApplicationContext(), AttendeesListActivity.class);
         startActivity(i);
 
-        if (confirmed != 0)
+        if (confirmed == 0)
             showDialog("Success",  getApplicationContext().getString(R.string.pending_request));
         else
             showDialog("Success",  getApplicationContext().getString(R.string.confirmation_successed));
