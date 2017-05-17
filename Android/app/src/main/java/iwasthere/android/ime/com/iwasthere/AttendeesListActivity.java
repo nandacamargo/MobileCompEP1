@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ListView;
@@ -67,24 +68,11 @@ public class AttendeesListActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.list_progress);
         progressBar.setVisibility(View.VISIBLE);
 
-
-        /*TabHost.TabSpec spec;
-        Intent intent;
-
-        FragmentTabHost mTabHost = (FragmentTabHost)findViewById(R.id.tabHost);
-        mTabHost.setup(AttendeesListActivity.this, getSupportFragmentManager(), android.R.id.tabcontent);
-
-        mTabHost.addTab(mTabHost.newTabSpec("First Tab").setIndicator("First Tab"), new FirstFragment().getClass(), null);
-        mTabHost.addTab(mTabHost.newTabSpec("Second Tab").setIndicator("Second Tab"), new SecondFragment().getClass(), null);
-        mTabHost.addTab(mTabHost.newTabSpec("Third Tab").setIndicator("Third Tab"), new ThirdQrActivity().getClass(), null);
-        TabHost host = (TabHost)findViewById(R.id.tabHost);
-        host.setup();*/
-
-
         final int id = getIntent().getIntExtra("id", -1);
         if (id < 0) finish();
 
         user = UserSingleton.getInstance();
+        Log.d("AttendeesList", "User: " + user);
 
         String url = "http://207.38.82.139:8001/attendence/listStudents";
 

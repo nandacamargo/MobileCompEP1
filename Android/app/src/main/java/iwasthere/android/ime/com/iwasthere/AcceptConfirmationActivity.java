@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -47,7 +48,6 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
     private Seminar seminar;
     private int seminarId = 0;
     private CheckAdapter adapter;
-    private CheckBox cb;
 
     private ArrayList<User> allAttendees = new ArrayList<>();
     private ArrayList<User> attendees = new ArrayList<>();
@@ -64,22 +64,25 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        user = null;
         user = UserSingleton.getInstance();
         nusp = user.getNusp();
 
         emptyText = (TextView)findViewById(android.R.id.empty);
         emptyText.setVisibility(View.GONE);
 
-        progressBar = (ProgressBar) findViewById(R.id.list_progress);
-        progressBar.setVisibility(View.VISIBLE);
-
         seminar = SeminarSingleton.getInstance();
         seminarId = seminar.getId();
 
-        if (user.isTeacher())
+        Button studentsWereThere = (Button) findViewById(R.id.students_were_there);
+
+        if (user.isTeacher()) {
             acceptRequests();
-        else
+        }
+        else {
+            studentsWereThere.setVisibility(View.GONE);
             confirmPresence(user, 0);
+        }
     }
 
 
@@ -129,9 +132,6 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
 
         private ArrayList<User> userList;
         private ArrayList<User> filteredUserList;
-        //private ArrayList<CheckboxModel> checkboxList;
-
-        //private CheckboxModel[] modelItems;
         private Context context;
 
         public CheckAdapter(Context context, ArrayList<CheckboxModel> checkboxList) {
@@ -145,8 +145,7 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
 
 
         private class ViewHolder {
-            //TextView nusp;
-            String nusp;
+            TextView nusp;
             CheckBox name;
         }
 
@@ -163,8 +162,9 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
                 convertView = vi.inflate(R.layout.row, null);
 
                 holder = new ViewHolder();
-                //holder.nusp = (TextView) convertView.findViewById(R.id.textView1);
-                holder.nusp = user.getNusp();
+                holder.nusp = (TextView) convertView.findViewById(R.id.textView1);
+                holder.nusp.setText(" (nusp: " + user.getNusp() + ")");
+
                 holder.name = (CheckBox) convertView.findViewById(R.id.checkBox1);
                 convertView.setTag(holder);
 
@@ -185,10 +185,11 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
             }
 
             User user = userList.get(position);
-            //holder.nusp.setText(" (" +  user.getNusp() + ")");
+
             holder.name.setText(user.getName());
             holder.name.setChecked(user.isSelected());
             holder.name.setTag(user);
+
 
             return convertView;
         }
@@ -262,40 +263,6 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
                 responseText.append("\n" + curr_user.getName());
 
                 confirmPresence(curr_user, 1);
-                /*StringRequest strRequest = new StringRequest(Request.Method.POST, url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                Log.d("Response: ", response);
-                                JSONObject resp = HttpUtil.getJSONObject(response, "sendPresenceConfirmation");
-                                if (HttpUtil.responseWasSuccess(resp)) {
-                                    Log.d("sendConfirmation", "SUCCESS");
-                                }
-                                else {
-                                    Snackbar.make(findViewById(android.R.id.content), "An error occurred. Please try again later.", Snackbar.LENGTH_LONG)
-                                            .setAction("Action", null).show();
-                                }
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                {
-                    @Override
-                    protected Map<String, String> getParams() {
-                        Map<String, String> params = new HashMap<String, String>();
-                        params.put("nusp", user.getNusp());
-                        params.put("seminar_id", "" + seminarId);
-                        params.put("data", "confirmed");
-                        params.put("confirmed", "" + 1);
-                        return params;
-                    }
-                };
-                RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);*/
-
             }
         }
         Log.d("AcceptConfirmation", "Leaving studentsWereThere");
@@ -367,7 +334,6 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
                             }
                         });
                         RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
-                    //}
                 }
                 try {
                     latch.await();
@@ -409,7 +375,6 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
                 }
             });
 
-            progressBar.setVisibility(View.GONE);
             emptyText.setVisibility(View.VISIBLE);
             requestList.setEmptyView(emptyText);
         }
@@ -480,10 +445,10 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
     }
 
     private void postPresenceConfirmation(int confirmed) {
-        Intent i = new Intent(getApplicationContext(), AttendeesListActivity.class);
-        startActivity(i);
+        /*Intent i = new Intent(getApplicationContext(), SeminarListActivity.class);
+        startActivity(i);*/
 
-        if (confirmed != 0)
+        if (confirmed == 0)
             showDialog("Success",  getApplicationContext().getString(R.string.pending_request));
         else
             showDialog("Success",  getApplicationContext().getString(R.string.confirmation_successed));
