@@ -120,6 +120,7 @@ public class SeminarListActivity extends AppCompatActivity {
                 i.putExtra("id", adapter.getItemAtPosition(position).getId());
                 name = adapter.getItemAtPosition(position).getName();
                 seminarId = adapter.getItemAtPosition(position).getId();
+                SeminarSingleton.deleteInstance();
                 SeminarSingleton.getInstance(name, seminarId);
                 startActivity(i);
             }

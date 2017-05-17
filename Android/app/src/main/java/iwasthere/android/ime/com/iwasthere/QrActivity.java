@@ -1,5 +1,6 @@
 package iwasthere.android.ime.com.iwasthere;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 public class QrActivity extends AppCompatActivity {
 
     private ImageView imageView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

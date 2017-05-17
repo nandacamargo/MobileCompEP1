@@ -163,9 +163,10 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
 
                 holder = new ViewHolder();
                 holder.nusp = (TextView) convertView.findViewById(R.id.textView1);
-                holder.nusp.setText(" (nusp: " + user.getNusp() + ")");
+                holder.nusp.setText(user.getName());
 
                 holder.name = (CheckBox) convertView.findViewById(R.id.checkBox1);
+                holder.name.setText("");
                 convertView.setTag(holder);
 
                 holder.name.setOnClickListener( new View.OnClickListener() {
@@ -186,7 +187,7 @@ public class AcceptConfirmationActivity extends AppCompatActivity {
 
             User user = userList.get(position);
 
-            holder.name.setText(user.getName());
+            /*holder.name.setText(user.getName());*/
             holder.name.setChecked(user.isSelected());
             holder.name.setTag(user);
 

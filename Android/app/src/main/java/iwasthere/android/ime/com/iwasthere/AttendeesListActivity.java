@@ -52,6 +52,7 @@ public class AttendeesListActivity extends AppCompatActivity {
     private TextView emptyText;
 
     private User user;
+    private Seminar seminar;
 
 
     @Override
@@ -73,6 +74,9 @@ public class AttendeesListActivity extends AppCompatActivity {
 
         user = UserSingleton.getInstance();
         Log.d("AttendeesList", "User: " + user);
+
+        seminar = SeminarSingleton.getInstance();
+        Log.d("AttendeesList", "Seminar: " + seminar);
 
         String url = "http://207.38.82.139:8001/attendence/listStudents";
 
