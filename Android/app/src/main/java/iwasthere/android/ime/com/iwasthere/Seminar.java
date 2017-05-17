@@ -1,5 +1,6 @@
 package iwasthere.android.ime.com.iwasthere;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
  * Created by dududcbier on 26/04/17.
  */
 
-public class Seminar {
+public class Seminar implements Comparable{
 
     private String name;
     private Integer id;
@@ -56,6 +57,11 @@ public class Seminar {
         return "Name: " + this.name + ", ID: " + this.id;
     }
 
+    @Override
+    public int compareTo(@NonNull Object o) {
+        Seminar s = (Seminar) o;
+        return this.name.compareTo(s.getName());
+    }
 }
 
 

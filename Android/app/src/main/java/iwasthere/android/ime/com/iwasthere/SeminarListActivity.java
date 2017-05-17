@@ -31,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class SeminarListActivity extends AppCompatActivity {
 
@@ -107,6 +108,8 @@ public class SeminarListActivity extends AppCompatActivity {
         JSONArray seminarsJSON =  HttpUtil.getResponseDataArray(resp);
         this.seminars = Seminar.getSeminars(seminarsJSON);
         this.allSeminars = Seminar.getSeminars(seminarsJSON);
+        Collections.sort(this.seminars);
+        Collections.sort(this.allSeminars);
 
         final ListView seminarList = (ListView) findViewById(R.id.list);
         adapter = new SeminarsAdapter(this, seminars);
@@ -141,12 +144,15 @@ public class SeminarListActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
+        Intent i;
         switch (item.getItemId()) {
             case R.id.new_teacher:
-                //TODO new teacher
+                i = new Intent(getApplicationContext(), SignUpActivity.class);
+                i.putExtra("teacher", true);
+                startActivity(i);
                 return true;
             case R.id.my_account:
-                Intent i = new Intent(getApplicationContext(), EditProfileActivity.class);
+                i = new Intent(getApplicationContext(), EditProfileActivity.class);
                 startActivity(i);
                 return true;
             default:
