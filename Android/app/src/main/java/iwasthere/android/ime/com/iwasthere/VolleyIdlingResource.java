@@ -1,13 +1,7 @@
 package iwasthere.android.ime.com.iwasthere;
 
-/**
- * Created by dududcbier on 5/17/17.
- */
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
-
 
 import android.support.test.espresso.IdlingResource;
 

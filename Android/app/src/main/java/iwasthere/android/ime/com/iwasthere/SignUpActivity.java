@@ -26,6 +26,7 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText nuspView;
     private EditText confirmPasswordView;
     private EditText passwordView;
+    private boolean teacher;
 
 
     @Override
@@ -39,19 +40,17 @@ public class SignUpActivity extends AppCompatActivity {
 
         nameView = (EditText) findViewById(R.id.name);
         nuspView = (EditText) findViewById(R.id.nusp);
-        passwordView = (EditText) findViewById(R.id.passwd);
-        confirmPasswordView = (EditText) findViewById(R.id.confirmPasswd);
+        passwordView = (EditText) findViewById(R.id.password);
+        confirmPasswordView = (EditText) findViewById(R.id.confirm_password);
 
         nuspView.setText(getIntent().getStringExtra("nusp"));
         passwordView.setText(getIntent().getStringExtra("password"));
 
+        teacher = getIntent().getBooleanExtra("teacher", false);
+
     }
 
-    public void signUpStudent(View v) {
-        signUpUser(false);
-    }
-
-    public void signUpUser(Boolean teacher) {
+    public void signUpUser(View v) {
         final String name = nameView.getText().toString();
         final String nusp = nuspView.getText().toString();
         final String password = passwordView.getText().toString();
@@ -82,12 +81,10 @@ public class SignUpActivity extends AppCompatActivity {
                         Log.d("Response: ", response);
                         JSONObject resp = HttpUtil.getJSONObject(response, "signUpUser");
                         if (HttpUtil.responseWasSuccess(resp)) {
-                            Log.d("signUpUser", "SUCCESS");
                             postSignUpUser();
                         }
                         else {
                             if (resp.has("message")) {
-                                Log.d("signUpUser", "WTF");
                                 nuspView.setError(getString(R.string.error_user_exists));
                                 nuspView.requestFocus();
                             }
@@ -120,7 +117,13 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void postSignUpUser() {
-        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+        Intent i;
+        if (!teacher) {
+            i = new Intent(getApplicationContext(), LoginActivity.class);
+        }
+        else {
+            i = new Intent(getApplicationContext(), SeminarListActivity.class);
+        }
         startActivity(i);
     }
 }
