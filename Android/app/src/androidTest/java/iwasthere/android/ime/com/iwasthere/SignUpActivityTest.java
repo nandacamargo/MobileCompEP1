@@ -79,7 +79,7 @@ public class SignUpActivityTest {
         onView(withId(R.id.register_button))
                 .perform(click());
         String expectedError = InstrumentationRegistry.getTargetContext()
-                .getString(R.string.error_field_required);
+                .getString(R.string.error_invalid_nusp);
         onView(ViewMatchers.withId((R.id.nusp)))
                 .check(ViewAssertions.matches(ErrorTextMatcher.withError(expectedError)));
     }
