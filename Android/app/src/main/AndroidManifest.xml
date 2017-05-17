@@ -73,17 +73,18 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
+
         <activity
             android:name=".SendConfirmationActivity"
             android:label="Send Confirmation"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity
-            android:name=".TextConfirmationActivity"
-            android:label="Send pdf confirmation"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity android:name=".QrActivity" />
+
+        <activity
+            android:name=".AcceptConfirmationActivity"
+            android:label="Accept Confirmation"
+            android:theme="@style/AppTheme.NoActionBar" />
 
     </application>
 

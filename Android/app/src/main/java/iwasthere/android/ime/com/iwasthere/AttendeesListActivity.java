@@ -1,23 +1,30 @@
 package iwasthere.android.ime.com.iwasthere;
 
+import android.app.LocalActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +58,7 @@ public class AttendeesListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendees_list);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -64,6 +72,7 @@ public class AttendeesListActivity extends AppCompatActivity {
         if (id < 0) finish();
 
         user = UserSingleton.getInstance();
+        Log.d("AttendeesList", "User: " + user);
 
         String url = "http://207.38.82.139:8001/attendence/listStudents";
 
@@ -212,13 +221,16 @@ public class AttendeesListActivity extends AppCompatActivity {
                 for (int i = 0; i < data.length(); i++) {
                     JSONObject user;
                     String url = null;
+                    String confirmed = "0";
                     try {
                         user = data.getJSONObject(i);
+                        confirmed = user.getString("confirmed");
                         url = "http://207.38.82.139:8001/student/get/" + user.getString("student_nusp");
                     } catch (JSONException e) {
                         Log.e("getUsersTask", e.getMessage());
                     }
 
+                    final int finalConfirmed = Integer.parseInt(confirmed);
                     StringRequest strRequest = new StringRequest(Request.Method.GET, url,
                             new Response.Listener<String>() {
                                 @Override
@@ -227,8 +239,10 @@ public class AttendeesListActivity extends AppCompatActivity {
                                     if (HttpUtil.responseWasSuccess(resp)) {
                                         String data = HttpUtil.getResponseDataString(resp);
                                         User user = new User(data, false);
-                                        attendees.add(user);
-                                        allAttendees.add(user);
+                                        if (finalConfirmed == 1) {
+                                            attendees.add(user);
+                                            allAttendees.add(user);
+                                        }
                                         latch.countDown();
                                     } else {
                                         Snackbar.make(findViewById(android.R.id.content), R.string.error_connection, Snackbar.LENGTH_LONG)
@@ -237,21 +251,24 @@ public class AttendeesListActivity extends AppCompatActivity {
                                 }
                             },
                             new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    Toast.makeText(getApplicationContext(), R.string.error_connection, Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Toast.makeText(getApplicationContext(), R.string.error_connection, Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                     RequestQueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(strRequest);
                 }
+
+
                 try {
                     latch.await();
                 } catch (InterruptedException e) {
                     Log.e("Thread", "interrupted");
                 }
+
             }
-            else {
-                Log.e("getUsersTask", "data is null");
+            else{
+                    Log.e("getUsersTask", "data is null");
             }
 
             return null;
@@ -278,9 +295,46 @@ public class AttendeesListActivity extends AppCompatActivity {
         }
     }
 
-    public void iWasThereButton(View v) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.attendees_menu, menu);
+        if (!user.isTeacher()) {
+            MenuItem menuItem = menu.findItem(R.id.generate_qr_code);
+            menuItem.setVisible(false);
+        }
+        if (user.isTeacher()) {
+            MenuItem menuItem = menu.findItem(R.id.scan_qr_code);
+            menuItem.setVisible(false);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.generate_qr_code:
+                Intent i = new Intent(getApplicationContext(), SendConfirmationActivity.class);
+                startActivity(i);
+                return true;
+            case R.id.scan_qr_code:
+                Intent i2 = new Intent(getApplicationContext(), SendConfirmationActivity.class);
+                startActivity(i2);
+                return true;
+            case R.id.other_confirmation:
+                Intent conf = new Intent(getApplicationContext(), AcceptConfirmationActivity.class);
+                startActivity(conf);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /*public void iWasThereButton(View v) {
 
         Intent i = new Intent(getApplicationContext(), SendConfirmationActivity.class);
         startActivity(i);
-    }
+    }*/
 }
