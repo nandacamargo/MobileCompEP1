@@ -66,12 +66,12 @@ We also tested in our mobile phones.
 
 ### Users 
 
-To test our application, we used the following users: <br> <br>
+To test our application, we used the following users: <br>
 Teacher: <br>
-nusp: 123456789  password: 123456 <br> <br>
+nusp: 123456789  password: 123456 <br>
 
 Students: <br>
 nusp: 1234       password: 1234 <br>
 nusp: 85361234   password: 5678 <br>
 
-- 
+ 
