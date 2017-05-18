@@ -46,7 +46,9 @@
         <activity
             android:name=".SeminarListActivity"
             android:label="@string/title_activity_seminar_list"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -67,7 +69,9 @@
         <activity
             android:name=".AttendeesListActivity"
             android:label="@string/title_attendees_list"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />

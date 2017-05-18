@@ -62,3 +62,16 @@ We tested using these emulators: <br>
 - Pixel, version 7.1.1 <br>
 
 We also tested in our mobile phones.
+
+
+### Users 
+
+To test our application, we used the following users: <br> <br>
+Teacher: <br>
+nusp: 123456789  password: 123456 <br> <br>
+
+Students: <br>
+nusp: 1234       password: 1234 <br>
+nusp: 85361234   password: 5678 <br>
+
+- 

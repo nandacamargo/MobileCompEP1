@@ -39,6 +39,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.title_edit_profile);
 
         user = UserSingleton.getInstance();
 
